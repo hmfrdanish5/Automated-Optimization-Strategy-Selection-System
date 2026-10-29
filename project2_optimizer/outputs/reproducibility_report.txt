@@ -1,0 +1,50 @@
+REVIEW-1 REPRODUCIBILITY REPORT
+Generated (UTC): 2026-10-08 18:39:24
+
+Python version: 3.12.6
+Platform: Windows-10-10.0.19045-SP0
+scikit-learn: 1.9.1
+numpy: 2.4.2
+pandas: 2.2.3
+joblib: 1.6.0
+
+Seeds:
+  dataset seed (GENERATION_SEED / FINAL): 42
+  split random_state: 42
+  model random_state: 42
+
+Dataset:
+  path: dataset/dataset_final.csv
+  rows: 200
+  unique feature vectors: 199
+  duplicate rows: 1
+  conflicting signatures in CSV: 0
+
+Class distribution:
+  algebraic_simplification: 22
+  common_subexpression_elimination: 31
+  constant_folding: 21
+  constant_propagation: 20
+  dead_code_elimination: 63
+  no_improvement: 33
+  strength_reduction: 10
+
+Model configuration (Review-1, no hyperparameter search):
+  DecisionTreeClassifier: {"random_state": 42}
+  RandomForestClassifier: {"n_estimators": 100, "random_state": 42}
+  train/test split: mode=strict, test_size=0.2
+
+Reproduce training on the expanded dataset (strict models in models/):
+  python train.py
+
+Reproduce final evaluation, holdout metrics, plots, and production models:
+  python evaluate.py
+
+Reproduce optimization demo (uses production models when present):
+  python optimize.py
+
+Reproduce audit, unseen benchmark, runtime and search-efficiency tables:
+  python validate.py
+
+Full unit tests:
+  python -m unittest tests.test_tac tests.test_features tests.test_optimizers tests.test_labeling tests.test_models tests.test_diversity tests.test_engine tests.test_final tests.test_hardening tests.test_optimizer_hardening tests.test_semantics

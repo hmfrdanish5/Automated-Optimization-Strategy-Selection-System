@@ -1,0 +1,109 @@
+# Hand-written programs that are not part of dataset_final.csv.
+# They are an unseen check. Do not add them to a training CSV.
+
+=== fold_product ===
+t1 = 8 * 3
+print t1
+
+=== fold_remainder ===
+t1 = 17 % 5
+t2 = 17 / 5
+print t1
+print t2
+
+=== unsafe_zero_divide ===
+t1 = 9 / 0
+print t1
+
+=== propagate_copy ===
+p = 6
+q = p
+r = q + 3
+print r
+
+=== propagate_reassign ===
+a = 1
+b = a + 2
+a = 9
+c = a + 2
+print b
+print c
+
+=== algebraic_pair ===
+t1 = u + 0
+t2 = 1 * v
+print t1
+print t2
+
+=== unsafe_subtract ===
+t1 = 0 - w
+print t1
+
+=== cse_plain ===
+t1 = p + q
+t2 = r - s
+t3 = p + q
+print t1
+print t3
+
+=== cse_redefined ===
+t1 = p + q
+p = 4
+t2 = p + q
+print t1
+print t2
+
+=== cse_latest ===
+t1 = p + q
+p = 3
+t2 = p + q
+t3 = p + q
+print t2
+print t3
+
+=== dead_chain ===
+a = 1
+b = a + 2
+print 7
+
+=== live_condition ===
+flag = 1
+if flag < 2 goto L1
+print 0
+L1:
+print flag
+
+=== strength_in_loop ===
+i = 0
+L1:
+t1 = i * 2
+i = i + 1
+if i < n goto L1
+print t1
+
+=== multiply_outside_loop ===
+t1 = z * 2
+print t1
+
+=== straight_dependency ===
+t1 = a + b
+t2 = t1 * c
+print t2
+
+=== mixed_live ===
+t1 = 4 + 9
+t2 = a + 0
+spare = 3
+print t1
+print t2
+
+=== name_plus_constant ===
+t1 = a + 4
+print t1
+
+=== counted_loop ===
+i = 0
+L1:
+i = i + 1
+if i < n goto L1
+print i

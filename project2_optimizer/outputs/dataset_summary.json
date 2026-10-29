@@ -1,0 +1,52 @@
+{
+  "samples": 200,
+  "unique_feature_vectors": 199,
+  "duplicate_rows": 1,
+  "conflicting_signatures": 0,
+  "class_counts": {
+    "constant_folding": 21,
+    "no_improvement": 33,
+    "algebraic_simplification": 22,
+    "common_subexpression_elimination": 31,
+    "dead_code_elimination": 63,
+    "strength_reduction": 10,
+    "constant_propagation": 20
+  },
+  "ranges": {
+    "num_statements": [
+      2,
+      31
+    ],
+    "num_constants": [
+      0,
+      11
+    ],
+    "num_repeated_expr": [
+      0,
+      8
+    ],
+    "num_dead_stmts": [
+      0,
+      10
+    ],
+    "num_algebraic_ops": [
+      0,
+      8
+    ],
+    "num_loop_ops": [
+      0,
+      23
+    ],
+    "num_tmp_vars": [
+      0,
+      12
+    ],
+    "const_ratio": [
+      0.0,
+      0.5714285714
+    ]
+  },
+  "dataset_seed": 42,
+  "split_random_state": 42,
+  "model_random_state": 42
+}
