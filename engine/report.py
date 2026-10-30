@@ -58,15 +58,18 @@ def format_comparison(runs: list[OptimizationRun]) -> str:
 
 
 def _format_iteration(record) -> list[str]:
+    extended = [name for name in record.features if name not in FEATURE_COLUMNS]
     lines = [
         "==================================================",
         f"Iteration {record.iteration}",
         "==================================================",
         "",
-        "Features:",
+        f"Features used by the selector ({len(record.features)}):",
     ]
     for column in FEATURE_COLUMNS:
         lines.append(f"    {column} = {record.features[column]}")
+    for column in extended:
+        lines.append(f"    {column} = {record.features[column]}  (extended)")
     lines.extend(["", "Selector scores:"])
     ordered = sorted(
         record.candidate_probabilities,
@@ -86,6 +89,14 @@ def _format_iteration(record) -> list[str]:
     for index, name in enumerate(record.strategy_ranking, start=1):
         lines.append(f"    {index}. {name}")
     lines.append("")
+    if not record.attempts:
+        lines.extend(
+            [
+                "No optimizer tried: the selector predicted no improvement",
+                "with enough confidence to stop early.",
+                "",
+            ]
+        )
     for attempt in record.attempts:
         lines.extend(
             [

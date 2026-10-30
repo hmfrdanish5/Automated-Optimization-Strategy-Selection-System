@@ -112,6 +112,14 @@ python evaluate_models.py
 
 Evaluation artifacts are written to `outputs/evaluation/` and are used by the Model Performance and Optimization Analytics tabs.
 
+## Search controls, fair rule baseline and required plots
+
+- **Search controls** (`engine/loop.py`): `optimize_program(..., stop_on_no_improvement=0.7)` stops when the selector predicts `no_improvement` with at least that confidence; `max_attempts_per_iteration=k` tries only the top-k candidates per round. Both are off by default, so normal runs are unchanged. The run report lists every feature the selector used.
+- **Rule-Based v2** (`RuleSelectorV2`, weights in `selection/search_config.py`): a rule baseline that uses the same 11 features as the ML models, ordered like the label policy (dead code first, constant propagation last).
+- **Evaluation** (`python evaluate_search.py`, writes `outputs/search/`): per-class holdout metrics, 5-fold grouped CV with mean ± std for both schemas, search experiments against fixed-order and random-order baselines, the unseen benchmark on the production models, and the six required plots (confusion matrix, feature importance, confidence vs gain line chart, strategy-sequence stacked bar, reduction box plot, `num_constants` vs constant-folding score scatter) plus a search-effort chart.
+
+Results on the 82 held-out programs: with 11 features every class F1 is at least 0.92; Rule-Based v2 reaches 0.976 accuracy (the 8-feature rule 0.537). With full search every selector reaches the same final cost, so selection pays off as less search: the learned selectors use 34-39% fewer optimizer runs than a fixed order, and 77% fewer with early stopping at 0.7 for Decision Tree and Random Forest with all of the gain kept. On 18 unseen hand-written programs, the ML models pick the best strategy first for 16, Rule-Based v2 for 15, the 8-feature rule for 11 and a fixed order for 2.
+
 ## Tests
 
 Run from this directory:

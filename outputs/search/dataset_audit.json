@@ -1,0 +1,16 @@
+{
+  "total_rows": 400,
+  "class_distribution": {
+    "algebraic_simplification": 43,
+    "common_subexpression_elimination": 63,
+    "constant_folding": 45,
+    "constant_propagation": 40,
+    "dead_code_elimination": 129,
+    "no_improvement": 63,
+    "strength_reduction": 17
+  },
+  "unique_feature_vectors_v1": 333,
+  "conflicting_signatures_v1": 6,
+  "unique_feature_vectors_v2": 340,
+  "conflicting_signatures_v2": 0
+}

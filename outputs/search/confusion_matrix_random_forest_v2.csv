@@ -1,0 +1,8 @@
+actual,constant_folding,constant_propagation,algebraic_simplification,common_subexpression_elimination,dead_code_elimination,strength_reduction,no_improvement
+constant_folding,9,0,0,0,0,0,0
+constant_propagation,0,7,0,0,0,0,0
+algebraic_simplification,0,0,11,0,0,0,0
+common_subexpression_elimination,0,0,0,12,0,0,0
+dead_code_elimination,0,0,0,0,28,0,0
+strength_reduction,0,0,0,0,0,3,0
+no_improvement,0,0,0,1,0,0,11

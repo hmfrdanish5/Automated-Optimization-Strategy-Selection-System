@@ -52,3 +52,38 @@ def predict_rule(features: dict[str, float]) -> str:
         if scores[strategy] == best_score:
             return strategy
     return NO_IMPROVEMENT
+
+
+# --- Eleven-feature rule baseline (final stage) ---------------------------------
+
+
+def rule_scores_v2(features: dict[str, float]) -> dict[str, float]:
+    """Scores from the eleven-feature schema using RULE_WEIGHTS_V2.
+
+    Raw counts are used (not divided by statements): only the order of the
+    scores matters for ranking, and every strategy shares the same program.
+    """
+    from features.extended_extractor import FEATURE_COLUMNS_EXTENDED as FEATURE_COLUMNS_V2
+    from selection.search_config import RULE_WEIGHTS_V2
+
+    missing = [column for column in FEATURE_COLUMNS_V2 if column not in features]
+    if missing:
+        raise KeyError(f"eleven-feature rule selector needs the feature columns {missing}")
+    scores: dict[str, float] = {}
+    for strategy in STRATEGY_PRIORITY:
+        scores[strategy] = sum(
+            weight * float(features[name]) for name, weight in RULE_WEIGHTS_V2[strategy].items()
+        )
+    return scores
+
+
+def predict_rule_v2(features: dict[str, float]) -> str:
+    """Highest eleven-feature rule score; all zero means `no_improvement`."""
+    scores = rule_scores_v2(features)
+    best_score = max(scores.values())
+    if best_score <= 0:
+        return NO_IMPROVEMENT
+    for strategy in STRATEGY_PRIORITY:
+        if scores[strategy] == best_score:
+            return strategy
+    return NO_IMPROVEMENT

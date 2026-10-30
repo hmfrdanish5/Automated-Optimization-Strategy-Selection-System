@@ -7,13 +7,14 @@ or a rule score is not an instruction-count gain.
 from __future__ import annotations
 
 from dataclasses import dataclass
+import random
 
 from evaluation.label_policy import NO_IMPROVEMENT, STRATEGY_PRIORITY
 from features.extended_extractor import FEATURE_COLUMNS_EXTENDED, extract_extended_features
 from features.extractor import FEATURE_COLUMNS, extract_features
 from optimizers.registry import STRATEGY_NAMES
 from selection.classifiers import StrategyClassifier, load_model
-from selection.rule_based import predict_rule, rule_scores
+from selection.rule_based import predict_rule, predict_rule_v2, rule_scores, rule_scores_v2
 
 
 @dataclass(frozen=True)
@@ -43,6 +44,27 @@ class RuleSelector:
         nothing = 0.0 if max(scores.values()) > 0 else 1.0
         probabilities = {**scores, NO_IMPROVEMENT: nothing}
         return _advice(self.selector_type, probabilities, predict_rule(features))
+
+
+class RuleSelectorV2:
+    """Hand-written scores that also use the three extended features.
+
+    This is the fair rule baseline for eleven-feature models: it sees the same
+    inputs they do. See RULE_WEIGHTS_V2 in selection/search_config.py.
+    """
+
+    selector_type = "rule_based_v2"
+
+    def prepare_features(self, program) -> dict[str, float]:
+        features = extract_extended_features(program)
+        require_feature_keys(features, list(FEATURE_COLUMNS_EXTENDED))
+        return features
+
+    def advise(self, features: dict[str, float]) -> SelectorAdvice:
+        scores = rule_scores_v2(features)
+        nothing = 0.0 if max(scores.values()) > 0 else 1.0
+        probabilities = {**scores, NO_IMPROVEMENT: nothing}
+        return _advice(self.selector_type, probabilities, predict_rule_v2(features))
 
 
 class ModelSelector:
@@ -110,6 +132,27 @@ class FixedOrderSelector:
         }
         probabilities[NO_IMPROVEMENT] = 0.0
         return _advice(self.selector_type, probabilities, STRATEGY_PRIORITY[0])
+
+
+class RandomOrderSelector:
+    """Try the six optimizers in a seeded random order (a no-knowledge baseline).
+
+    The order is reshuffled at every call, from one seeded generator, so a run
+    is reproducible but the ranking carries no information about the program.
+    """
+
+    selector_type = "random_order"
+
+    def __init__(self, seed: int = 0):
+        self._rng = random.Random(seed)
+
+    def advise(self, features: dict[str, float]) -> SelectorAdvice:
+        del features
+        order = list(STRATEGY_PRIORITY)
+        self._rng.shuffle(order)
+        probabilities = {name: float(len(order) - index) for index, name in enumerate(order)}
+        probabilities[NO_IMPROVEMENT] = 0.0
+        return _advice(self.selector_type, probabilities, order[0])
 
 
 def saved_selectors() -> dict[str, RuleSelector | ModelSelector]:

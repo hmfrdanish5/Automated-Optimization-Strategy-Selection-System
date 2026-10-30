@@ -2,8 +2,18 @@
 
 The selector orders candidate optimizers. A candidate is accepted only when
 `improves_on_original` says it is better than leaving the TAC unchanged.
-That is the same comparison the labels use. Predicting `no_improvement` does
-not stop the loop by itself.
+That is the same comparison the labels use.
+
+Two optional search controls exist for experiments and the demo. Both are off
+by default, so the default behaviour is unchanged:
+
+- ``stop_on_no_improvement``: stop before trying any optimizer when the
+  selector's top class is ``no_improvement`` with at least this confidence.
+  Without it, predicting ``no_improvement`` does not stop the loop; every run
+  ends with a sweep over all six optimizers that confirms nothing helps.
+- ``max_attempts_per_iteration``: try only the top-k ranked optimizers in each
+  round. With a small budget a wrong ranking costs real improvement, so the
+  quality of the prediction becomes visible in the final code.
 """
 
 from __future__ import annotations
@@ -12,6 +22,7 @@ from dataclasses import asdict, dataclass, field
 
 from dataset.labeler import score_strategy
 from engine.selectors import SelectorAdvice, require_feature_keys
+from evaluation.label_policy import NO_IMPROVEMENT
 from evaluation.comparison import improves_on_original
 from evaluation.metrics import instruction_count, instruction_gain, weighted_cost_gain
 from features.extractor import FEATURE_COLUMNS, extract_features
@@ -24,6 +35,8 @@ MAX_ITERATIONS = 20
 STOP_NO_BENEFIT = "no beneficial strategy remains"
 STOP_ITERATION_LIMIT = "maximum iterations reached"
 STOP_REPEATED_STATE = "repeated TAC state"
+STOP_PREDICTED_NO_IMPROVEMENT = "selector predicted no improvement"
+STOP_BUDGET_EXHAUSTED = "no improvement within the candidate budget"
 
 
 @dataclass(frozen=True)
@@ -114,14 +127,24 @@ def optimize_program(
     program_id: str = "",
     max_iterations: int = MAX_ITERATIONS,
     apply=apply_strategy,
+    *,
+    stop_on_no_improvement: float | None = None,
+    max_attempts_per_iteration: int | None = None,
 ) -> OptimizationRun:
     """Optimize a copy of `program`. The caller's program is not modified.
 
     `apply(program, strategy_name)` runs one optimizer. Tests can pass a
     substitute. The default is the real registry.
+
+    `stop_on_no_improvement` and `max_attempts_per_iteration` are optional
+    search controls (see the module docstring). Both default to off.
     """
     if max_iterations < 1:
         raise ValueError("max_iterations must be at least 1")
+    if stop_on_no_improvement is not None and not 0.0 <= stop_on_no_improvement <= 1.0:
+        raise ValueError("stop_on_no_improvement must be between 0 and 1")
+    if max_attempts_per_iteration is not None and max_attempts_per_iteration < 1:
+        raise ValueError("max_attempts_per_iteration must be at least 1")
     original_text = program.to_tac()
     current = program.copy()
     seen = {original_text}
@@ -136,6 +159,28 @@ def optimize_program(
             features = extract_features(current)
             require_feature_keys(features)
         advice = selector.advise(features)
+        if (
+            stop_on_no_improvement is not None
+            and advice.selected_strategy == NO_IMPROVEMENT
+            and advice.confidence >= stop_on_no_improvement
+        ):
+            current_count = instruction_count(current)
+            history.append(
+                _record(
+                    iteration,
+                    features,
+                    advice,
+                    current_count,
+                    current_count,
+                    None,
+                    False,
+                    None,
+                    (),
+                    current.to_tac(),
+                )
+            )
+            stopped_because = STOP_PREDICTED_NO_IMPROVEMENT
+            break
         record, accepted_program, stop_now = _run_iteration(
             iteration,
             current,
@@ -143,6 +188,7 @@ def optimize_program(
             advice,
             seen,
             apply,
+            max_attempts_per_iteration,
         )
         history.append(record)
         if accepted_program is None:
@@ -198,14 +244,24 @@ def search_metrics_from_history(history: tuple[IterationRecord, ...]) -> dict[st
     }
 
 
-def _run_iteration(iteration, current, features, advice: SelectorAdvice, seen, apply):
+def _run_iteration(
+    iteration,
+    current,
+    features,
+    advice: SelectorAdvice,
+    seen,
+    apply,
+    max_attempts: int | None = None,
+):
     before = instruction_count(current)
     current_text = current.to_tac()
     attempts: list[CandidateAttempt] = []
     accepted_program = None
     blocked_by_repeat = False
+    candidates = advice.try_order if max_attempts is None else advice.try_order[:max_attempts]
+    budget_limited = max_attempts is not None and len(candidates) < len(advice.try_order)
 
-    for strategy in advice.try_order:
+    for strategy in candidates:
         candidate = apply(current.copy(), strategy)
         if current.to_tac() != current_text:
             raise RuntimeError(f"{strategy} changed the program it was given")
@@ -257,7 +313,12 @@ def _run_iteration(iteration, current, features, advice: SelectorAdvice, seen, a
             tuple(attempts),
             current_text,
         )
-        stop = STOP_REPEATED_STATE if blocked_by_repeat else STOP_NO_BENEFIT
+        if blocked_by_repeat:
+            stop = STOP_REPEATED_STATE
+        elif budget_limited:
+            stop = STOP_BUDGET_EXHAUSTED
+        else:
+            stop = STOP_NO_BENEFIT
         return record, None, stop
 
     record = _record(
@@ -289,7 +350,12 @@ def _record(
 ) -> IterationRecord:
     return IterationRecord(
         iteration=iteration,
-        features={column: features[column] for column in FEATURE_COLUMNS},
+        # The eight original columns first, then any extended columns the
+        # selector used (an 11-feature model), so reports show its real inputs.
+        features={
+            **{column: features[column] for column in FEATURE_COLUMNS},
+            **{name: value for name, value in features.items() if name not in FEATURE_COLUMNS},
+        },
         strategy_ranking=advice.ranking,
         candidate_probabilities=dict(advice.probabilities),
         selected_strategy=advice.selected_strategy,
