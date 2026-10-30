@@ -1,260 +1,144 @@
-# Automated Optimization Strategy Selection
+# Automated Optimization Strategy Selection System
 
-## Introduction
+A Python-based compiler-optimization demonstrator. It accepts a restricted C-like source language or Three-Address Code (TAC), then uses a strategy selector to rank six TAC optimization passes. The system compares a rule-based selector with four trained machine-learning classifiers.
 
-This system chooses which compiler optimization to try next on a **TAC**
-(three-address code) program. For each step it extracts features, ranks the six
-optimizers (plus a **`no_improvement`** class when no single pass wins under the
-label policy), tries candidates in order, measures real gains, and repeats until
-convergence.
+## Run the application
 
-**Review 2 (current):** five selectors : Rule-Based, Decision Tree, Random Forest,
-Logistic Regression, and MLP : trained on `dataset/dataset_v2.csv` (400 programs).
-ML models may use the **original eight features** or the **extended eleven-feature**
-schema; the Rule-Based selector always uses eight features. The Streamlit demo and
-`optimize.py` load **saved production pickles**; they do not train.
+Python 3.11 or newer is recommended. Install the pinned dependencies and start Streamlit:
 
-**Review 1 (frozen baseline):** two ML models (tree + forest) on 200 programs.
-Artifacts and metrics are preserved; see `REVIEW_1_BASELINE.md`.
+```bash
+python -m pip install -r requirements.txt
+python -m streamlit run app.py
+```
 
-The Streamlit demo defaults to a **restricted C-like source language** compiled by
-`source_frontend/` (this is **not** the missing external Project 1 parser). Advanced
-TAC input remains available for debugging.
+The application provides five tabs:
+
+- **Optimize Program** — compile supported source code or enter TAC, then compare all five selectors.
+- **Model Performance** — inspect saved holdout, cross-validation, and feature-ablation results.
+- **Mathematics** — review feature definitions, selector scoring, optimization metrics, and evaluation methodology.
+- **Optimization Analytics** — explore saved model and optimization analysis artifacts.
+- **Semantic Correctness** — inspect conservative optimizer safeguards and differential-test coverage.
+
+The application performs inference with saved models. It does not train models during an optimization run.
 
 ## Architecture
 
 ```text
-                    OFFLINE (training / evaluation — not run on every UI click)
-  dataset_v2.csv ──► train_review2.py ──► saved production pickles (models/)
-                  └──► evaluate_review2.py ──► outputs/review2/ (metrics, plots)
-
-                    ONLINE (Streamlit / optimize.py)
-  Source code ──► lexer ──► parser ──► AST ──► TAC generator
-       │                                              │
-       └── Advanced TAC paste ────────────────────────┘
-                              ▼
-                    tac/parser.py (validation)
-                              ▼
-                    feature extraction (8 or 11 columns)
-                              ▼
-         five selectors (saved models + rule baseline)
-                              ▼
-              candidate ranking + six optimization passes
-                              ▼
-           measured gains + iterative engine ──► final TAC
-
-  Supporting (offline): semantic/differential tests, fuzz corpus — not mandatory per request
+Restricted C-like source
+  Lexer → Parser → AST → TAC generator ─┐
+                                       ├→ TAC parser / validator
+Advanced TAC input ────────────────────┘
+                                         ↓
+                              Feature extraction
+                                         ↓
+                           Strategy selector (1 of 5)
+                                         ↓
+                         Candidate optimizer passes
+                                         ↓
+                       Measure gain and accept/reject
+                                         ↓
+                       Re-extract features and repeat
 ```
 
-Each optimizer runs alone and returns a **new** program. The original TAC is never
-modified in place.
+### Source-language frontend
 
-## Supported source language (subset)
+`source_frontend/` is a hand-written frontend. Recursive-descent parsing handles statements and program structure; Pratt parsing handles expressions, precedence, and associativity. The resulting abstract syntax tree is converted into TAC and validated by the existing TAC parser.
 
-Implemented in `source_frontend/`:
+Supported constructs include integer declarations with initializers, assignments, arithmetic (`+`, `-`, `*`, `/`, `%`), unary minus, parentheses, `print(expression)`, relational conditions in `if` / `else` and `while`, nested blocks, and `//` comments.
 
-- `int name = expression;` declarations (flat namespace; duplicate names rejected).
-- Assignment, `+ - * / %`, unary `-`, parentheses.
-- `print(expr);`
-- `if (a rel b) { ... } else { ... }` and `while (cond) { ... }` with nested blocks.
-- `//` line comments.
+This is a deliberately restricted C-like language, not a complete C compiler. Function definitions/calls, arrays, pointers, floating-point values, strings, `for`, `break`, `continue`, logical `&&` / `||`, and external input are not supported. The frontend checks declarations and definite assignment before generating TAC.
 
-**Not supported:** functions, arrays, pointers, floats, strings, `for`, `break`, `continue`,
-`return`, logical `&&`/`||`, and external input. Identifiers `if`, `goto`, and `print` are
-reserved because the TAC backend uses them as keywords. A definite-assignment check rejects
-reads of variables that may be uninitialized (for example, declared only inside a loop body).
-Unsupported constructs produce errors with line/column information.
+### TAC optimization passes
 
-Compile entry point: `source_frontend.compiler.compile_source(source)`.
+| Short name | Optimization |
+|---|---|
+| CF | Constant Folding |
+| CP | Constant Propagation |
+| ALG | Algebraic Simplification |
+| CSE | Common Subexpression Elimination |
+| DCE | Dead Code Elimination |
+| SR | Strength Reduction |
 
-## Visualization dashboard
+### Strategy selectors
 
-`app.py` tabs **Model Performance**, **Optimization Analytics**, and **Semantic Correctness**
-render frozen artifacts from `outputs/` and `outputs/review2/` via `ui/visualizations.py`.
-Review-1 and Review-2 charts are labeled separately; the UI does not retrain models or
-regenerate experiment CSVs.
+1. Rule-Based
+2. Decision Tree
+3. Random Forest
+4. Logistic Regression
+5. Multi-Layer Perceptron (MLP)
 
-## Review-1 frozen baseline
+The four trained ML classifiers use the 11-feature schema. The Rule-Based selector uses the eight core features. A selector ranks the six optimizer passes; it does not modify TAC itself.
 
-Historical scope (unchanged artifacts):
+The engine tries candidate passes in ranked order, measures each transformed program, and accepts the first candidate with a positive gain under the lexicographic objective. It then extracts features again and repeats until no candidate improves the program, a repeated state is detected, or the iteration limit is reached.
 
-- `dataset/dataset.csv`, `dataset_expanded.csv`, `dataset_final.csv` (200-row final set).
-- `models/production_decision_tree.pkl`, `models/production_random_forest.pkl`.
-- Training/evaluation via `python train.py` and `python evaluate.py`.
-- Reference metrics in `REVIEW_1_BASELINE.md` and `REVIEW_1_VS_REVIEW_2.md`.
+## Features and optimization objective
 
-## Features
+The eight core features are `num_statements`, `num_constants`, `num_repeated_expr`, `num_dead_stmts`, `num_algebraic_ops`, `num_loop_ops`, `num_tmp_vars`, and `const_ratio`.
 
-**Eight original columns** (`features/extractor.py`, `FEATURE_COLUMNS`) : unchanged.
+The 11-feature ML schema adds `num_constant_propagation_uses`, `num_safe_repeated_expr`, and `num_mul_by_two_in_loops`.
 
-| Feature | Meaning |
-| --- | --- |
-| `num_statements` | All instructions, including labels, jumps, and prints. |
-| `num_constants` | Binary ops with two integer operands (not `/` or `%` by zero), plus unary minus of an integer. Plain `x = 10` does not count. |
-| `num_repeated_expr` | Extra copies of the same binary expression in written order (`a + b` ≠ `b + a`). |
-| `num_dead_stmts` | Assignments removable by iterative liveness (same analysis as DCE). |
-| `num_algebraic_ops` | Count of `x+0`, `0+x`, `x-0`, `x*1`, `1*x`, `x/1`, `x*0`, `0*x`. |
-| `num_loop_ops` | Instructions inside a back-edge loop (counted once). |
-| `num_tmp_vars` | Unique names matching `t` + digits or `__src_tmp_` + digits (as result or operand). |
-| `const_ratio` | `num_constants / num_statements`, or 0 if empty. |
+Candidate gains are compared lexicographically:
 
-**Three extended columns** (`features/extended_extractor.py`, Review 2 only) document
-optimizer-aligned opportunities (constant propagation uses, safe CSE sites, `×2` in loops).
+1. Instruction-count reduction
+2. Weighted arithmetic-cost reduction
+3. Arithmetic-operation reduction
+4. Temporary-variable reduction
+5. Rendered TAC character-count reduction
 
-## Optimizers
+The weighted arithmetic-cost model assigns `+` = 1, `-` = 1, `*` = 2, `/` = 4, `%` = 4, and unary minus = 1. This is an educational relative-cost model, not a measurement of CPU cycles or wall-clock execution time. Assignments, prints, labels, jumps, and comparisons have zero arithmetic cost.
 
-Each module exposes `optimize(program) -> TACProgram`:
+## Dataset and model artifacts
 
-| Name | Role |
-| --- | --- |
-| `constant_folding` | Evaluate constant arithmetic when safe (integer `/` truncates toward zero; no fold on divide/mod by zero). |
-| `constant_propagation` | Substitute constants from simple assignments and copies (does not fold new expressions). |
-| `algebraic_simplification` | Apply the eight algebraic identities listed above. |
-| `common_subexpression_elimination` | Reuse temporaries for repeated expressions; respects reassignment; no commutativity. |
-| `dead_code_elimination` | Remove dead assignments; keeps prints, labels, jumps, and unused `/`/`%` that may trap. |
-| `strength_reduction` | Inside loops only: `x * 2` or `2 * x` → `x + x`. |
+`dataset/optimization_dataset.csv` contains 400 deterministic TAC programs. Labels are generated by applying the six optimization passes independently to copies of each program, measuring the resulting gains, and selecting the best strategy. `no_improvement` is assigned when no pass produces a positive gain. Diagnostic gain columns are excluded from model inputs.
 
-`apply_strategy(program, name)` runs one pass. Chaining happens only in the
-iterative engine.
+The four saved production classifiers are in `models/`:
 
-## Selectors (Review 2)
+- `production_decision_tree_11_features.pkl`
+- `production_random_forest_11_features.pkl`
+- `production_logistic_regression_11_features.pkl`
+- `production_mlp_11_features.pkl`
 
-| Selector | Input schema | Notes |
-| --- | --- | --- |
-| Rule-Based | 8 features | Hand-written scores; not probabilities. |
-| Decision Tree | 8 or 11 | Single interpretable tree. |
-| Random Forest | 8 or 11 | 100 trees, `random_state=42`. |
-| Logistic Regression | 8 or 11 | `StandardScaler` + multinomial logistic. |
-| MLP | 8 or 11 | Small `MLPClassifier` with scaler. |
+To rebuild the dataset and train the production classifiers:
 
-All ML selectors predict one of **seven** classes: the six optimizers or
-`no_improvement`.
+```bash
+python train_models.py
+```
 
-## Training
+To rerun holdout evaluation, grouped cross-validation, and feature ablation:
 
-Labels come from `dataset/labeler.py` (independent optimizer runs). Only feature
-columns enter `model.fit`; gain columns are diagnostic.
+```bash
+python evaluate_models.py
+```
 
-**Review 1**
+Evaluation artifacts are written to `outputs/evaluation/` and are used by the Model Performance and Optimization Analytics tabs.
+
+## Tests
+
+Run from this directory:
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+Tests cover TAC parsing and interpretation, optimization passes, strategy selection, dataset generation and validation, source lexing/parsing/code generation, and semantic-preservation regressions. Differential tests compare program output, runtime errors, and termination on bounded generated inputs. This provides evidence for the tested cases, not a formal proof of semantic equivalence.
+
+## Repository structure
 
 ```text
-python train.py
-python evaluate.py
+project2_optimizer/
+├── app.py                 # Streamlit application
+├── source_frontend/       # Lexer, parser, AST, semantic checks, TAC generator
+├── tac/                   # TAC parser, instructions, interpreter, analysis
+├── optimizers/            # Six optimization passes
+├── features/              # Feature extraction
+├── selection/             # Rule-Based and ML selectors, model configuration
+├── engine/                # Iterative optimization engine
+├── dataset/               # Dataset builder and frozen dataset
+├── evaluation/            # Label policy, metrics, validation, evaluation
+├── models/                # Four production classifiers
+├── outputs/evaluation/    # Saved evaluation tables and plots
+├── ui/                    # Streamlit services and visualizations
+├── scripts/               # Archive verification utility
+├── examples/              # Demonstration programs
+└── tests/                 # Unit, integration, and differential tests
 ```
-
-**Review 2**
-
-```text
-python train_review2.py
-python evaluate_review2.py
-```
-
-`train_review2.py` writes `dataset/dataset_v2.csv` once; evaluation loads the CSV
-via `dataset/v2_loader.py` without regenerating rows.
-
-## Prediction and confidence
-
-`predict` / `predict_proba` rank candidates. Class probability is **not** a promise
-of optimization gain; the engine still measures every candidate.
-
-## Semantic correctness testing
-
-Conservative optimizer rules (for example, not folding division by a variable
-that might be zero, and keeping unused `/` or `%` when the divisor may be zero
-during dead-code elimination) are intended to preserve semantics, but they are
-not a formal proof.
-
-**Offline differential testing** compares observable behavior before and after
-optimization using the TAC interpreter (`tac/interpreter.py`, step limit
-10,000): printed integers, runtime errors, and termination status.
-
-| Suite | Role |
-| --- | --- |
-| `tests/test_semantics.py` | Hand-written regression cases for each of the six passes. |
-| `tests/test_semantic_fuzz.py` | Deterministic generated corpus (seed `20261029`): 80 programs × 10 input environments × 6 passes (4,800 comparisons), plus 24 programs × 10 environments through the fixed-order iterative engine (240 comparisons). |
-| `tests/test_source_*.py` | Lexer/parser/codegen tests plus source→TAC→optimizer differential checks. |
-
-These tests provide evidence for the cases they exercise; they do **not** verify
-every possible TAC program. The production engine does not re-run the interpreter
-on the original program at optimization time.
-
-## Important distinction
-
-| Phase | What happens |
-| --- | --- |
-| **Training** | Fit on labeled CSV rows; labels come from running each optimizer once. |
-| **Prediction** | Classify features of the **current** program to rank candidates. |
-| **Optimization iteration** | Run optimizers, accept only measured improvements, update TAC, repeat. |
-
-## Evaluation
-
-- **Holdout** : strict grouped split by feature signature (`STRICT_SPLIT`).
-- **Grouped cross-validation** : `StratifiedGroupKFold` when possible.
-- Review-1 outputs under `outputs/`; Review-2 under `outputs/review2/`.
-
-## Iterative engine
-
-`python optimize.py` compares all five selectors on sample TAC (Review-2 production
-models when present). Search-efficiency metrics are recorded per run.
-
-## Limitations
-
-- Synthetic dataset; not representative of production compilers.
-- Simplified TAC (no functions, pointers, or rich types in the IR).
-- Source front end covers a small C-like subset only.
-- Feature vectors can be ambiguous under eight columns; extended features reduce but
-  do not remove all limits on this corpus.
-- External Project 1 parser is **not** integrated; `integration/project1_adapter.py` delegates to `source_frontend`.
-
-## Reproducing the project
-
-From the `project2_optimizer` directory:
-
-```text
-python -m pip install -r requirements.txt
-python -m unittest discover -s tests -p "test_*.py"
-python train_review2.py
-python evaluate_review2.py
-python optimize.py
-python validate.py
-```
-
-Review-1 reproduction (frozen baseline only):
-
-```text
-python train.py
-python evaluate.py
-```
-
-### Web demo (Streamlit)
-
-```text
-cd project2_optimizer
-python app.py
-```
-
-Pinned: `scikit-learn==1.9.1`, `streamlit==1.63.0` (see `requirements.txt`).
-
-Tabs: **Optimize Program** (source/TAC input, five-selector comparison), **Model Performance**,
-**Optimization Analytics**, **Semantic Correctness** (saved offline artifacts).
-
-## TAC syntax (quick reference)
-
-One statement per line. Operators `+ - * / %`. Labels, `goto`, `if rel goto`,
-`print`. Negative constants: `t1 = - 10`.
-
-## Datasets
-
-| File | Purpose |
-| --- | --- |
-| `dataset/dataset.csv` | Review-1 original (57 rows) : **frozen** |
-| `dataset/dataset_expanded.csv` | Review-1 expanded : **frozen** |
-| `dataset/dataset_final.csv` | Review-1 final (200 rows) : **frozen** |
-| `dataset/dataset_v2.csv` | Review-2 (400 rows) |
-
-## Review 2 deliverables
-
-- Models: `models/review2_production_*` (v1 and v2 feature schemas).
-- Reports: `REVIEW_2_FINAL_REPORT.md`, `REVIEW_1_VS_REVIEW_2.md`.
-- Submission: `python package_submission.py` then `python scripts/verify_submission_zip.py`.
-- Git root: this directory. A former nested duplicate was moved to `../_local_backups/` (local only).

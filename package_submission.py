@@ -22,7 +22,11 @@ def should_skip(path: Path, relative: Path) -> bool:
         return True
     if path.suffix.lower() in SKIP_FILE_SUFFIXES:
         return True
-    if relative.name in SUBMISSION_ZIP_NAMES:
+    if relative.name in SUBMISSION_ZIP_NAMES or path.suffix.lower() == ".zip":
+        return True
+    if relative.name == ".env" or relative.name.startswith(".env."):
+        return True
+    if relative.as_posix() == ".streamlit/secrets.toml":
         return True
     posix = relative.as_posix()
     if posix.startswith(".git/") or "/.git/" in posix or posix.endswith("/.git"):

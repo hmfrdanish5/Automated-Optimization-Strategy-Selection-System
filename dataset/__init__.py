@@ -1,4 +1,4 @@
-"""Hand-written TAC samples and the measured Review 1 dataset."""
+"""Hand-written TAC samples and deterministic dataset utilities."""
 
 from dataset.dataset_builder import (
     build_dataset,

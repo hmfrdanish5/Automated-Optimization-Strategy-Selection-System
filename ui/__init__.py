@@ -1,1 +1,1 @@
-"""UI adapters for the Streamlit demo (five selectors, Review-2 when available)."""
+"""Streamlit presentation and application services for the optimization system."""

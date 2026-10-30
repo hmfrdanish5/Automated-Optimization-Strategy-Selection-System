@@ -1,0 +1,5 @@
+{
+  "five_selector_cv_original_8_features": "StratifiedGroupKFold",
+  "five_selector_cv_extended_11_features": "StratifiedGroupKFold",
+  "feature_ablation_cv_8_feature_groups": "StratifiedGroupKFold"
+}

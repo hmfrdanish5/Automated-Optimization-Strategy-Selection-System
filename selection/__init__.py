@@ -1,11 +1,20 @@
-"""Rule scores, decision tree, and random forest.
+"""Model factories and strategy prediction helpers.
 
-The selectors only choose a strategy name. An optimizer performs the change.
+Training is imported lazily so dataset configuration can import the selection
+package without creating a dataset/selection import cycle.
 """
 
 from selection.classifiers import decision_tree, load_model, random_forest, save_model
-from selection.pipeline import train_review_models
 from selection.rule_based import predict_rule
+
+
+def __getattr__(name: str):
+    if name == "train_classifiers":
+        from selection.pipeline import train_classifiers
+
+        return train_classifiers
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+
 
 __all__ = [
     "decision_tree",
@@ -13,5 +22,5 @@ __all__ = [
     "predict_rule",
     "random_forest",
     "save_model",
-    "train_review_models",
+    "train_classifiers",
 ]

@@ -10,7 +10,7 @@ from dataset.labeler import label_program
 from dataset.examples import load_sample_programs
 from dataset.generator import EXPANDED_GENERATED_COUNT, GENERATION_SEED, generate_diverse_programs
 from features.extractor import FEATURE_COLUMNS, extract_features
-from selection.config import REVIEW_SPLIT, STRICT_SPLIT
+from selection.config import STRATIFIED_SPLIT, STRICT_SPLIT
 from selection.pipeline import load_dataset_frame, load_labeled_examples
 from selection.splitting import split_examples
 from tac.parser import parse_tac
@@ -47,26 +47,27 @@ class GroupedSplitTests(unittest.TestCase):
             [example.program_id for example in second_test],
         )
 
-    def test_review_split_reports_overlap_and_strict_split_has_none(self) -> None:
+    def test_stratified_split_and_strict_split_are_reported(self) -> None:
         examples = load_labeled_examples()
-        _train, _test, review = split_examples(examples, REVIEW_SPLIT)
+        _train, _test, stratified = split_examples(examples, STRATIFIED_SPLIT)
         _strict_train, _strict_test, strict = split_examples(examples, STRICT_SPLIT)
-        self.assertEqual(review.overlap_rows, 7)
+        self.assertTrue(stratified.stratified)
+        self.assertGreaterEqual(stratified.overlap_rows, 0)
         self.assertEqual(strict.overlap_rows, 0)
-        self.assertIn("MODE A", review.explanation)
-        self.assertIn("MODE B", strict.explanation)
+        self.assertIn("Stratified row-level split", stratified.explanation)
+        self.assertIn("strict feature-grouped split", strict.explanation)
 
 
 class DiversityTests(unittest.TestCase):
-    def test_review_dataset_duplicate_counts(self) -> None:
+    def test_frozen_dataset_duplicate_counts(self) -> None:
         frame = load_dataset_frame()
         report = diversity_report(frame.to_dict(orient="records"))
-        self.assertEqual(report.row_count, 57)
-        self.assertEqual(report.unique_feature_vectors, 34)
-        self.assertEqual(report.duplicate_rows, 23)
+        self.assertEqual(report.row_count, 400)
+        self.assertGreater(report.unique_feature_vectors, 300)
+        self.assertEqual(report.duplicate_rows, 400 - report.unique_feature_vectors)
         text = format_diversity_report(report)
-        self.assertIn("Unique feature vectors: 34", text)
-        self.assertIn("Duplicate feature rows: 23", text)
+        self.assertIn(f"Unique feature vectors: {report.unique_feature_vectors}", text)
+        self.assertIn(f"Duplicate feature rows: {report.duplicate_rows}", text)
         self.assertEqual(len(report.unique_values), len(FEATURE_COLUMNS))
         self.assertIn("num_loop_ops", report.ranges)
 

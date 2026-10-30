@@ -1,4 +1,4 @@
-"""Build the Review 1 CSV from hand-written samples plus generated programs."""
+"""Build deterministic TAC datasets from hand-written samples and generated programs."""
 
 from __future__ import annotations
 

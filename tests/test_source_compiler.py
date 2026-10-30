@@ -7,7 +7,6 @@ import unittest
 from source_frontend.compiler import compile_source
 from source_frontend.errors import SourceCompileError
 from tac.interpreter import execute
-from integration.project1_adapter import source_to_tac_program
 
 
 class TacGenerationTests(unittest.TestCase):
@@ -62,10 +61,6 @@ class TacGenerationTests(unittest.TestCase):
         run = execute(result.program)
         self.assertEqual(run.prints, (1,))
         self.assertEqual(run.error, "division by zero")
-
-    def test_adapter_entry_point(self) -> None:
-        program = source_to_tac_program("int x = 3;\nprint(x);\n")
-        self.assertEqual(execute(program).prints, (3,))
 
     def test_empty_source_reports_error(self) -> None:
         result = compile_source("   ")

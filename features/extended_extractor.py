@@ -1,6 +1,6 @@
-"""Extended feature schema (Review 2).
+"""Additional pass-aware features used by the 11-feature schema.
 
-FEATURE_COLUMNS_V2 keeps the original eight features in the same order and
+FEATURE_COLUMNS_EXTENDED keeps the original eight features in the same order and
 appends three analysis features that mirror what the current optimizers can
 actually use. They are conservative: if the pass would not rewrite a site,
 it is not counted.
@@ -17,10 +17,10 @@ from optimizers.common_subexpression_elimination import _expression_key as cse_e
 from optimizers.constant_propagation import _assigned_constant, _substitute_unsigned
 from optimizers.strength_reduction import _variable_multiplied_by_two
 
-FEATURE_SCHEMA_V1 = "v1"
-FEATURE_SCHEMA_V2 = "v2"
+FEATURE_SCHEMA_ORIGINAL = "8_features"
+FEATURE_SCHEMA_EXTENDED = "11_features"
 
-FEATURE_COLUMNS_V2 = [
+FEATURE_COLUMNS_EXTENDED = [
     *FEATURE_COLUMNS,
     "num_constant_propagation_uses",
     "num_safe_repeated_expr",
@@ -28,13 +28,13 @@ FEATURE_COLUMNS_V2 = [
 ]
 
 
-def extract_features_v2(program: TACProgram) -> dict[str, float]:
-    """Return eleven features in FEATURE_COLUMNS_V2 order."""
+def extract_extended_features(program: TACProgram) -> dict[str, float]:
+    """Return eleven features in FEATURE_COLUMNS_EXTENDED order."""
     features = extract_features(program)
     features["num_constant_propagation_uses"] = num_constant_propagation_uses(program)
     features["num_safe_repeated_expr"] = num_safe_repeated_expr(program)
     features["num_mul_by_two_in_loops"] = num_mul_by_two_in_loops(program)
-    return {name: features[name] for name in FEATURE_COLUMNS_V2}
+    return {name: features[name] for name in FEATURE_COLUMNS_EXTENDED}
 
 
 def num_constant_propagation_uses(program: TACProgram) -> int:

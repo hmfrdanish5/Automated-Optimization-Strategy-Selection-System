@@ -1,0 +1,38 @@
+Selector evaluation summary
+Dataset: optimization_dataset.csv (400 rows)
+Unique 8-feature vectors: 333
+Unique 11-feature vectors: 340
+Extension seed: 43, final-200 seed: 42
+
+Strict holdout results:
+  rule_based (8 features): accuracy 0.537, macro F1 0.521
+  rule_based (11 features): accuracy 0.560, macro F1 0.554
+  decision_tree (8 features): accuracy 0.939, macro F1 0.911
+  decision_tree (11 features): accuracy 1.000, macro F1 1.000
+  random_forest (8 features): accuracy 0.927, macro F1 0.879
+  random_forest (11 features): accuracy 1.000, macro F1 1.000
+  logistic_regression (8 features): accuracy 0.939, macro F1 0.913
+  logistic_regression (11 features): accuracy 0.988, macro F1 0.991
+  mlp (8 features): accuracy 0.939, macro F1 0.931
+  mlp (11 features): accuracy 0.988, macro F1 0.991
+
+Feature ablation (same grouped holdout programs for both schemas):
+  train programs: 318, test programs: 82
+  decision_tree (original_8_features): 0.911
+  random_forest (original_8_features): 0.879
+  logistic_regression (original_8_features): 0.913
+  mlp (original_8_features): 0.931
+  decision_tree (extended_11_features): 1.000
+  random_forest (extended_11_features): 0.988
+  logistic_regression (extended_11_features): 0.991
+  mlp (extended_11_features): 0.979
+
+Feature ablation cross-validation (mean macro F1):
+  decision_tree (extended_11_features): 0.997 ± 0.008
+  decision_tree (original_8_features): 0.896 ± 0.048
+  logistic_regression (extended_11_features): 0.976 ± 0.024
+  logistic_regression (original_8_features): 0.880 ± 0.057
+  mlp (extended_11_features): 0.983 ± 0.018
+  mlp (original_8_features): 0.888 ± 0.035
+  random_forest (extended_11_features): 0.995 ± 0.007
+  random_forest (original_8_features): 0.874 ± 0.041

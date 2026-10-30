@@ -8,9 +8,10 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import sklearn
 import streamlit as st
+import streamlit.components.v1 as components
 
 from selection.config import FOREST_PARAMETERS, MODEL_RANDOM_STATE
-from features.extended_extractor import FEATURE_COLUMNS_V2
+from features.extended_extractor import FEATURE_COLUMNS_EXTENDED
 from ui.demo_service import (
     DEMO_SAMPLE_IDS,
     OBSERVABILITY_NOTE,
@@ -106,10 +107,11 @@ def main() -> None:
     _banner()
 
     samples = cached_samples()
-    tab_optimize, tab_models, tab_analytics, tab_semantic = st.tabs(
+    tab_optimize, tab_models, tab_math, tab_analytics, tab_semantic = st.tabs(
         [
             "Optimize Program",
             "Model Performance",
+            "Mathematics",
             "Optimization Analytics",
             "Semantic Correctness",
         ]
@@ -345,24 +347,21 @@ def _editor(samples) -> None:
             list(DEMO_SAMPLE_IDS),
             label_visibility="collapsed",
         )
-        _tip(
-            "Generate Random TAC",
-            "Fills the editor with a small valid program that prints a result. Not added to the training set.",
-        )
-        st.button(
-            "Generate Random TAC",
-            on_click=_fill_random,
-            use_container_width=True,
-        )
-        _tip(
-            "Generate Random Source Code",
-            "Fills Source Code mode with a small valid C-like program (not added to the training set).",
-        )
-        st.button(
-            "Generate Random Source Code",
-            on_click=_fill_random_source,
-            use_container_width=True,
-        )
+        gen_col1, gen_col2 = st.columns(2)
+        with gen_col1:
+            st.button(
+                "Random Source",
+                on_click=_fill_random_source,
+                use_container_width=True,
+                help="Small C-like program with print.",
+            )
+        with gen_col2:
+            st.button(
+                "Random TAC",
+                on_click=_fill_random,
+                use_container_width=True,
+                help="Switches to Advanced TAC mode.",
+            )
         _tip(
             "Load Example",
             "Copies the selected TAC example into Advanced TAC mode.",
@@ -393,8 +392,9 @@ def _editor(samples) -> None:
 
 
 def _results_panel() -> None:
-    _render_pipeline_flowchart(st.session_state.get("comparison") is not None)
     comparison = _current_comparison()
+    with st.expander("Pipeline flowchart", expanded=comparison is None):
+        _render_pipeline_flowchart(comparison is not None)
     with st.container(border=True):
         _panel_switcher()
         notice = st.session_state.get("notice")
@@ -411,7 +411,7 @@ def _results_panel() -> None:
             st.caption(
                 "Enter or generate source/TAC in the sidebar, then **Compare All Selectors**. "
                 "Results appear below; use **Model Performance**, **Mathematics**, and "
-                "**Optimization Analytics** tabs for saved experiments."
+                "**Optimization Analytics** tabs for saved evaluation results."
             )
             return
         if comparison.submitted_source:
@@ -515,43 +515,58 @@ def _fill_random_source() -> None:
 
 
 def _render_pipeline_flowchart(ran_comparison: bool) -> None:
-    status = "done" if ran_comparison else "ready"
     st.markdown("#### End-to-end pipeline")
     st.caption(
         "Source mode compiles through the front end; Advanced TAC skips straight to validation. "
-        "After comparison, explore other tabs for frozen ML charts."
+        "After **Compare All Selectors**, use **Model Performance**, **Mathematics**, and "
+        "**Optimization Analytics** for saved evaluation views."
     )
-    st.mermaid(
+    note = (
+        "Comparison complete — explore **Model Performance**, **Mathematics**, and "
+        "**Optimization Analytics** tabs."
+        if ran_comparison
+        else "Enter source/TAC, then click **Compare All Selectors**."
+    )
+    diagram = """
+flowchart LR
+    S[Source code] --> L[Lexer]
+    L --> P[Parser / AST]
+    P --> G[TAC generator]
+    G --> V[TAC validation]
+    T[Advanced TAC] --> V
+    V --> F[Features]
+    F --> SEL[Five selectors]
+    SEL --> ENG[Optimizer engine]
+    ENG --> RES[Results panel]
+    RES --> MP[Model Performance]
+    RES --> MA[Mathematics]
+    RES --> OA[Analytics]
+"""
+    safe = html.escape(diagram.strip())
+    components.html(
         f"""
-        flowchart LR
-            subgraph input [Your input]
-                S[Source code]
-                T[Advanced TAC]
-            end
-            subgraph frontend [source_frontend]
-                L[Lexer]
-                P[Parser / AST]
-                G[TAC generator]
-            end
-            V[TAC parser validation]
-            F[Feature extraction]
-            SEL[Five selectors]
-            ENG[Iterative optimizer]
-            RES[Compare results]
-            MP[Model Performance tab]
-            MA[Mathematics tab]
-            OA[Optimization Analytics tab]
-            S --> L --> P --> G --> V
-            T --> V
-            V --> F --> SEL --> ENG --> RES
-            RES --> MP
-            RES --> MA
-            RES --> OA
-            classDef highlight fill:#6baed6,stroke:#2b6a94,color:#fff
-            classDef idle fill:#eef4f8,stroke:#9fbcd0
-            class {"RES,MP,MA,OA highlight" if status == "done" else "S,T highlight"}
-        """
+        <script type="module">
+          import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.esm.min.mjs";
+          mermaid.initialize({{ startOnLoad: false, theme: "neutral", securityLevel: "loose" }});
+          const nodes = document.querySelectorAll("pre.mermaid");
+          if (nodes.length) {{
+            await mermaid.run({{ nodes }});
+          }}
+        </script>
+        <pre class="mermaid">{safe}</pre>
+        """,
+        height=240,
+        scrolling=False,
     )
+    with st.expander("Text pipeline (always visible)", expanded=False):
+        st.code(
+            "Source code → Lexer → Parser/AST → TAC generator → TAC validation\n"
+            "Advanced TAC ────────────────────────────────┘\n"
+            "→ Feature extraction → Five selectors → Iterative optimizer → Results\n"
+            "→ Tabs: Model Performance | Mathematics | Optimization Analytics",
+            language=None,
+        )
+    st.caption(note)
 
 
 def _fill_example(samples, example: str) -> None:
@@ -631,21 +646,21 @@ def _overview_tab(comparison) -> None:
     _tip(
         "Features",
         "Eight core inputs extracted from the submitted TAC. Eleven-feature ML selectors "
-        "also use the three extended Review-2 columns shown below when applicable.",
+        "also use the three additional pass-aware features shown below.",
     )
     _feature_grid(comparison.features)
     extended_item = next(
         (
             comparison.by_selector[key]
             for key in SELECTOR_ORDER
-            if len(comparison.by_selector[key].features) == len(FEATURE_COLUMNS_V2)
+            if len(comparison.by_selector[key].features) == len(FEATURE_COLUMNS_EXTENDED)
         ),
         None,
     )
     if extended_item is not None:
         extended = {
             name: extended_item.features[name]
-            for name in FEATURE_COLUMNS_V2
+            for name in FEATURE_COLUMNS_EXTENDED
             if name not in comparison.features
         }
         st.markdown("**Extended features (11-feature ML selectors)**")
@@ -740,25 +755,19 @@ def _about() -> None:
     with st.expander("About and model information"):
         st.markdown(
             f"""
-This demo accepts **restricted C-like source** (default) or **Advanced TAC**. Source compiles through
-`source_frontend/` (lexer → parser → AST → TAC generator → existing TAC parser) before optimization.
-**This is not the missing external Project 1 parser.**
+This demo accepts **restricted C-like source** (default) or **Advanced TAC**. Source is processed by
+`source_frontend/` (lexer → recursive-descent / Pratt parser → AST → TAC generator) and validated
+by the TAC parser before optimization.
 
-The UI ranks six optimizers, applies candidates in order, and repeats until convergence.
-**No training happens here** — saved production artifacts load from `models/review2_production_*` when present.
+The UI ranks six optimizer passes, measures each candidate, accepts beneficial transformations,
+and repeats until no further improvement is found. **Training does not happen in the UI** — the
+four saved production models load from `models/production_*_11_features.pkl`.
 
-**Review-2 dataset:** `dataset_v2.csv` (400 programs, generated offline).
+**Dataset:** `dataset/optimization_dataset.csv` (400 generated and hand-authored TAC programs).
 
-**Selectors:** Rule-Based (8 features), Decision Tree, Random Forest, Logistic Regression,
-and MLP. ML models use either the **original eight-feature schema** or the **extended
-eleven-feature schema** depending on which production pickle was trained; the per-selector
-panel shows which schema applies.
+**Selectors:** Rule-Based (8 features), Decision Tree, Random Forest, Logistic Regression, and MLP.
+The four ML models use all 11 features. The Rule-Based selector uses the eight core features.
 
-**Optimizers:** constant folding, constant propagation, algebraic simplification,
-common subexpression elimination, dead code elimination, strength reduction.
-
-Random Forest training config (offline): {FOREST_PARAMETERS.get("n_estimators", 100)} trees,
-`random_state={MODEL_RANDOM_STATE}`. Environment: scikit-learn {sklearn.__version__}.
 """
         )
 

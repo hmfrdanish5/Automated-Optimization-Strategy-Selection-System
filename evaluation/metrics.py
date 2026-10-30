@@ -17,7 +17,7 @@ from evaluation.operation_cost import OPERATION_COST, UNARY_MINUS_COST
 from tac.instruction import InstructionType
 from tac.program import TACProgram
 
-# Match both classic TAC temporaries and source-compiler temporaries.
+# Match classic TAC temporaries and source-compiler temporaries.
 _TEMP_NAME = re.compile(r"(?:t\d+|__src_tmp_\d+)\Z")
 
 

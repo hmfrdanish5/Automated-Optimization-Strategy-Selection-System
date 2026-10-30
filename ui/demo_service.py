@@ -1,7 +1,7 @@
-"""Thin adapter between the Streamlit demo and the Review-2 backend.
+"""Adapter between the Streamlit demo and the optimization engine.
 
-Compares five selectors on the same TAC using saved production models (Review-2
-when present, else Review-1). Does not train or modify datasets.
+Compares five selectors on identical TAC input using the saved production models.
+The demo does not train models or modify datasets.
 """
 
 from __future__ import annotations
@@ -25,15 +25,14 @@ from engine.loop import (
 )
 from engine.selectors import ModelSelector, SelectorAdvice, runtime_selectors
 from evaluation.label_policy import NO_IMPROVEMENT
-from features.extended_extractor import FEATURE_COLUMNS_V2, extract_features_v2
+from features.extended_extractor import FEATURE_COLUMNS_EXTENDED, extract_extended_features
 from features.extractor import FEATURE_COLUMNS, extract_features
 from optimizers.registry import STRATEGY_NAMES
-from selection.config import PRODUCTION_FOREST_PATH, PRODUCTION_TREE_PATH
-from selection.review2_config import (
-    REVIEW2_PRODUCTION_FOREST_V2,
-    REVIEW2_PRODUCTION_LOGISTIC_V2,
-    REVIEW2_PRODUCTION_MLP_V2,
-    REVIEW2_PRODUCTION_TREE_V2,
+from selection.model_config import (
+    PRODUCTION_FOREST_EXTENDED,
+    PRODUCTION_LOGISTIC_EXTENDED,
+    PRODUCTION_MLP_EXTENDED,
+    PRODUCTION_TREE_EXTENDED,
 )
 from tac.parser import parse_tac
 from tac.program import TACProgram
@@ -166,35 +165,32 @@ def load_demo_samples(path: Path | None = None) -> DemoSamples:
 
 
 def ensure_production_models() -> bool:
-    """Return True when runtime selectors can load production pickles."""
-    review2 = all(
+    """Return True when all production classifier artifacts are available."""
+    return all(
         path.is_file()
         for path in (
-            REVIEW2_PRODUCTION_TREE_V2,
-            REVIEW2_PRODUCTION_FOREST_V2,
-            REVIEW2_PRODUCTION_LOGISTIC_V2,
-            REVIEW2_PRODUCTION_MLP_V2,
+            PRODUCTION_TREE_EXTENDED,
+            PRODUCTION_FOREST_EXTENDED,
+            PRODUCTION_LOGISTIC_EXTENDED,
+            PRODUCTION_MLP_EXTENDED,
         )
     )
-    review1 = PRODUCTION_TREE_PATH.is_file() and PRODUCTION_FOREST_PATH.is_file()
-    return review2 or review1
 
 
 def get_runtime_selectors():
-    """Same selector map as optimize.py (production models when present)."""
+    """Return the five production selectors without fitting anything in the UI."""
     if not ensure_production_models():
         raise ModelArtifactsMissing(
-            "Production models were not found. Run python train_review2.py or "
-            "python evaluate.py to create model artifacts under models/."
+            "Production models were not found. Run `python train_models.py` to create them."
         )
     return runtime_selectors()
 
 
 def selector_feature_bundle(program: TACProgram, selector) -> tuple[dict[str, float], str]:
-    """Features and schema label for display (8-feature rule baseline or ML schema)."""
+    """Return the appropriate feature vector and a display label for a selector."""
     if hasattr(selector, "prepare_features"):
         features = selector.prepare_features(program)
-        schema = "11 features (extended)" if len(features) == len(FEATURE_COLUMNS_V2) else "8 features (original)"
+        schema = "11 features (extended)" if len(features) == len(FEATURE_COLUMNS_EXTENDED) else "8 features (original)"
         return features, schema
     features = extract_features(program)
     return {column: features[column] for column in FEATURE_COLUMNS}, "8 features (original)"
@@ -238,11 +234,11 @@ def compare_all_selectors(
     program = parse_tac_text(source)
     submitted = program.to_tac()
     features = extract_features(program)
-    features_v2 = extract_features_v2(program)
+    features_extended = extract_extended_features(program)
     selectors = get_runtime_selectors()
     by_selector: dict[str, DemoOptimizationResult] = {}
     for key in SELECTOR_ORDER:
-        by_selector[key] = _optimize_copy(program, selectors[key], key, features, features_v2)
+        by_selector[key] = _optimize_copy(program, selectors[key], key, features, features_extended)
     if program.to_tac() != submitted:
         raise DemoError("Internal error: the backend changed the input program.")
     return SelectorComparison(
@@ -395,19 +391,19 @@ def _optimize_copy(
     program,
     selector,
     selector_key: str,
-    features_v1: dict[str, float],
-    features_v2: dict[str, float],
+    features_original: dict[str, float],
+    features_extended: dict[str, float],
 ) -> DemoOptimizationResult:
     before = program.to_tac()
     if isinstance(selector, ModelSelector):
-        if list(selector.model.feature_columns) == list(FEATURE_COLUMNS_V2):
-            features = {column: features_v2[column] for column in FEATURE_COLUMNS_V2}
+        if list(selector.model.feature_columns) == list(FEATURE_COLUMNS_EXTENDED):
+            features = {column: features_extended[column] for column in FEATURE_COLUMNS_EXTENDED}
             schema = "11 features (extended)"
         else:
-            features = {column: features_v1[column] for column in FEATURE_COLUMNS}
+            features = {column: features_original[column] for column in FEATURE_COLUMNS}
             schema = "8 features (original)"
     else:
-        features = {column: features_v1[column] for column in FEATURE_COLUMNS}
+        features = {column: features_original[column] for column in FEATURE_COLUMNS}
         schema = "8 features (original)"
     advice = selector.advise(features)
     try:

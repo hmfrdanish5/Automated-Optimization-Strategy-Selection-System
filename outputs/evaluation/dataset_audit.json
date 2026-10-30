@@ -1,0 +1,64 @@
+{
+  "total_rows": 400,
+  "seed_final_200": 42,
+  "seed_extension_200": 43,
+  "unique_feature_vectors_8_features": 333,
+  "unique_feature_vectors_11_features": 340,
+  "conflicting_signatures_8_features": 6,
+  "conflicting_signatures_11_features": 0,
+  "class_distribution": {
+    "algebraic_simplification": 43,
+    "common_subexpression_elimination": 63,
+    "constant_folding": 45,
+    "constant_propagation": 40,
+    "dead_code_elimination": 129,
+    "no_improvement": 63,
+    "strength_reduction": 17
+  },
+  "feature_ranges_11_features": {
+    "num_statements": [
+      2,
+      31
+    ],
+    "num_constants": [
+      0,
+      12
+    ],
+    "num_repeated_expr": [
+      0,
+      8
+    ],
+    "num_dead_stmts": [
+      0,
+      10
+    ],
+    "num_algebraic_ops": [
+      0,
+      8
+    ],
+    "num_loop_ops": [
+      0,
+      23
+    ],
+    "num_tmp_vars": [
+      0,
+      12
+    ],
+    "const_ratio": [
+      0.0,
+      0.6666666667
+    ],
+    "num_constant_propagation_uses": [
+      0,
+      11
+    ],
+    "num_safe_repeated_expr": [
+      0,
+      8
+    ],
+    "num_mul_by_two_in_loops": [
+      0,
+      4
+    ]
+  }
+}

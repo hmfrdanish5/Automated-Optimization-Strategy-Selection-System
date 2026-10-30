@@ -340,7 +340,7 @@ class DatasetRowTests(unittest.TestCase):
         )
         self.assertIn("WARNING: strength_reduction has no samples", report)
 
-    def test_full_review_dataset_contains_every_optimizer_class(self) -> None:
+    def test_generated_dataset_contains_every_optimizer_class(self) -> None:
         rows = build_dataset()
         self.assertEqual(len(rows), 57)
         counts = Counter(str(row["best_strategy"]) for row in rows)

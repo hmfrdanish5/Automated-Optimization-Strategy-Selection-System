@@ -1,7 +1,7 @@
 """Parser for textual TAC.
 
 This is not a source-language parser. It only accepts the TAC syntax below.
-Project 1 can later produce the same `TACProgram` objects by another route.
+Source and TAC inputs converge on the same `TACProgram` representation.
 
 Grammar
 -------

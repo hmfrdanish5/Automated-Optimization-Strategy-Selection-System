@@ -23,7 +23,7 @@ from sklearn.tree import DecisionTreeClassifier, export_text
 
 from features.extractor import FEATURE_COLUMNS
 from selection.config import FOREST_PARAMETERS, TREE_PARAMETERS
-from selection.review2_config import LOGISTIC_PARAMETERS, MLP_PARAMETERS
+from selection.model_config import LOGISTIC_PARAMETERS, MLP_PARAMETERS
 
 
 @dataclass(frozen=True)
@@ -38,8 +38,8 @@ class StrategyPrediction:
 class StrategyClassifier:
     """A fitted scikit-learn classifier restricted to one feature schema.
 
-    The default schema is the original eight FEATURE_COLUMNS. Review-2 models
-    pass FEATURE_COLUMNS_V2. A frame with a different column list is rejected.
+    The default schema is the original eight FEATURE_COLUMNS. Extended-schema models
+    pass FEATURE_COLUMNS_EXTENDED. A frame with a different column list is rejected.
     """
 
     def __init__(self, name: str, estimator, feature_columns: list[str] | None = None):
@@ -125,7 +125,7 @@ def decision_tree(feature_columns: list[str] | None = None) -> StrategyClassifie
 
 
 def random_forest(feature_columns: list[str] | None = None) -> StrategyClassifier:
-    """The Review-1 forest: 100 trees, fixed seed, library defaults otherwise."""
+    """The Random Forest: 100 trees, fixed seed, library defaults otherwise."""
     return StrategyClassifier(
         "random_forest",
         RandomForestClassifier(**FOREST_PARAMETERS),

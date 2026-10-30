@@ -1,4 +1,4 @@
-"""Fixed settings for the Review-1 learning experiment.
+"""Fixed model and split settings.
 
 Seeds are shared so a later run can reproduce this split and these models.
 The dataset is small. Test metrics from this split are a pipeline check,
@@ -14,7 +14,7 @@ DATASET_SEED = 42
 SPLIT_RANDOM_STATE = 42
 MODEL_RANDOM_STATE = 42
 TEST_SIZE = 0.20
-REVIEW_SPLIT = "review"
+STRATIFIED_SPLIT = "stratified"
 STRICT_SPLIT = "strict"
 
 TREE_PARAMETERS = {

@@ -4,7 +4,7 @@ From the project2_optimizer directory:
 
     python optimize.py
 
-Loads saved production models (Review-2 when present). This script does not train.
+Loads the saved production classifiers. This script does not train models.
 """
 
 from __future__ import annotations
@@ -45,7 +45,7 @@ def main() -> None:
     for program_id in DEMO_IDS:
         for name in SELECTOR_KEYS:
             if name not in selectors:
-                raise RuntimeError(f"selector {name} is not available; run train_review2.py first")
+                raise RuntimeError(f"selector {name} is not available; run train_models.py first")
             runs.append(optimize_program(programs[program_id], selectors[name], program_id))
     print(format_comparison(runs))
     print()

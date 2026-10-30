@@ -1,6 +1,6 @@
 """Row-level and feature-grouped train/test splits.
 
-The model sees only FEATURE_COLUMNS. Two rows with the same eight numbers
+The model sees only the selected feature columns. Two rows with identical inputs
 are the same input, so a strict split keeps that tuple entirely in train
 or entirely in test.
 """
@@ -13,13 +13,13 @@ from dataclasses import dataclass
 from sklearn.model_selection import train_test_split
 
 from dataset.diversity import feature_signature
-from selection.config import REVIEW_SPLIT, SPLIT_RANDOM_STATE, STRICT_SPLIT, TEST_SIZE
+from selection.config import STRATIFIED_SPLIT, SPLIT_RANDOM_STATE, STRICT_SPLIT, TEST_SIZE
 from tac.program import TACProgram
 
 
 @dataclass(frozen=True)
 class LabeledExample:
-    """One TAC program, its eight features, and its measured label."""
+    """One TAC program, its selected feature vector, and its measured label."""
 
     program_id: str
     program: TACProgram
@@ -33,7 +33,7 @@ class SplitInfo:
 
     stratified: bool
     explanation: str
-    mode: str = REVIEW_SPLIT
+    mode: str = STRATIFIED_SPLIT
     overlap_rows: int = 0
     train_groups: int | None = None
     test_groups: int | None = None
@@ -41,17 +41,17 @@ class SplitInfo:
 
 def split_examples(
     examples: list[LabeledExample],
-    mode: str = REVIEW_SPLIT,
+    mode: str = STRATIFIED_SPLIT,
     feature_columns: tuple[str, ...] | list[str] | None = None,
 ) -> tuple[list[LabeledExample], list[LabeledExample], SplitInfo]:
     """Hold out about TEST_SIZE of the examples.
 
-    `review` splits rows and may place the same feature vector on both sides.
+    `stratified` splits rows and may place the same feature vector on both sides.
     `strict` splits groups of identical feature vectors. If that grouped
     split cannot be stratified, the fallback is still a group split. It is
     not a row-level shuffle.
     """
-    if mode == REVIEW_SPLIT:
+    if mode == STRATIFIED_SPLIT:
         return _split_rows(examples)
     if mode == STRICT_SPLIT:
         return _split_groups(examples, feature_columns)
@@ -69,7 +69,7 @@ def _split_rows(
             random_state=SPLIT_RANDOM_STATE,
             stratify=labels,
         )
-        info = SplitInfo(True, "MODE A - Review-1 row-level stratified split succeeded", REVIEW_SPLIT)
+        info = SplitInfo(True, "Stratified row-level split succeeded", STRATIFIED_SPLIT)
     except ValueError as error:
         train, test = train_test_split(
             examples,
@@ -79,10 +79,10 @@ def _split_rows(
         )
         info = SplitInfo(
             False,
-            "MODE A - Review-1 row-level split could not be stratified "
+            "Stratified row-level split could not be stratified "
             f"({error}). The fallback is an ordinary row shuffle with "
             f"random_state={SPLIT_RANDOM_STATE}.",
-            REVIEW_SPLIT,
+            STRATIFIED_SPLIT,
         )
     train_list = list(train)
     test_list = list(test)
@@ -90,7 +90,7 @@ def _split_rows(
     return train_list, test_list, SplitInfo(
         info.stratified,
         info.explanation,
-        REVIEW_SPLIT,
+        STRATIFIED_SPLIT,
         overlap,
     )
 

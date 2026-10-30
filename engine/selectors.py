@@ -9,11 +9,10 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from evaluation.label_policy import NO_IMPROVEMENT, STRATEGY_PRIORITY
-from features.extended_extractor import FEATURE_COLUMNS_V2, extract_features_v2
+from features.extended_extractor import FEATURE_COLUMNS_EXTENDED, extract_extended_features
 from features.extractor import FEATURE_COLUMNS, extract_features
 from optimizers.registry import STRATEGY_NAMES
 from selection.classifiers import StrategyClassifier, load_model
-from selection.config import FOREST_PATH, TREE_PATH
 from selection.rule_based import predict_rule, rule_scores
 
 
@@ -57,8 +56,8 @@ class ModelSelector:
         self.model = model
 
     def prepare_features(self, program) -> dict[str, float]:
-        if list(self.model.feature_columns) == list(FEATURE_COLUMNS_V2):
-            features = extract_features_v2(program)
+        if list(self.model.feature_columns) == list(FEATURE_COLUMNS_EXTENDED):
+            features = extract_extended_features(program)
         else:
             features = extract_features(program)
         require_feature_keys(features, self.model.feature_columns)
@@ -114,51 +113,41 @@ class FixedOrderSelector:
 
 
 def saved_selectors() -> dict[str, RuleSelector | ModelSelector]:
-    """Load the expanded-dataset models. Training stays outside this function."""
-    return {
-        "rule_based": RuleSelector(),
-        "decision_tree": ModelSelector("decision_tree", load_model(TREE_PATH)),
-        "random_forest": ModelSelector("random_forest", load_model(FOREST_PATH)),
-    }
+    """Load the same saved production selectors used by the Streamlit application."""
+    return runtime_selectors()
 
 
 def runtime_selectors() -> dict[str, RuleSelector | ModelSelector]:
-    """Load Review-2 production models when present, else Review-1 production."""
-    from selection.config import PRODUCTION_FOREST_PATH, PRODUCTION_TREE_PATH
-    from selection.review2_config import (
-        REVIEW2_PRODUCTION_FOREST_V2,
-        REVIEW2_PRODUCTION_LOGISTIC_V2,
-        REVIEW2_PRODUCTION_MLP_V2,
-        REVIEW2_PRODUCTION_TREE_V2,
+    """Load the four production classifiers and the rule-based selector."""
+    from selection.model_config import (
+        PRODUCTION_FOREST_EXTENDED,
+        PRODUCTION_LOGISTIC_EXTENDED,
+        PRODUCTION_MLP_EXTENDED,
+        PRODUCTION_TREE_EXTENDED,
     )
 
-    review2_ready = all(
-        path.exists()
-        for path in (
-            REVIEW2_PRODUCTION_TREE_V2,
-            REVIEW2_PRODUCTION_FOREST_V2,
-            REVIEW2_PRODUCTION_LOGISTIC_V2,
-            REVIEW2_PRODUCTION_MLP_V2,
-        )
+    model_paths = (
+        PRODUCTION_TREE_EXTENDED,
+        PRODUCTION_FOREST_EXTENDED,
+        PRODUCTION_LOGISTIC_EXTENDED,
+        PRODUCTION_MLP_EXTENDED,
     )
-    if review2_ready:
-        return {
-            "rule_based": RuleSelector(),
-            "decision_tree": ModelSelector("decision_tree", load_model(REVIEW2_PRODUCTION_TREE_V2)),
-            "random_forest": ModelSelector("random_forest", load_model(REVIEW2_PRODUCTION_FOREST_V2)),
-            "logistic_regression": ModelSelector(
-                "logistic_regression",
-                load_model(REVIEW2_PRODUCTION_LOGISTIC_V2),
-            ),
-            "mlp": ModelSelector("mlp", load_model(REVIEW2_PRODUCTION_MLP_V2)),
-        }
-    if PRODUCTION_TREE_PATH.exists() and PRODUCTION_FOREST_PATH.exists():
-        return {
-            "rule_based": RuleSelector(),
-            "decision_tree": ModelSelector("decision_tree", load_model(PRODUCTION_TREE_PATH)),
-            "random_forest": ModelSelector("random_forest", load_model(PRODUCTION_FOREST_PATH)),
-        }
-    return saved_selectors()
+    missing = [path.name for path in model_paths if not path.is_file()]
+    if missing:
+        raise FileNotFoundError(
+            "Production model files are missing: " + ", ".join(missing)
+            + ". Run `python train_models.py` to create them."
+        )
+
+    return {
+        "rule_based": RuleSelector(),
+        "decision_tree": ModelSelector("decision_tree", load_model(PRODUCTION_TREE_EXTENDED)),
+        "random_forest": ModelSelector("random_forest", load_model(PRODUCTION_FOREST_EXTENDED)),
+        "logistic_regression": ModelSelector(
+            "logistic_regression", load_model(PRODUCTION_LOGISTIC_EXTENDED)
+        ),
+        "mlp": ModelSelector("mlp", load_model(PRODUCTION_MLP_EXTENDED)),
+    }
 
 
 def _advice(selector_type: str, probabilities: dict[str, float], selected: str) -> SelectorAdvice:

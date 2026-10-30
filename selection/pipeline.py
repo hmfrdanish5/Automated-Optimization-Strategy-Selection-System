@@ -1,8 +1,7 @@
-"""Train the Review-1 models and compare them with the rule baseline.
+"""Train and evaluate classifiers using the eight-feature schema.
 
-The input matrix is only FEATURE_COLUMNS. Labels are best_strategy.
-Running this module trains once and saves the fitted models. It does not
-retrain while an optimizer is being applied.
+The input matrix contains only FEATURE_COLUMNS. Labels are best_strategy.
+This helper keeps training separate from the live optimization engine.
 """
 
 from __future__ import annotations
@@ -11,16 +10,7 @@ from collections import Counter
 
 import pandas as pd
 
-from dataset.dataset_builder import DATASET_PATH, EXPANDED_DATASET_PATH
 from dataset.diversity import diversity_report, feature_signature, format_diversity_report
-from dataset.examples import load_sample_programs
-from dataset.generator import (
-    EXPANDED_GENERATED_COUNT,
-    GENERATED_PROGRAM_COUNT,
-    GENERATION_SEED,
-    generate_diverse_programs,
-    generate_programs,
-)
 from evaluation.classification import (
     CLASS_ORDER,
     SHORT_CLASS_NAMES,
@@ -32,6 +22,8 @@ from evaluation.classification import (
 from evaluation.label_policy import NO_IMPROVEMENT
 from evaluation.metrics import instruction_gain, weighted_cost_gain
 from features.extractor import FEATURE_COLUMNS
+from dataset.loader import load_dataset_rows, pair_dataset_examples
+from selection.model_config import OPTIMIZATION_DATASET_PATH
 from optimizers.registry import apply_strategy
 from selection.classifiers import (
     StrategyClassifier,
@@ -44,7 +36,7 @@ from selection.config import (
     DATASET_SEED,
     FOREST_PATH,
     MODEL_RANDOM_STATE,
-    REVIEW_SPLIT,
+    STRATIFIED_SPLIT,
     SPLIT_RANDOM_STATE,
     STRICT_SPLIT,
     TEST_SIZE,
@@ -55,9 +47,9 @@ from selection.splitting import LabeledExample, SplitInfo, split_examples
 from tac.program import TACProgram
 
 
-def load_dataset_frame(path=DATASET_PATH) -> pd.DataFrame:
-    """Read the CSV. Callers must select FEATURE_COLUMNS before training."""
-    frame = pd.read_csv(path)
+def load_dataset_frame(path=None) -> pd.DataFrame:
+    """Read the frozen optimization dataset used by the production pipeline."""
+    frame = pd.read_csv(path or OPTIMIZATION_DATASET_PATH)
     missing = [column for column in (*FEATURE_COLUMNS, "best_strategy", "program_id") if column not in frame.columns]
     if missing:
         raise ValueError(f"dataset is missing columns: {missing}")
@@ -75,64 +67,14 @@ def target_labels(frame: pd.DataFrame) -> pd.Series:
 
 
 def load_labeled_examples(frame: pd.DataFrame | None = None) -> list[LabeledExample]:
-    """Pair each CSV row with the TAC program that produced it.
-
-    Programs are rebuilt with the dataset seed. Their ids must match the CSV.
-    """
-    table = frame if frame is not None else load_dataset_frame()
-    programs = [(program_id, program) for program_id, program in load_sample_programs()]
-    programs.extend(
-        (program_id, program)
-        for program_id, program, _category in generate_programs(
-            GENERATED_PROGRAM_COUNT,
-            GENERATION_SEED,
-        )
-    )
-    if [program_id for program_id, _program in programs] != list(table["program_id"]):
-        raise ValueError("dataset rows are not in the same order as the seeded programs")
-    examples: list[LabeledExample] = []
-    for (_program_id, program), row in zip(programs, table.to_dict(orient="records")):
-        features = {column: row[column] for column in FEATURE_COLUMNS}
-        examples.append(
-            LabeledExample(
-                program_id=str(row["program_id"]),
-                program=program,
-                features=features,
-                label=str(row["best_strategy"]),
-            )
-        )
-    return examples
+    """Rebuild TAC programs and pair them with the persisted dataset rows."""
+    rows = frame.to_dict(orient="records") if frame is not None else load_dataset_rows()
+    return pair_dataset_examples(rows, FEATURE_COLUMNS)
 
 
 def load_expanded_examples(frame: pd.DataFrame | None = None) -> list[LabeledExample]:
-    """Pair the expanded CSV with the programs that produced it."""
-    table = frame if frame is not None else load_dataset_frame(EXPANDED_DATASET_PATH)
-    programs = [(program_id, program) for program_id, program in load_sample_programs()]
-    programs.extend(
-        (program_id, program)
-        for program_id, program, _category in generate_diverse_programs(
-            EXPANDED_GENERATED_COUNT,
-            GENERATION_SEED,
-        )
-    )
-    return _examples_from_table(table, programs)
-
-
-def _examples_from_table(table: pd.DataFrame, programs: list[tuple[str, TACProgram]]) -> list[LabeledExample]:
-    if [program_id for program_id, _program in programs] != list(table["program_id"]):
-        raise ValueError("dataset rows are not in the same order as the seeded programs")
-    examples: list[LabeledExample] = []
-    for (_program_id, program), row in zip(programs, table.to_dict(orient="records")):
-        features = {column: row[column] for column in FEATURE_COLUMNS}
-        examples.append(
-            LabeledExample(
-                program_id=str(row["program_id"]),
-                program=program,
-                features=features,
-                label=str(row["best_strategy"]),
-            )
-        )
-    return examples
+    """Return the current deterministic dataset paired with the eight-feature schema."""
+    return load_labeled_examples(frame)
 
 
 def _frame(examples: list[LabeledExample]) -> tuple[pd.DataFrame, pd.Series]:
@@ -157,9 +99,9 @@ def measured_gains(program: TACProgram, strategy: str) -> tuple[int, int]:
     )
 
 
-def train_review_models(
+def train_classifiers(
     examples: list[LabeledExample] | None = None,
-    mode: str = REVIEW_SPLIT,
+    mode: str = STRATIFIED_SPLIT,
     save: bool = True,
 ) -> dict[str, object]:
     """Fit both models and score the held-out programs.
@@ -235,14 +177,14 @@ def train_expanded_evaluation(
     """
     labeled = examples if examples is not None else load_expanded_examples()
     return {
-        REVIEW_SPLIT: train_review_models(labeled, REVIEW_SPLIT, save=False),
-        STRICT_SPLIT: train_review_models(labeled, STRICT_SPLIT, save=True),
+        STRATIFIED_SPLIT: train_classifiers(labeled, STRATIFIED_SPLIT, save=False),
+        STRICT_SPLIT: train_classifiers(labeled, STRICT_SPLIT, save=True),
     }
 
 
 def format_expanded_report(results: dict[str, dict[str, object]]) -> str:
-    """Review-1 and strict reports, printed separately."""
-    review = results[REVIEW_SPLIT]
+    """Format stratified and strict grouped evaluation reports."""
+    stratified = results[STRATIFIED_SPLIT]
     strict = results[STRICT_SPLIT]
     rows = [
         {
@@ -250,7 +192,7 @@ def format_expanded_report(results: dict[str, dict[str, object]]) -> str:
             "best_strategy": example.label,
             **example.features,
         }
-        for example in review["examples"]
+        for example in stratified["examples"]
     ]
     diversity = diversity_report(rows)
     parts = [
@@ -261,7 +203,7 @@ def format_expanded_report(results: dict[str, dict[str, object]]) -> str:
         "",
         _format_poor_classes(diversity.class_counts, diversity.row_count),
         "",
-        format_training_report(review),
+        format_training_report(stratified),
         "",
         format_training_report(strict),
     ]
@@ -415,7 +357,7 @@ def format_training_report(result: dict[str, object]) -> str:
 
 def format_prediction_demo(result: dict[str, object], limit: int = 4) -> str:
     """Show features, both predictions, forest probabilities, and measured gains."""
-    blocks = ["========================================", "Review-1 prediction demo", "========================================"]
+    blocks = ["========================================", "Eight-feature classifier prediction demo", "========================================"]
     forest: StrategyClassifier = result["forest"]
     tree: StrategyClassifier = result["tree"]
     for example in _demo_examples(result["test"], result["practical"], limit):

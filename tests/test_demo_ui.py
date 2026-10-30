@@ -9,12 +9,11 @@ from pathlib import Path
 from unittest.mock import patch
 
 from engine.selectors import runtime_selectors
-from selection.config import PRODUCTION_FOREST_PATH, PRODUCTION_TREE_PATH
-from selection.review2_config import (
-    REVIEW2_PRODUCTION_FOREST_V2,
-    REVIEW2_PRODUCTION_LOGISTIC_V2,
-    REVIEW2_PRODUCTION_MLP_V2,
-    REVIEW2_PRODUCTION_TREE_V2,
+from selection.model_config import (
+    PRODUCTION_FOREST_EXTENDED,
+    PRODUCTION_LOGISTIC_EXTENDED,
+    PRODUCTION_MLP_EXTENDED,
+    PRODUCTION_TREE_EXTENDED,
 )
 from ui.demo_service import SELECTOR_ORDER
 from tac.parser import parse_tac
@@ -77,7 +76,8 @@ class DemoServiceTests(unittest.TestCase):
             run_demo_optimization("not valid tac !!!", "rule_based")
 
     @unittest.skipUnless(
-        PRODUCTION_TREE_PATH.is_file() and PRODUCTION_FOREST_PATH.is_file(),
+        PRODUCTION_TREE_EXTENDED.is_file() and PRODUCTION_FOREST_EXTENDED.is_file()
+        and PRODUCTION_LOGISTIC_EXTENDED.is_file() and PRODUCTION_MLP_EXTENDED.is_file(),
         "production models required",
     )
     def test_optimization_uses_production_selectors(self) -> None:
@@ -90,13 +90,14 @@ class DemoServiceTests(unittest.TestCase):
         self.assertTrue(iteration_history_rows(result.run))
 
     @unittest.skipUnless(
-        PRODUCTION_TREE_PATH.is_file() and PRODUCTION_FOREST_PATH.is_file(),
+        PRODUCTION_TREE_EXTENDED.is_file() and PRODUCTION_FOREST_EXTENDED.is_file()
+        and PRODUCTION_LOGISTIC_EXTENDED.is_file() and PRODUCTION_MLP_EXTENDED.is_file(),
         "production models required",
     )
     def test_selector_keys_map_to_runtime_selectors(self) -> None:
         samples = load_demo_samples()
         source = samples.get("constant_heavy")
-        for key in ("rule_based", "decision_tree", "random_forest"):
+        for key in SELECTOR_ORDER:
             result = run_demo_optimization(source, key)
             self.assertEqual(result.selector_key, key)
         selectors = runtime_selectors()
@@ -104,15 +105,10 @@ class DemoServiceTests(unittest.TestCase):
         self.assertIn("random_forest", selectors)
 
     @unittest.skipUnless(
-        (
-            PRODUCTION_TREE_PATH.is_file() and PRODUCTION_FOREST_PATH.is_file()
-        )
-        or (
-            REVIEW2_PRODUCTION_TREE_V2.is_file()
-            and REVIEW2_PRODUCTION_FOREST_V2.is_file()
-            and REVIEW2_PRODUCTION_LOGISTIC_V2.is_file()
-            and REVIEW2_PRODUCTION_MLP_V2.is_file()
-        ),
+        PRODUCTION_TREE_EXTENDED.is_file()
+        and PRODUCTION_FOREST_EXTENDED.is_file()
+        and PRODUCTION_LOGISTIC_EXTENDED.is_file()
+        and PRODUCTION_MLP_EXTENDED.is_file(),
         "production models required",
     )
     def test_compare_runs_all_selectors_from_the_same_original(self) -> None:
@@ -146,14 +142,13 @@ class DemoServiceTests(unittest.TestCase):
             compare_all_selectors("goto nowhere\n")
 
     def test_ensure_production_models_matches_files(self) -> None:
-        review1 = PRODUCTION_TREE_PATH.is_file() and PRODUCTION_FOREST_PATH.is_file()
-        review2 = (
-            REVIEW2_PRODUCTION_TREE_V2.is_file()
-            and REVIEW2_PRODUCTION_FOREST_V2.is_file()
-            and REVIEW2_PRODUCTION_LOGISTIC_V2.is_file()
-            and REVIEW2_PRODUCTION_MLP_V2.is_file()
+        expected = (
+            PRODUCTION_TREE_EXTENDED.is_file()
+            and PRODUCTION_FOREST_EXTENDED.is_file()
+            and PRODUCTION_LOGISTIC_EXTENDED.is_file()
+            and PRODUCTION_MLP_EXTENDED.is_file()
         )
-        self.assertEqual(ensure_production_models(), review1 or review2)
+        self.assertEqual(ensure_production_models(), expected)
 
 
 if __name__ == "__main__":

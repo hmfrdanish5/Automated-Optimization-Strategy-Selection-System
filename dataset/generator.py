@@ -290,8 +290,7 @@ _GENERATORS = {
 }
 
 
-# The expanded set is a later dataset. `generate_programs` above stays the
-# Review-1 generator so dataset.csv remains reproducible.
+# Keep deterministic base and expanded program generators available for tests and reuse.
 EXPANDED_GENERATED_COUNT = 102
 FINAL_GENERATED_COUNT = 191
 FINAL_CATEGORY_MINIMUMS = {
@@ -400,18 +399,18 @@ def generate_final_programs(
     return programs
 
 
-def generate_v2_extension_programs(
+def generate_extension_programs(
     count: int = 200,
     seed: int = 43,
 ) -> list[tuple[str, TACProgram, str]]:
-    """Additional programs for dataset_v2.csv only (Review-2 extension)."""
+    """Additional generated TAC programs for the frozen optimization dataset."""
     rng = random.Random(seed)
     chosen = _cover_categories(_final_pool(), count, rng, FINAL_CATEGORY_MINIMUMS)
     seen: set[tuple] = set()
     programs: list[tuple[str, TACProgram, str]] = []
     for index, (category, program) in enumerate(chosen, start=1):
         program = _separate_signature(program, seen)
-        programs.append((f"v2_{index:03d}", program, category))
+        programs.append((f"ext_{index:03d}", program, category))
     return programs
 
 

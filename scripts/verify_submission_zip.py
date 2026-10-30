@@ -1,4 +1,4 @@
-"""Verify submission zip contents before hand-in."""
+"""Verify a Git-ready project archive has the expected source and runtime artifacts."""
 
 from __future__ import annotations
 
@@ -8,127 +8,117 @@ import io
 import zipfile
 from pathlib import Path
 
-import pandas as pd
-
-DEFAULT_ZIP = Path(__file__).resolve().parents[2] / "project2_optimizer_submission.zip"
-ARCHIVE_PREFIX = "project2_optimizer/"
-
-REQUIRED_PATHS = (
-    f"{ARCHIVE_PREFIX}dataset/dataset_v2.csv",
-    f"{ARCHIVE_PREFIX}dataset/dataset_final.csv",
-    f"{ARCHIVE_PREFIX}dataset/dataset.csv",
-    f"{ARCHIVE_PREFIX}models/production_decision_tree.pkl",
-    f"{ARCHIVE_PREFIX}models/production_random_forest.pkl",
-    f"{ARCHIVE_PREFIX}models/review2_production_decision_tree_v2.pkl",
-    f"{ARCHIVE_PREFIX}models/review2_production_random_forest_v2.pkl",
-    f"{ARCHIVE_PREFIX}models/review2_production_logistic_regression_v2.pkl",
-    f"{ARCHIVE_PREFIX}models/review2_production_mlp_v2.pkl",
-    f"{ARCHIVE_PREFIX}outputs/review2/feature_ablation.csv",
-    f"{ARCHIVE_PREFIX}outputs/review2/experiment_summary.txt",
-    f"{ARCHIVE_PREFIX}REVIEW_2_FINAL_REPORT.md",
-    f"{ARCHIVE_PREFIX}REVIEW_1_VS_REVIEW_2.md",
-    f"{ARCHIVE_PREFIX}requirements.txt",
-    f"{ARCHIVE_PREFIX}tests/test_semantic_fuzz.py",
-    f"{ARCHIVE_PREFIX}tests/test_semantics.py",
-    f"{ARCHIVE_PREFIX}tests/test_source_compiler.py",
-    f"{ARCHIVE_PREFIX}tests/test_source_lexer.py",
-    f"{ARCHIVE_PREFIX}source_frontend/compiler.py",
-    f"{ARCHIVE_PREFIX}source_frontend/semantic_analysis.py",
-    f"{ARCHIVE_PREFIX}tests/test_source_features.py",
-    f"{ARCHIVE_PREFIX}tests/test_source_correctness.py",
-    f"{ARCHIVE_PREFIX}ui/visualizations.py",
-    f"{ARCHIVE_PREFIX}tests/test_review2.py",
-    f"{ARCHIVE_PREFIX}dataset/v2_loader.py",
-    f"{ARCHIVE_PREFIX}package_submission.py",
+DEFAULT_ZIP = Path(__file__).resolve().parents[2] / "project2_optimizer_git_ready.zip"
+PREFIX = "project2_optimizer/"
+DATASET_FEATURES = (
+    "num_statements", "num_constants", "num_repeated_expr", "num_dead_stmts",
+    "num_algebraic_ops", "num_loop_ops", "num_tmp_vars", "const_ratio",
+    "num_constant_propagation_uses", "num_safe_repeated_expr", "num_mul_by_two_in_loops",
 )
-
-EXPECTED_V2_ROWS = 400
+REQUIRED_PATHS = (
+    ".gitignore", "README.md", "requirements.txt", "app.py", "train_models.py",
+    "evaluate_models.py", "source_frontend/compiler.py", "source_frontend/parser.py",
+    "selection/model_config.py", "engine/selectors.py", "dataset/optimization_dataset.csv",
+    "models/production_decision_tree_11_features.pkl",
+    "models/production_random_forest_11_features.pkl",
+    "models/production_logistic_regression_11_features.pkl",
+    "models/production_mlp_11_features.pkl",
+    "outputs/evaluation/holdout_metrics.csv",
+    "outputs/evaluation/cross_validation_metrics.csv",
+    "outputs/evaluation/feature_ablation.csv", "outputs/evaluation/summary.txt",
+    "tests/test_source_compiler.py", "tests/test_source_correctness.py",
+    "tests/test_semantic_fuzz.py", "package_submission.py",
+)
 
 
 def _is_forbidden(name: str) -> bool:
-    if "Automated-Optimizer-Selection-System" in name:
-        return True
-    if "__pycache__" in name:
-        return True
-    if ".git/" in name or name.endswith("/.git"):
-        return True
-    if name.endswith(".pyc") or name.endswith(".pyo"):
-        return True
-    if name.endswith("project2_optimizer_submission.zip"):
-        return True
-    return False
+    lowered = name.lower()
+    return (
+        "__pycache__" in lowered or ".pytest_cache" in lowered
+        or "/.git/" in lowered or lowered.endswith("/.git")
+        or lowered.endswith((".pyc", ".pyo", ".zip"))
+    )
 
 
 def verify(zip_path: Path) -> list[str]:
     failures: list[str] = []
     if not zip_path.is_file():
         return [f"archive not found: {zip_path}"]
+    try:
+        with zipfile.ZipFile(zip_path) as archive:
+            bad_member = archive.testzip()
+            if bad_member is not None:
+                return [f"corrupt archive member: {bad_member}"]
+            names = set(archive.namelist())
+            if not names:
+                return ["archive is empty"]
+            wrong_root = sorted(name for name in names if not name.startswith(PREFIX))
+            if wrong_root:
+                failures.append(f"paths outside {PREFIX} ({len(wrong_root)}), e.g. {wrong_root[0]}")
+            forbidden = sorted(name for name in names if _is_forbidden(name))
+            if forbidden:
+                failures.append(f"unwanted cache, Git, or nested archive paths ({len(forbidden)}), e.g. {forbidden[0]}")
+            missing = [PREFIX + path for path in REQUIRED_PATHS if PREFIX + path not in names]
+            if missing:
+                failures.append("missing required files: " + ", ".join(missing))
 
-    with zipfile.ZipFile(zip_path) as archive:
-        names = set(archive.namelist())
-        forbidden = sorted(name for name in names if _is_forbidden(name))
-        if forbidden:
-            failures.append(f"forbidden paths ({len(forbidden)}), e.g. {forbidden[0]}")
+            expected_models = {PREFIX + "models/" + name for name in (
+                "production_decision_tree_11_features.pkl",
+                "production_random_forest_11_features.pkl",
+                "production_logistic_regression_11_features.pkl",
+                "production_mlp_11_features.pkl",
+            )}
+            actual_models = {name for name in names if name.startswith(PREFIX + "models/") and name.endswith(".pkl")}
+            if actual_models != expected_models:
+                failures.append("models directory must contain exactly the four production classifiers")
 
-        missing = [path for path in REQUIRED_PATHS if path not in names]
-        if missing:
-            failures.append(f"missing required paths ({len(missing)}): " + ", ".join(missing[:5]))
-            if len(missing) > 5:
-                failures[-1] += ", ..."
+            dataset_path = PREFIX + "dataset/optimization_dataset.csv"
+            if dataset_path in names:
+                raw = archive.read(dataset_path).decode("utf-8-sig")
+                reader = csv.DictReader(io.StringIO(raw))
+                rows = list(reader)
+                if len(rows) != 400:
+                    failures.append(f"dataset row count is {len(rows)}, expected 400")
+                fields = reader.fieldnames or []
+                missing_features = [name for name in DATASET_FEATURES if name not in fields]
+                if missing_features:
+                    failures.append("dataset is missing model features: " + ", ".join(missing_features))
+                ids = [row.get("program_id") for row in rows]
+                if any(not value for value in ids):
+                    failures.append("dataset contains a row without program_id")
+                if len(ids) != len(set(ids)):
+                    failures.append("dataset program_id values are not unique")
 
-        summary_path = f"{ARCHIVE_PREFIX}outputs/review2/experiment_summary.txt"
-        ablation_path = f"{ARCHIVE_PREFIX}outputs/review2/feature_ablation.csv"
-        dataset_path = f"{ARCHIVE_PREFIX}dataset/dataset_v2.csv"
+            holdout_path = PREFIX + "outputs/evaluation/holdout_metrics.csv"
+            if holdout_path in names:
+                raw = archive.read(holdout_path).decode("utf-8-sig")
+                schemas = {row.get("feature_schema") for row in csv.DictReader(io.StringIO(raw))}
+                if schemas != {"8_features", "11_features"}:
+                    failures.append(f"unexpected holdout feature schemas: {sorted(str(x) for x in schemas)}")
 
-        if dataset_path in names:
-            rows = list(
-                csv.DictReader(io.StringIO(archive.read(dataset_path).decode("utf-8")))
-            )
-            if len(rows) != EXPECTED_V2_ROWS:
-                failures.append(
-                    f"dataset_v2.csv row count {len(rows)}, expected {EXPECTED_V2_ROWS}"
-                )
-        elif dataset_path not in missing:
-            failures.append("dataset_v2.csv present in listing but unreadable")
-
-        if summary_path in names and ablation_path in names:
-            summary = archive.read(summary_path).decode("utf-8")
-            abl = pd.read_csv(io.BytesIO(archive.read(ablation_path)))
-            mismatches = []
-            for _, row in abl.iterrows():
-                line = f"{row['model']} ({row['schema']}): {row['macro_f1']:.3f}"
-                if line not in summary:
-                    mismatches.append(line)
-            if mismatches:
-                failures.append(
-                    f"ablation vs in-archive summary mismatches ({len(mismatches)}): "
-                    + "; ".join(mismatches[:3])
-                )
-        elif summary_path not in names or ablation_path not in names:
-            if not missing:
-                failures.append("cannot compare ablation to summary (files missing from archive)")
-
+            ablation_path = PREFIX + "outputs/evaluation/feature_ablation.csv"
+            if ablation_path in names:
+                raw = archive.read(ablation_path).decode("utf-8-sig")
+                schemas = {row.get("schema") for row in csv.DictReader(io.StringIO(raw))}
+                if schemas != {"original_8_features", "extended_11_features"}:
+                    failures.append(f"unexpected ablation schemas: {sorted(str(x) for x in schemas)}")
+    except (OSError, zipfile.BadZipFile, UnicodeDecodeError) as error:
+        failures.append(f"could not inspect archive: {error}")
     return failures
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Verify project2_optimizer submission zip.")
-    parser.add_argument(
-        "zip_path",
-        nargs="?",
-        type=Path,
-        default=DEFAULT_ZIP,
-        help=f"Path to submission zip (default: {DEFAULT_ZIP})",
-    )
+    parser = argparse.ArgumentParser(description="Verify the Git-ready project ZIP.")
+    parser.add_argument("zip_path", nargs="?", type=Path, default=DEFAULT_ZIP)
     args = parser.parse_args()
     failures = verify(args.zip_path)
     if failures:
         print(f"FAILED: {args.zip_path}")
-        for item in failures:
-            print(f"  - {item}")
+        for failure in failures:
+            print(f"  - {failure}")
         raise SystemExit(1)
     print(f"OK: {args.zip_path}")
-    print(f"  entries checked; required artifacts, {EXPECTED_V2_ROWS} dataset rows, ablation summary consistent")
+    print("  archive integrity, clean paths, runtime models, dataset, and evaluation artifacts verified")
 
 
 if __name__ == "__main__":

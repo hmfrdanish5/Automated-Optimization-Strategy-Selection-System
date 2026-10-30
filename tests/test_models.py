@@ -23,7 +23,7 @@ from selection.pipeline import (
     load_labeled_examples,
     split_examples,
     target_labels,
-    train_review_models,
+    train_classifiers,
 )
 from selection.rule_based import predict_rule, rule_scores
 
@@ -31,7 +31,7 @@ from selection.rule_based import predict_rule, rule_scores
 class DatasetSelectionTests(unittest.TestCase):
     def test_frame_has_features_and_the_label_column(self) -> None:
         frame = load_dataset_frame()
-        self.assertEqual(len(frame), 57)
+        self.assertEqual(len(frame), 400)
         features = feature_matrix(frame)
         labels = target_labels(frame)
         self.assertEqual(list(features.columns), FEATURE_COLUMNS)
@@ -77,7 +77,7 @@ class TrainingTests(unittest.TestCase):
         self.assertGreater(len(test), 0)
         self.assertLess(len(test), len(train))
         self.assertAlmostEqual(len(test) / len(examples), TEST_SIZE, delta=0.05)
-        self.assertIn("stratified", info.explanation)
+        self.assertIn("stratified", info.explanation.lower())
         if info.stratified:
             train_counts = Counter(example.label for example in train)
             test_counts = Counter(example.label for example in test)
@@ -213,9 +213,9 @@ class TrainingTests(unittest.TestCase):
             mismatched_messages = [str(item.message) for item in mismatched if issubclass(item.category, UserWarning)]
             self.assertTrue(any("0.0.0" in message for message in mismatched_messages))
 
-    def test_review_training_uses_only_the_eight_features(self) -> None:
-        result = train_review_models(save=False)
-        self.assertEqual(len(result["examples"]), 57)
+    def test_training_uses_only_the_eight_base_features(self) -> None:
+        result = train_classifiers(save=False)
+        self.assertEqual(len(result["examples"]), 400)
         self.assertTrue(result["split"].stratified or result["split"].explanation)
         self.assertEqual(len(result["practical"]), len(result["test"]))
         leaked = [column for column in FEATURE_COLUMNS if "gain" in column or column == "best_strategy"]

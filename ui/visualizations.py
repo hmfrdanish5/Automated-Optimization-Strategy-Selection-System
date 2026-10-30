@@ -1,17 +1,15 @@
-"""Streamlit helpers for offline experiment visualizations."""
+"""Streamlit views for saved model-evaluation and optimization artifacts."""
 
 from __future__ import annotations
 
 import ast
 from pathlib import Path
 
-import matplotlib.pyplot as plt
 import pandas as pd
 import streamlit as st
 
 ROOT = Path(__file__).resolve().parents[1]
-OUTPUTS = ROOT / "outputs"
-REVIEW2 = OUTPUTS / "review2"
+EVALUATION = ROOT / "outputs" / "evaluation"
 
 
 def _missing(path: Path) -> bool:
@@ -21,174 +19,120 @@ def _missing(path: Path) -> bool:
     return False
 
 
-def _caption(text: str) -> None:
-    st.caption(text)
-
-
 def render_model_performance_tab() -> None:
-    st.markdown("### Review-2 classification artifacts (frozen offline results)")
-    _caption(
-        "Dataset: `dataset/dataset_v2.csv` (400 programs). "
-        "This tab mixes **two holdout settings**: the five-selector table uses the "
-        "eight-feature (v1) strict holdout in `holdout_metrics.csv`; the Random Forest "
-        "v2 confusion matrix is a separate eleven-feature (v2) holdout run. "
-        "Nothing here is recomputed live in the UI."
+    st.markdown("### Saved model-performance results")
+    st.caption(
+        "Frozen offline evaluation on the 400-program dataset. Results are loaded from saved "
+        "artifacts and are not recomputed when this tab opens."
     )
-    holdout_path = REVIEW2 / "holdout_metrics.csv"
+    holdout_path = EVALUATION / "holdout_metrics.csv"
     if _missing(holdout_path):
         return
     holdout = pd.read_csv(holdout_path)
+    if "feature_schema" not in holdout.columns:
+        st.warning("The holdout metrics file is outdated. Run `python evaluate_models.py` to regenerate it.")
+        return
     ml = holdout[holdout["selector"] != "rule_based"].copy()
     if ml.empty:
-        st.info("No ML holdout rows found.")
+        st.info("No machine-learning holdout rows are available.")
         return
-
-    st.markdown("#### Confusion matrix (Random Forest, eleven-feature v2 holdout)")
-    cm_png = REVIEW2 / "confusion_matrix_random_forest_v2.png"
-    if not _missing(cm_png):
-        _caption(
-            "Model: Random Forest · Feature schema: **eleven-feature v2** · "
-            "Standalone holdout from `evaluate_five_selectors(..., tag=\"v2\")` "
-            "(not the same run as the eight-feature five-selector table below)."
-        )
-        st.image(str(cm_png), use_container_width=True)
-    cm_csv = REVIEW2 / "confusion_matrix_random_forest_v2.csv"
-    if not _missing(cm_csv):
-        matrix = pd.read_csv(cm_csv, index_col=0)
-        with st.expander("Confusion matrix table (Random Forest v2)"):
-            st.dataframe(matrix, use_container_width=True)
-
-    st.markdown("#### Review-1 baseline confusion matrix (200-program era)")
-    review1_cm = OUTPUTS / "confusion_matrix.png"
-    if not _missing(review1_cm):
-        _caption("Review-1 frozen artifact · Decision Tree / Random Forest training era")
-        st.image(str(review1_cm), use_container_width=True)
-
-    st.markdown("#### Holdout macro F1 — five selectors (eight-feature v1 schema)")
-    chart = ml.set_index("selector")[["macro_f1", "weighted_f1"]]
-    st.bar_chart(chart)
-    _caption(
-        "From `holdout_metrics.csv`: strict grouped holdout on `dataset_v2` with the "
-        "**eight-feature (v1)** production models for Rule-Based, Decision Tree, Random Forest, "
-        "Logistic Regression, and MLP."
+    st.markdown("#### Strict holdout macro F1")
+    pivot = ml.pivot(index="selector", columns="feature_schema", values="macro_f1")
+    st.bar_chart(pivot)
+    st.caption(
+        "The original schema has eight features; the extended schema has eleven. "
+        "The Rule-Based selector is shown separately because it uses the original eight features."
     )
+    rule = holdout[holdout["selector"] == "rule_based"]
+    if not rule.empty:
+        st.dataframe(rule[["feature_schema", "accuracy", "macro_f1", "weighted_f1"]], hide_index=True, use_container_width=True)
 
-    st.markdown("#### Grouped cross-validation macro F1 (Review-2)")
-    cv_path = REVIEW2 / "cross_validation_metrics.csv"
+    cm_path = EVALUATION / "confusion_matrix_random_forest_11_features.png"
+    if not _missing(cm_path):
+        st.markdown("#### Random Forest confusion matrix (11 features)")
+        st.image(str(cm_path), use_container_width=True)
+    cm_csv = EVALUATION / "confusion_matrix_random_forest_11_features.csv"
+    if cm_csv.is_file():
+        with st.expander("Confusion matrix values"):
+            st.dataframe(pd.read_csv(cm_csv, index_col=0), use_container_width=True)
+
+    cv_path = EVALUATION / "cross_validation_metrics.csv"
     if not _missing(cv_path):
         cv = pd.read_csv(cv_path)
-        summary = (
-            cv.groupby(["selector", "schema"], as_index=False)["macro_f1"]
-            .mean()
-            .pivot(index="selector", columns="schema", values="macro_f1")
-        )
-        st.dataframe(summary, use_container_width=True)
-        _caption(
-            "Evaluation: StratifiedGroupKFold on `dataset_v2.csv`. "
-            "Columns v1/v2 name the eight- and eleven-feature schemas."
-        )
+        if "schema" in cv.columns:
+            summary = cv.groupby(["selector", "schema"], as_index=False)["macro_f1"].agg(mean="mean", std="std")
+            st.markdown("#### Grouped cross-validation")
+            st.dataframe(summary, hide_index=True, use_container_width=True)
 
-    st.markdown("#### Eight vs eleven feature ablation (shared strict holdout)")
-    ablation_path = REVIEW2 / "feature_ablation.csv"
+    ablation_path = EVALUATION / "feature_ablation.csv"
     if not _missing(ablation_path):
-        abl = pd.read_csv(ablation_path)
-        pivot = abl.pivot(index="model", columns="schema", values="macro_f1")
-        st.dataframe(pivot, use_container_width=True)
-        _caption(
-            "Shared strict holdout grouped by original **eight-feature program signatures** "
-            "(`feature_ablation.csv`). Compares v1_8_features vs v2_11_features on the same programs."
-        )
+        ablation = pd.read_csv(ablation_path)
+        st.markdown("#### Eight-feature vs eleven-feature ablation")
+        st.dataframe(ablation.pivot(index="model", columns="schema", values="macro_f1"), use_container_width=True)
+        st.caption("Both schemas are evaluated on the same grouped holdout programs.")
 
-    st.markdown("#### Per-class precision / recall / F1 (eight-feature v1 holdout)")
+    st.markdown("#### Per-class metrics")
     for _, row in ml.iterrows():
-        with st.expander(f"{row['selector']} — macro F1 {row['macro_f1']:.3f}"):
+        schema = row.get("feature_schema", "feature schema")
+        with st.expander(f"{row['selector']} · {schema} · macro F1 {row['macro_f1']:.3f}"):
             try:
                 per_class = ast.literal_eval(str(row["per_class"]))
             except (SyntaxError, ValueError):
-                st.write("Per-class metrics could not be parsed.")
+                st.write("Per-class metrics could not be parsed from the saved artifact.")
                 continue
-            rows = []
-            for name, stats in per_class.items():
-                if name in {"accuracy", "macro avg", "weighted avg"}:
-                    continue
-                rows.append(
-                    {
-                        "class": name,
-                        "precision": stats.get("precision"),
-                        "recall": stats.get("recall"),
-                        "f1": stats.get("f1-score"),
-                        "support": stats.get("support"),
-                    }
-                )
+            rows = [
+                {"class": name, "precision": stats.get("precision"), "recall": stats.get("recall"),
+                 "F1": stats.get("f1-score"), "support": stats.get("support")}
+                for name, stats in per_class.items()
+                if name not in {"accuracy", "macro avg", "weighted avg"}
+            ]
             st.dataframe(pd.DataFrame(rows), hide_index=True, use_container_width=True)
 
 
 def render_optimization_analytics_tab() -> None:
-    st.markdown("### Offline optimization analytics (saved artifacts)")
-    _caption("These charts summarize historical experiments — not the program currently edited in Tab 1.")
-
-    st.markdown("#### Random Forest feature importance")
-    for label, path in (
-        ("Review-2 (11-feature)", REVIEW2 / "random_forest_feature_importance_v2.png"),
-        ("Review-1 baseline", OUTPUTS / "random_forest_feature_importance.png"),
-    ):
-        if not _missing(path):
-            st.image(str(path), use_container_width=True)
-            _caption(f"{label} · mean decrease in impurity · not a causal effect")
-
-    st.markdown("#### Confidence vs measured gain")
-    scatter = OUTPUTS / "confidence_vs_gain.png"
-    if not _missing(scatter):
-        st.image(str(scatter), use_container_width=True)
-        _caption("Review-1 era scatter from saved optimization/search logs.")
-
-    st.markdown("#### Instruction reduction by strategy")
-    box = OUTPUTS / "instruction_reduction_by_strategy.png"
-    if not _missing(box):
-        st.image(str(box), use_container_width=True)
-        _caption("Review-1 dataset instruction-count gains per optimizer pass.")
-
-    st.markdown("#### Strategy selection sequences (sample programs)")
-    sequences = OUTPUTS / "strategy_sequences.png"
-    if not _missing(sequences):
-        st.image(str(sequences), use_container_width=True)
-
-    st.markdown("#### Constant-feature count vs constant-folding gain")
-    constants = OUTPUTS / "constants_vs_constant_folding.png"
-    if not _missing(constants):
-        st.image(str(constants), use_container_width=True)
-
-    opt_csv = REVIEW2 / "optimization_results.csv"
-    if opt_csv.is_file():
-        with st.expander("Review-2 optimization_results.csv (first 50 rows)"):
-            sample = pd.read_csv(opt_csv).head(50)
-            st.dataframe(sample, use_container_width=True)
-            _caption("Per-program holdout optimization traces — live UI runs are separate measurements.")
+    st.markdown("### Optimization analytics")
+    st.caption("Saved offline results from the deterministic dataset and model evaluation.")
+    importance = EVALUATION / "random_forest_feature_importance_11_features.png"
+    if not _missing(importance):
+        st.markdown("#### Random Forest feature importance")
+        st.image(str(importance), use_container_width=True)
+        st.caption("Mean decrease in impurity; this is a model diagnostic, not a causal effect.")
+    coefficients = EVALUATION / "logistic_coefficients_11_features.csv"
+    if coefficients.is_file():
+        with st.expander("Logistic Regression coefficients"):
+            st.dataframe(pd.read_csv(coefficients), hide_index=True, use_container_width=True)
+    results = EVALUATION / "optimization_results.csv"
+    if not _missing(results):
+        frame = pd.read_csv(results)
+        st.markdown("#### Measured optimization results")
+        st.dataframe(frame.head(60), hide_index=True, use_container_width=True)
+        st.caption("These are saved offline measurements; live program results appear in Optimize Program.")
+    summary = EVALUATION / "summary.txt"
+    if summary.is_file():
+        with st.expander("Evaluation summary"):
+            st.code(summary.read_text(encoding="utf-8"), language="text")
 
 
 def render_semantic_correctness_tab() -> None:
     st.markdown("### Semantic preservation approach")
     st.markdown(
         """
-**Conservative optimizer rules** (for example, refusing to fold division by a variable that
-might be zero, and keeping unused `/` or `%` when the divisor may be zero during dead-code
-elimination) are intended to preserve semantics but are **not** a formal proof.
+**Conservative optimizer rules** are intended to preserve observable behavior. For example,
+constant folding avoids unsafe division, and dead-code elimination retains unused `/` or `%`
+operations when removing them could hide a division-by-zero error. These safeguards are not a
+formal proof of equivalence.
 
-**Offline differential testing** executes original and optimized TAC with the project
-interpreter (10,000-step limit) and compares printed output, runtime errors, and termination.
+**Differential testing** executes original and optimized TAC with the project interpreter and
+compares printed output, runtime errors, and termination under a bounded execution limit.
 
-**Deterministic fuzz** (`tests/test_semantic_fuzz.py`, seed `20261029`):
-80 generated programs × 10 input environments × 6 optimizer passes (4,800 comparisons), plus
-24 programs × 10 environments through the fixed-order iterative engine (240 comparisons).
-
-**Hand-written regression** (`tests/test_semantics.py`) covers representative programs on each pass.
-
-These counts reflect the latest verified full-suite run (**221** unit tests including fuzz subTests);
-passing tests provide evidence for exercised cases only, not universal equivalence.
+The deterministic fuzz tests cover 4,800 independent optimizer-pass comparisons plus 240
+iterative-engine comparisons. Hand-written regression tests cover representative cases for each
+pass, and source-frontend tests compare execution before and after optimization. Passing tests are
+evidence for the tested programs and inputs, not a universal guarantee.
         """
     )
     st.markdown("#### Source-language pipeline testing")
     st.markdown(
-        "Dedicated tests under `tests/test_source_*.py` compile restricted C-like programs to TAC, "
-        "execute them, and compare optimized behavior using the same differential utilities."
+        "Tests under `tests/test_source_*.py` cover lexing, parsing, AST construction, TAC generation, "
+        "definite-assignment checks, and optimized-program behavior."
     )

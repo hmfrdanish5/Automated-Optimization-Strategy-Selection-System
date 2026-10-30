@@ -1,7 +1,7 @@
 """Structured three-address code (TAC) instructions.
 
 TAC is the input to this project. A later phase can obtain these same
-instructions from the Project 1 parser. Optimizers should build new
+instructions from the source-language frontend or TAC parser. Optimizers should build new
 instructions rather than editing old ones: each instruction is frozen.
 """
 
