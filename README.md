@@ -1,6 +1,6 @@
-# Project 2 — Automated Optimization Strategy Selection
+# Automated Optimization Strategy Selection
 
-## Project goal
+## Introduction
 
 This system chooses which compiler optimization to try next on a **TAC**
 (three-address code) program. For each step it extracts features, ranks the six
@@ -8,8 +8,8 @@ optimizers (plus a **`no_improvement`** class when no single pass wins under the
 label policy), tries candidates in order, measures real gains, and repeats until
 convergence.
 
-**Review 2 (current):** five selectors — Rule-Based, Decision Tree, Random Forest,
-Logistic Regression, and MLP — trained on `dataset/dataset_v2.csv` (400 programs).
+**Review 2 (current):** five selectors : Rule-Based, Decision Tree, Random Forest,
+Logistic Regression, and MLP : trained on `dataset/dataset_v2.csv` (400 programs).
 ML models may use the **original eight features** or the **extended eleven-feature**
 schema; the Rule-Based selector always uses eight features. The Streamlit demo and
 `optimize.py` load **saved production pickles**; they do not train.
@@ -85,7 +85,7 @@ Historical scope (unchanged artifacts):
 
 ## Features
 
-**Eight original columns** (`features/extractor.py`, `FEATURE_COLUMNS`) — unchanged.
+**Eight original columns** (`features/extractor.py`, `FEATURE_COLUMNS`) : unchanged.
 
 | Feature | Meaning |
 | --- | --- |
@@ -188,8 +188,8 @@ on the original program at optimization time.
 
 ## Evaluation
 
-- **Holdout** — strict grouped split by feature signature (`STRICT_SPLIT`).
-- **Grouped cross-validation** — `StratifiedGroupKFold` when possible.
+- **Holdout** : strict grouped split by feature signature (`STRICT_SPLIT`).
+- **Grouped cross-validation** : `StratifiedGroupKFold` when possible.
 - Review-1 outputs under `outputs/`; Review-2 under `outputs/review2/`.
 
 ## Iterative engine
@@ -247,9 +247,9 @@ One statement per line. Operators `+ - * / %`. Labels, `goto`, `if rel goto`,
 
 | File | Purpose |
 | --- | --- |
-| `dataset/dataset.csv` | Review-1 original (57 rows) — **frozen** |
-| `dataset/dataset_expanded.csv` | Review-1 expanded — **frozen** |
-| `dataset/dataset_final.csv` | Review-1 final (200 rows) — **frozen** |
+| `dataset/dataset.csv` | Review-1 original (57 rows) : **frozen** |
+| `dataset/dataset_expanded.csv` | Review-1 expanded : **frozen** |
+| `dataset/dataset_final.csv` | Review-1 final (200 rows) : **frozen** |
 | `dataset/dataset_v2.csv` | Review-2 (400 rows) |
 
 ## Review 2 deliverables
