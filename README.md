@@ -13,11 +13,11 @@ python -m streamlit run app.py
 
 The application provides five tabs:
 
-- **Optimize Program** — compile supported source code or enter TAC, then compare all five selectors.
-- **Model Performance** — inspect saved holdout, cross-validation, and feature-ablation results.
-- **Mathematics** — review feature definitions, selector scoring, optimization metrics, and evaluation methodology.
-- **Optimization Analytics** — explore saved model and optimization analysis artifacts.
-- **Semantic Correctness** — inspect conservative optimizer safeguards and differential-test coverage.
+- **Optimize Program** : compile supported source code or enter TAC, then compare all five selectors.
+- **Model Performance** : inspect saved holdout, cross-validation, and feature-ablation results.
+- **Mathematics** : review feature definitions, selector scoring, optimization metrics, and evaluation methodology.
+- **Optimization Analytics** : explore saved model and optimization analysis artifacts.
+- **Semantic Correctness** : inspect conservative optimizer safeguards and differential-test coverage.
 
 The application performs inference with saved models. It does not train models during an optimization run.
 
