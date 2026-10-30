@@ -11,8 +11,11 @@ import logging
 from pathlib import Path
 
 from dataset.examples import SAMPLE_FILE, load_sample_sources
+from source_frontend.compiler import compile_source
+from source_frontend.errors import format_errors
 from tac.instruction import InstructionType
 from ui.random_tac import generate_random_tac
+from ui.random_source import generate_random_source
 from engine.loop import (
     STOP_ITERATION_LIMIT,
     STOP_NO_BENEFIT,
@@ -116,6 +119,7 @@ class SelectorComparison:
     has_print: bool
     by_selector: dict[str, DemoOptimizationResult]
     uses_production_models: bool
+    submitted_source: str | None = None
 
 
 @dataclass(frozen=True)
@@ -137,6 +141,11 @@ class DemoOptimizationResult:
 def load_random_tac(seed: int | None = None) -> str:
     """Demo TAC with at least one print. Not written to a dataset."""
     return generate_random_tac(seed)
+
+
+def load_random_source(seed: int | None = None) -> str:
+    """Demo C-like source with at least one print. Not written to a dataset."""
+    return generate_random_source(seed)
 
 
 def program_has_print(program: TACProgram) -> bool:
@@ -203,8 +212,25 @@ def parse_tac_text(source: str) -> TACProgram:
         raise DemoError(f"Could not parse TAC: {error}") from error
 
 
-def compare_all_selectors(source: str) -> SelectorComparison:
-    """Run rule, decision tree, and random forest from the same original TAC.
+def compile_source_for_demo(source: str):
+    """Compile restricted source to TAC or raise DemoError."""
+    from source_frontend.compiler import CompilationResult
+
+    text = source.strip()
+    if not text:
+        raise DemoError("Source input is empty. Enter a supported C-like program.")
+    result = compile_source(text)
+    if not result.ok or result.program is None:
+        raise DemoError(format_errors(result.errors) or "Source compilation failed.")
+    return result
+
+
+def compare_all_selectors(
+    source: str,
+    *,
+    submitted_source: str | None = None,
+) -> SelectorComparison:
+    """Run all five selectors on separate copies of the same TAC program.
 
     Each call uses ``optimize_program``, which copies its input. The parsed
     program is checked afterward and must match the text that was submitted.
@@ -226,6 +252,7 @@ def compare_all_selectors(source: str) -> SelectorComparison:
         has_print=program_has_print(program),
         by_selector=by_selector,
         uses_production_models=ensure_production_models(),
+        submitted_source=submitted_source,
     )
 
 
@@ -373,7 +400,12 @@ def _optimize_copy(
 ) -> DemoOptimizationResult:
     before = program.to_tac()
     if isinstance(selector, ModelSelector):
-        features, schema = selector_feature_bundle(program, selector)
+        if list(selector.model.feature_columns) == list(FEATURE_COLUMNS_V2):
+            features = {column: features_v2[column] for column in FEATURE_COLUMNS_V2}
+            schema = "11 features (extended)"
+        else:
+            features = {column: features_v1[column] for column in FEATURE_COLUMNS}
+            schema = "8 features (original)"
     else:
         features = {column: features_v1[column] for column in FEATURE_COLUMNS}
         schema = "8 features (original)"

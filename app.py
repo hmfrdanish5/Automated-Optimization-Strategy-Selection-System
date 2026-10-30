@@ -10,6 +10,7 @@ import sklearn
 import streamlit as st
 
 from selection.config import FOREST_PARAMETERS, MODEL_RANDOM_STATE
+from features.extended_extractor import FEATURE_COLUMNS_V2
 from ui.demo_service import (
     DEMO_SAMPLE_IDS,
     OBSERVABILITY_NOTE,
@@ -20,11 +21,19 @@ from ui.demo_service import (
     class_score_rows,
     compare_all_selectors,
     comparison_table_rows,
+    compile_source_for_demo,
     horizontal_score_figure,
     iteration_history_rows,
     load_demo_samples,
     load_random_tac,
+    load_random_source,
     strategy_label,
+)
+from ui.model_math import render_mathematics_tab
+from ui.visualizations import (
+    render_model_performance_tab,
+    render_optimization_analytics_tab,
+    render_semantic_correctness_tab,
 )
 
 logging.basicConfig(level=logging.INFO)
@@ -35,6 +44,14 @@ t2 = a + t1
 t3 = t2 - d
 x = t3
 print x"""
+
+SOURCE_PLACEHOLDER = """int a = 10;
+int b = 20;
+int c = a + b * 2;
+print(c);
+"""
+
+INPUT_MODES = ("Source Code", "Advanced TAC Input")
 
 PANELS = (
     (
@@ -66,8 +83,11 @@ FEATURE_HELP = {
     "num_dead_stmts": "Assignments the dead-code analysis can remove.",
     "num_algebraic_ops": "Identities such as x + 0 and x * 1.",
     "num_loop_ops": "Instructions inside a back-edge loop.",
-    "num_tmp_vars": "Names like t1 and t2.",
+    "num_tmp_vars": "Unique temporaries: t1, t2, … or __src_tmp_1 from the source compiler.",
     "const_ratio": "num_constants divided by num_statements.",
+    "num_constant_propagation_uses": "Sites constant propagation could rewrite.",
+    "num_safe_repeated_expr": "Repeated expressions safe for CSE.",
+    "num_mul_by_two_in_loops": "Loop multiplies by two that strength reduction could rewrite.",
 }
 
 
@@ -86,17 +106,33 @@ def main() -> None:
     _banner()
 
     samples = cached_samples()
-    toggle_col, _spacer = st.columns([0.12, 0.88])
-    with toggle_col:
-        label = "Hide program panel" if st.session_state.sidebar_open else "Show program panel"
-        if st.button(label, use_container_width=True):
-            st.session_state.sidebar_open = not st.session_state.sidebar_open
-            st.rerun()
-
-    if st.session_state.sidebar_open:
-        with st.sidebar:
-            _editor(samples)
-    _results_panel()
+    tab_optimize, tab_models, tab_analytics, tab_semantic = st.tabs(
+        [
+            "Optimize Program",
+            "Model Performance",
+            "Optimization Analytics",
+            "Semantic Correctness",
+        ]
+    )
+    with tab_optimize:
+        toggle_col, _spacer = st.columns([0.12, 0.88])
+        with toggle_col:
+            label = "Hide program panel" if st.session_state.sidebar_open else "Show program panel"
+            if st.button(label, use_container_width=True, key="sidebar_toggle"):
+                st.session_state.sidebar_open = not st.session_state.sidebar_open
+                st.rerun()
+        if st.session_state.sidebar_open:
+            with st.sidebar:
+                _editor(samples)
+        _results_panel()
+    with tab_models:
+        render_model_performance_tab()
+    with tab_math:
+        render_mathematics_tab()
+    with tab_analytics:
+        render_optimization_analytics_tab()
+    with tab_semantic:
+        render_semantic_correctness_tab()
     _about()
 
 
@@ -259,11 +295,21 @@ def _tip(label: str, text: str) -> None:
 
 def _editor(samples) -> None:
     with st.container(border=True):
+        if "input_mode" not in st.session_state:
+            st.session_state["input_mode"] = INPUT_MODES[0]
+        st.radio(
+            "Input mode",
+            INPUT_MODES,
+            key="input_mode",
+            help="Source Code compiles to TAC before optimization. Advanced TAC skips the source front end.",
+        )
         _tip(
             "Program",
-            "Edit TAC here. All five selectors start from this text when you compare. "
+            "Edit source or TAC here. All five selectors start from the compiled or pasted program. "
             + OBSERVABILITY_NOTE,
         )
+        if "source_input" not in st.session_state:
+            st.session_state["source_input"] = ""
         if "tac_input" not in st.session_state:
             st.session_state["tac_input"] = ""
         st.slider(
@@ -274,13 +320,22 @@ def _editor(samples) -> None:
             key="editor_height",
             help="Drag to give the TAC editor more or less vertical space.",
         )
-        st.text_area(
-            "TAC",
-            height=int(st.session_state.editor_height),
-            placeholder=PLACEHOLDER,
-            key="tac_input",
-            label_visibility="collapsed",
-        )
+        if st.session_state["input_mode"] == INPUT_MODES[0]:
+            st.text_area(
+                "Source",
+                height=int(st.session_state.editor_height),
+                placeholder=SOURCE_PLACEHOLDER,
+                key="source_input",
+                label_visibility="collapsed",
+            )
+        else:
+            st.text_area(
+                "TAC",
+                height=int(st.session_state.editor_height),
+                placeholder=PLACEHOLDER,
+                key="tac_input",
+                label_visibility="collapsed",
+            )
         _tip(
             "Example",
             "Choose a saved program, then click Load Example. Selecting alone does not change the editor.",
@@ -300,8 +355,17 @@ def _editor(samples) -> None:
             use_container_width=True,
         )
         _tip(
+            "Generate Random Source Code",
+            "Fills Source Code mode with a small valid C-like program (not added to the training set).",
+        )
+        st.button(
+            "Generate Random Source Code",
+            on_click=_fill_random_source,
+            use_container_width=True,
+        )
+        _tip(
             "Load Example",
-            "Copies the selected example into the editor so you can compare a known case.",
+            "Copies the selected TAC example into Advanced TAC mode.",
         )
         st.button(
             "Load Example",
@@ -311,15 +375,15 @@ def _editor(samples) -> None:
         )
         _tip(
             "Compare All Selectors",
-            "Runs Rule-Based, Decision Tree, Random Forest, Logistic Regression, and MLP "
-            "on separate copies of this TAC. Loads saved production models; does not train.",
+            "Compiles source (when selected) or parses TAC, then runs all five selectors "
+            "on separate copies. Loads saved production models; does not train.",
         )
         if st.button(
             "Compare All Selectors",
             type="primary",
             use_container_width=True,
         ):
-            _compare(st.session_state.get("tac_input", ""))
+            _compare()
         _tip("Clear", "Empty the editor and hide the last comparison.")
         st.button(
             "Clear",
@@ -329,6 +393,7 @@ def _editor(samples) -> None:
 
 
 def _results_panel() -> None:
+    _render_pipeline_flowchart(st.session_state.get("comparison") is not None)
     comparison = _current_comparison()
     with st.container(border=True):
         _panel_switcher()
@@ -344,10 +409,17 @@ def _results_panel() -> None:
         if comparison is None:
             st.markdown("**Awaiting a run**")
             st.caption(
-                "Open the program panel (sidebar), enter or load TAC, then click Compare All Selectors. "
-                "Overview, rankings, optimized TAC, and attempt history will appear here."
+                "Enter or generate source/TAC in the sidebar, then **Compare All Selectors**. "
+                "Results appear below; use **Model Performance**, **Mathematics**, and "
+                "**Optimization Analytics** tabs for saved experiments."
             )
             return
+        if comparison.submitted_source:
+            with st.expander("Source → TAC pipeline", expanded=True):
+                st.markdown("**Original source**")
+                st.code(comparison.submitted_source, language="c")
+                st.markdown("**Generated TAC (validated)**")
+                st.code(comparison.submitted_tac or "(empty)", language=None)
         panel = st.session_state.get("result_panel", "overview")
         if panel == "scores":
             _scores_tab(comparison)
@@ -361,15 +433,26 @@ def _results_panel() -> None:
 
 def _current_comparison():
     comparison = st.session_state.get("comparison")
-    current = st.session_state.get("tac_input", "").strip()
     if comparison is None:
         return None
-    if current != comparison.submitted_tac.strip():
-        st.session_state["notice"] = (
-            "The editor no longer matches the last comparison. Click Compare All Selectors to run this TAC."
-        )
-        st.session_state["notice_kind"] = "info"
-        return None
+    mode = st.session_state.get("input_mode", INPUT_MODES[0])
+    if mode == INPUT_MODES[0]:
+        current = st.session_state.get("source_input", "").strip()
+        expected = (comparison.submitted_source or "").strip()
+        if current != expected:
+            st.session_state["notice"] = (
+                "The editor no longer matches the last comparison. Click Compare All Selectors to run again."
+            )
+            st.session_state["notice_kind"] = "info"
+            return None
+    else:
+        current = st.session_state.get("tac_input", "").strip()
+        if current != comparison.submitted_tac.strip():
+            st.session_state["notice"] = (
+                "The editor no longer matches the last comparison. Click Compare All Selectors to run this TAC."
+            )
+            st.session_state["notice_kind"] = "info"
+            return None
     if st.session_state.get("notice_kind") == "info":
         st.session_state.pop("notice", None)
         st.session_state.pop("notice_kind", None)
@@ -422,32 +505,96 @@ def _select_panel(key: str) -> None:
 
 
 def _fill_random() -> None:
+    st.session_state["input_mode"] = INPUT_MODES[1]
     st.session_state["tac_input"] = load_random_tac()
 
 
+def _fill_random_source() -> None:
+    st.session_state["input_mode"] = INPUT_MODES[0]
+    st.session_state["source_input"] = load_random_source()
+
+
+def _render_pipeline_flowchart(ran_comparison: bool) -> None:
+    status = "done" if ran_comparison else "ready"
+    st.markdown("#### End-to-end pipeline")
+    st.caption(
+        "Source mode compiles through the front end; Advanced TAC skips straight to validation. "
+        "After comparison, explore other tabs for frozen ML charts."
+    )
+    st.mermaid(
+        f"""
+        flowchart LR
+            subgraph input [Your input]
+                S[Source code]
+                T[Advanced TAC]
+            end
+            subgraph frontend [source_frontend]
+                L[Lexer]
+                P[Parser / AST]
+                G[TAC generator]
+            end
+            V[TAC parser validation]
+            F[Feature extraction]
+            SEL[Five selectors]
+            ENG[Iterative optimizer]
+            RES[Compare results]
+            MP[Model Performance tab]
+            MA[Mathematics tab]
+            OA[Optimization Analytics tab]
+            S --> L --> P --> G --> V
+            T --> V
+            V --> F --> SEL --> ENG --> RES
+            RES --> MP
+            RES --> MA
+            RES --> OA
+            classDef highlight fill:#6baed6,stroke:#2b6a94,color:#fff
+            classDef idle fill:#eef4f8,stroke:#9fbcd0
+            class {"RES,MP,MA,OA highlight" if status == "done" else "S,T highlight"}
+        """
+    )
+
+
 def _fill_example(samples, example: str) -> None:
+    st.session_state["input_mode"] = INPUT_MODES[1]
     st.session_state["tac_input"] = samples.get(example)
 
 
 def _clear_editor() -> None:
+    st.session_state["source_input"] = ""
     st.session_state["tac_input"] = ""
     st.session_state.pop("comparison", None)
     st.session_state.pop("notice", None)
     st.session_state.pop("notice_kind", None)
 
 
-def _compare(source: str) -> None:
+def _compare() -> None:
     st.session_state.pop("notice", None)
     st.session_state.pop("notice_kind", None)
     try:
-        program_text = source.strip()
-        if program_text and "print" not in program_text:
-            st.session_state["notice"] = (
-                "This TAC has no print statement. Dead-code elimination may remove every assignment "
-                "and leave an empty program. " + OBSERVABILITY_NOTE
+        mode = st.session_state.get("input_mode", INPUT_MODES[0])
+        if mode == INPUT_MODES[0]:
+            source_text = st.session_state.get("source_input", "")
+            compilation = compile_source_for_demo(source_text)
+            tac_text = compilation.tac_text
+            if "print" not in tac_text:
+                st.session_state["notice"] = (
+                    "Compiled TAC has no print statement. Dead-code elimination may remove every assignment. "
+                    + OBSERVABILITY_NOTE
+                )
+                st.session_state["notice_kind"] = "warning"
+            st.session_state["comparison"] = compare_all_selectors(
+                tac_text,
+                submitted_source=source_text.strip(),
             )
-            st.session_state["notice_kind"] = "warning"
-        st.session_state["comparison"] = compare_all_selectors(source)
+        else:
+            program_text = st.session_state.get("tac_input", "").strip()
+            if program_text and "print" not in program_text:
+                st.session_state["notice"] = (
+                    "This TAC has no print statement. Dead-code elimination may remove every assignment "
+                    "and leave an empty program. " + OBSERVABILITY_NOTE
+                )
+                st.session_state["notice_kind"] = "warning"
+            st.session_state["comparison"] = compare_all_selectors(program_text)
         st.session_state["result_panel"] = "overview"
         st.session_state["focus_selector"] = "random_forest"
     except (ModelArtifactsMissing, DemoError) as error:
@@ -481,13 +628,35 @@ def _overview_tab(comparison) -> None:
                     f"{run.successful_iterations} successful iterations, {run.candidate_attempts} attempts"
                 )
     st.dataframe(pd.DataFrame(comparison_table_rows(comparison)), hide_index=True, use_container_width=True)
-    _tip("Features", "The eight model inputs extracted from the submitted TAC.")
+    _tip(
+        "Features",
+        "Eight core inputs extracted from the submitted TAC. Eleven-feature ML selectors "
+        "also use the three extended Review-2 columns shown below when applicable.",
+    )
     _feature_grid(comparison.features)
+    extended_item = next(
+        (
+            comparison.by_selector[key]
+            for key in SELECTOR_ORDER
+            if len(comparison.by_selector[key].features) == len(FEATURE_COLUMNS_V2)
+        ),
+        None,
+    )
+    if extended_item is not None:
+        extended = {
+            name: extended_item.features[name]
+            for name in FEATURE_COLUMNS_V2
+            if name not in comparison.features
+        }
+        st.markdown("**Extended features (11-feature ML selectors)**")
+        _feature_grid(extended)
 
 
 def _feature_grid(features: dict[str, float]) -> None:
     names = list(features)
-    for start in (0, 4):
+    if not names:
+        return
+    for start in range(0, len(names), 4):
         columns = st.columns(4)
         for column, name in zip(columns, names[start : start + 4]):
             value = features[name]
@@ -571,9 +740,12 @@ def _about() -> None:
     with st.expander("About and model information"):
         st.markdown(
             f"""
-This demo analyzes Three Address Code, ranks six optimizers, applies candidates in order,
-and repeats until convergence. **No training happens in the UI** — it loads saved production
-artifacts from `models/review2_production_*` when present.
+This demo accepts **restricted C-like source** (default) or **Advanced TAC**. Source compiles through
+`source_frontend/` (lexer → parser → AST → TAC generator → existing TAC parser) before optimization.
+**This is not the missing external Project 1 parser.**
+
+The UI ranks six optimizers, applies candidates in order, and repeats until convergence.
+**No training happens here** — saved production artifacts load from `models/review2_production_*` when present.
 
 **Review-2 dataset:** `dataset_v2.csv` (400 programs, generated offline).
 

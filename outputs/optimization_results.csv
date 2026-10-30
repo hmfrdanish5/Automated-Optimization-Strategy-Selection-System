@@ -1,161 +1,493 @@
-program_id,selector,initial_instruction_count,final_instruction_count,instruction_gain,instruction_reduction_percentage,initial_weighted_cost,final_weighted_cost,weighted_cost_gain,successful_iterations,strategy_sequence
-fin_129,rule_based,27,27,0,0.0,14,3,11,4,strength_reduction -> common_subexpression_elimination -> constant_folding -> algebraic_simplification
-fin_129,decision_tree,27,27,0,0.0,14,3,11,4,common_subexpression_elimination -> algebraic_simplification -> constant_folding -> strength_reduction
-fin_129,random_forest,27,27,0,0.0,14,3,11,4,common_subexpression_elimination -> constant_folding -> algebraic_simplification -> strength_reduction
-fin_129,fixed_order,27,27,0,0.0,14,3,11,4,constant_folding -> algebraic_simplification -> common_subexpression_elimination -> strength_reduction
-fin_141,rule_based,4,2,2,50.0,2,0,2,3,constant_folding -> constant_propagation -> dead_code_elimination
-fin_141,decision_tree,4,2,2,50.0,2,0,2,3,constant_folding -> constant_propagation -> dead_code_elimination
-fin_141,random_forest,4,2,2,50.0,2,0,2,3,constant_folding -> constant_propagation -> dead_code_elimination
-fin_141,fixed_order,4,2,2,50.0,2,0,2,3,constant_folding -> constant_propagation -> dead_code_elimination
-fin_010,rule_based,5,4,1,20.0,2,2,0,1,dead_code_elimination
-fin_010,decision_tree,5,4,1,20.0,2,2,0,1,dead_code_elimination
-fin_010,random_forest,5,4,1,20.0,2,2,0,1,dead_code_elimination
-fin_010,fixed_order,5,4,1,20.0,2,2,0,1,dead_code_elimination
-fin_047,rule_based,12,11,1,8.333333333333332,6,2,4,4,strength_reduction -> constant_folding -> common_subexpression_elimination -> dead_code_elimination
-fin_047,decision_tree,12,11,1,8.333333333333332,6,2,4,4,dead_code_elimination -> constant_folding -> common_subexpression_elimination -> strength_reduction
-fin_047,random_forest,12,11,1,8.333333333333332,6,2,4,4,dead_code_elimination -> common_subexpression_elimination -> constant_folding -> strength_reduction
-fin_047,fixed_order,12,11,1,8.333333333333332,6,2,4,4,constant_folding -> common_subexpression_elimination -> dead_code_elimination -> strength_reduction
-fin_046,rule_based,12,12,0,0.0,5,4,1,1,common_subexpression_elimination
-fin_046,decision_tree,12,12,0,0.0,5,4,1,1,common_subexpression_elimination
-fin_046,random_forest,12,12,0,0.0,5,4,1,1,common_subexpression_elimination
-fin_046,fixed_order,12,12,0,0.0,5,4,1,1,common_subexpression_elimination
-fin_012,rule_based,19,19,0,0.0,9,8,1,1,strength_reduction
-fin_012,decision_tree,19,19,0,0.0,9,8,1,1,strength_reduction
-fin_012,random_forest,19,19,0,0.0,9,8,1,1,strength_reduction
-fin_012,fixed_order,19,19,0,0.0,9,8,1,1,strength_reduction
-fin_179,rule_based,25,14,11,44.0,11,0,11,3,constant_folding -> constant_propagation -> dead_code_elimination
-fin_179,decision_tree,25,14,11,44.0,11,0,11,3,constant_folding -> constant_propagation -> dead_code_elimination
-fin_179,random_forest,25,14,11,44.0,11,0,11,3,constant_folding -> constant_propagation -> dead_code_elimination
-fin_179,fixed_order,25,14,11,44.0,11,0,11,3,constant_folding -> constant_propagation -> dead_code_elimination
-fin_113,rule_based,16,16,0,0.0,8,8,0,0,
-fin_113,decision_tree,16,16,0,0.0,8,8,0,0,
-fin_113,random_forest,16,16,0,0.0,8,8,0,0,
-fin_113,fixed_order,16,16,0,0.0,8,8,0,0,
-fin_188,rule_based,20,19,1,5.0,10,3,7,5,strength_reduction -> common_subexpression_elimination -> constant_folding -> algebraic_simplification -> dead_code_elimination
-fin_188,decision_tree,20,19,1,5.0,10,3,7,5,dead_code_elimination -> common_subexpression_elimination -> algebraic_simplification -> constant_folding -> strength_reduction
-fin_188,random_forest,20,19,1,5.0,10,3,7,5,dead_code_elimination -> common_subexpression_elimination -> algebraic_simplification -> constant_folding -> strength_reduction
-fin_188,fixed_order,20,19,1,5.0,10,3,7,5,constant_folding -> algebraic_simplification -> common_subexpression_elimination -> dead_code_elimination -> strength_reduction
-fin_018,rule_based,5,2,3,60.0,1,1,0,1,dead_code_elimination
-fin_018,decision_tree,5,2,3,60.0,1,1,0,1,dead_code_elimination
-fin_018,random_forest,5,2,3,60.0,1,1,0,1,dead_code_elimination
-fin_018,fixed_order,5,2,3,60.0,1,1,0,1,dead_code_elimination
-fin_126,rule_based,8,2,6,75.0,7,1,6,1,dead_code_elimination
-fin_126,decision_tree,8,2,6,75.0,7,1,6,1,dead_code_elimination
-fin_126,random_forest,8,2,6,75.0,7,1,6,1,dead_code_elimination
-fin_126,fixed_order,8,2,6,75.0,7,1,6,2,constant_folding -> dead_code_elimination
-fin_011,rule_based,23,23,0,0.0,9,9,0,0,
-fin_011,decision_tree,23,23,0,0.0,9,9,0,0,
-fin_011,random_forest,23,23,0,0.0,9,9,0,0,
-fin_011,fixed_order,23,23,0,0.0,9,9,0,0,
-fin_104,rule_based,17,16,1,5.88235294117647,6,0,6,3,constant_propagation -> constant_folding -> dead_code_elimination
-fin_104,decision_tree,17,16,1,5.88235294117647,6,0,6,3,constant_propagation -> dead_code_elimination -> constant_folding
-fin_104,random_forest,17,16,1,5.88235294117647,6,0,6,3,constant_propagation -> dead_code_elimination -> constant_folding
-fin_104,fixed_order,17,16,1,5.88235294117647,6,0,6,3,constant_propagation -> constant_folding -> dead_code_elimination
-fin_068,rule_based,11,10,1,9.090909090909092,5,1,4,4,algebraic_simplification -> constant_folding -> common_subexpression_elimination -> dead_code_elimination
-fin_068,decision_tree,11,10,1,9.090909090909092,5,1,4,4,dead_code_elimination -> common_subexpression_elimination -> algebraic_simplification -> constant_folding
-fin_068,random_forest,11,10,1,9.090909090909092,5,1,4,4,dead_code_elimination -> common_subexpression_elimination -> algebraic_simplification -> constant_folding
-fin_068,fixed_order,11,10,1,9.090909090909092,5,1,4,4,constant_folding -> algebraic_simplification -> common_subexpression_elimination -> dead_code_elimination
-fin_056,rule_based,11,11,0,0.0,5,0,5,1,algebraic_simplification
-fin_056,decision_tree,11,11,0,0.0,5,0,5,1,algebraic_simplification
-fin_056,random_forest,11,11,0,0.0,5,0,5,1,algebraic_simplification
-fin_056,fixed_order,11,11,0,0.0,5,0,5,1,algebraic_simplification
-fin_191,rule_based,8,4,4,50.0,2,2,0,1,dead_code_elimination
-fin_191,decision_tree,8,4,4,50.0,2,2,0,1,dead_code_elimination
-fin_191,random_forest,8,4,4,50.0,2,2,0,1,dead_code_elimination
-fin_191,fixed_order,8,4,4,50.0,2,2,0,1,dead_code_elimination
-fin_149,rule_based,17,17,0,0.0,8,8,0,0,
-fin_149,decision_tree,17,17,0,0.0,8,8,0,0,
-fin_149,random_forest,17,17,0,0.0,8,8,0,0,
-fin_149,fixed_order,17,17,0,0.0,8,8,0,0,
-fin_020,rule_based,9,6,3,33.33333333333333,3,0,3,3,constant_folding -> constant_propagation -> dead_code_elimination
-fin_020,decision_tree,9,6,3,33.33333333333333,3,0,3,3,constant_folding -> constant_propagation -> dead_code_elimination
-fin_020,random_forest,9,6,3,33.33333333333333,3,0,3,3,constant_folding -> constant_propagation -> dead_code_elimination
-fin_020,fixed_order,9,6,3,33.33333333333333,3,0,3,3,constant_folding -> constant_propagation -> dead_code_elimination
-fin_143,rule_based,5,4,1,20.0,1,0,1,3,constant_propagation -> constant_folding -> dead_code_elimination
-fin_143,decision_tree,5,4,1,20.0,1,0,1,3,constant_propagation -> dead_code_elimination -> constant_folding
-fin_143,random_forest,5,4,1,20.0,1,0,1,3,constant_propagation -> dead_code_elimination -> constant_folding
-fin_143,fixed_order,5,4,1,20.0,1,0,1,3,constant_propagation -> constant_folding -> dead_code_elimination
-fin_161,rule_based,15,15,0,0.0,7,6,1,1,strength_reduction
-fin_161,decision_tree,15,15,0,0.0,7,6,1,1,strength_reduction
-fin_161,random_forest,15,15,0,0.0,7,6,1,1,strength_reduction
-fin_161,fixed_order,15,15,0,0.0,7,6,1,1,strength_reduction
-fin_069,rule_based,8,8,0,0.0,4,4,0,0,
-fin_069,decision_tree,8,8,0,0.0,4,4,0,0,
-fin_069,random_forest,8,8,0,0.0,4,4,0,0,
-fin_069,fixed_order,8,8,0,0.0,4,4,0,0,
-cse_heavy,rule_based,8,8,0,0.0,5,3,2,1,common_subexpression_elimination
-cse_heavy,decision_tree,8,8,0,0.0,5,3,2,1,common_subexpression_elimination
-cse_heavy,random_forest,8,8,0,0.0,5,3,2,1,common_subexpression_elimination
-cse_heavy,fixed_order,8,8,0,0.0,5,3,2,1,common_subexpression_elimination
-fin_021,rule_based,15,14,1,6.666666666666667,6,0,6,3,constant_propagation -> constant_folding -> dead_code_elimination
-fin_021,decision_tree,15,14,1,6.666666666666667,6,0,6,3,constant_propagation -> dead_code_elimination -> constant_folding
-fin_021,random_forest,15,14,1,6.666666666666667,6,0,6,3,constant_propagation -> dead_code_elimination -> constant_folding
-fin_021,fixed_order,15,14,1,6.666666666666667,6,0,6,3,constant_propagation -> constant_folding -> dead_code_elimination
-fin_108,rule_based,15,15,0,0.0,6,6,0,0,
-fin_108,decision_tree,15,15,0,0.0,6,6,0,0,
-fin_108,random_forest,15,15,0,0.0,6,6,0,0,
-fin_108,fixed_order,15,15,0,0.0,6,6,0,0,
-fin_050,rule_based,14,7,7,50.0,7,0,7,3,constant_folding -> constant_propagation -> dead_code_elimination
-fin_050,decision_tree,14,7,7,50.0,7,0,7,3,constant_folding -> constant_propagation -> dead_code_elimination
-fin_050,random_forest,14,7,7,50.0,7,0,7,3,constant_folding -> constant_propagation -> dead_code_elimination
-fin_050,fixed_order,14,7,7,50.0,7,0,7,3,constant_folding -> constant_propagation -> dead_code_elimination
-fin_146,rule_based,21,21,0,0.0,10,3,7,4,strength_reduction -> constant_folding -> algebraic_simplification -> common_subexpression_elimination
-fin_146,decision_tree,21,21,0,0.0,10,3,7,4,common_subexpression_elimination -> algebraic_simplification -> constant_folding -> strength_reduction
-fin_146,random_forest,21,21,0,0.0,10,3,7,4,common_subexpression_elimination -> constant_folding -> algebraic_simplification -> strength_reduction
-fin_146,fixed_order,21,21,0,0.0,10,3,7,4,constant_folding -> algebraic_simplification -> common_subexpression_elimination -> strength_reduction
-fin_100,rule_based,12,12,0,0.0,7,0,7,1,algebraic_simplification
-fin_100,decision_tree,12,12,0,0.0,7,0,7,1,algebraic_simplification
-fin_100,random_forest,12,12,0,0.0,7,0,7,1,algebraic_simplification
-fin_100,fixed_order,12,12,0,0.0,7,0,7,1,algebraic_simplification
-fin_099,rule_based,8,8,0,0.0,3,2,1,1,common_subexpression_elimination
-fin_099,decision_tree,8,8,0,0.0,3,2,1,1,common_subexpression_elimination
-fin_099,random_forest,8,8,0,0.0,3,2,1,1,common_subexpression_elimination
-fin_099,fixed_order,8,8,0,0.0,3,2,1,1,common_subexpression_elimination
-fin_118,rule_based,12,11,1,8.333333333333332,5,0,5,3,constant_propagation -> constant_folding -> dead_code_elimination
-fin_118,decision_tree,12,11,1,8.333333333333332,5,0,5,3,constant_propagation -> dead_code_elimination -> constant_folding
-fin_118,random_forest,12,11,1,8.333333333333332,5,0,5,3,constant_propagation -> dead_code_elimination -> constant_folding
-fin_118,fixed_order,12,11,1,8.333333333333332,5,0,5,3,constant_propagation -> constant_folding -> dead_code_elimination
-fin_081,rule_based,7,2,5,71.42857142857143,9,1,8,2,constant_folding -> dead_code_elimination
-fin_081,decision_tree,7,2,5,71.42857142857143,9,1,8,1,dead_code_elimination
-fin_081,random_forest,7,2,5,71.42857142857143,9,1,8,1,dead_code_elimination
-fin_081,fixed_order,7,2,5,71.42857142857143,9,1,8,2,constant_folding -> dead_code_elimination
-fin_097,rule_based,13,13,0,0.0,4,4,0,0,
-fin_097,decision_tree,13,13,0,0.0,4,4,0,0,
-fin_097,random_forest,13,13,0,0.0,4,4,0,0,
-fin_097,fixed_order,13,13,0,0.0,4,4,0,0,
-fin_007,rule_based,6,6,0,0.0,3,1,2,1,common_subexpression_elimination
-fin_007,decision_tree,6,6,0,0.0,3,1,2,1,common_subexpression_elimination
-fin_007,random_forest,6,6,0,0.0,3,1,2,1,common_subexpression_elimination
-fin_007,fixed_order,6,6,0,0.0,3,1,2,1,common_subexpression_elimination
-fin_109,rule_based,5,2,3,60.0,3,1,2,1,dead_code_elimination
-fin_109,decision_tree,5,2,3,60.0,3,1,2,1,dead_code_elimination
-fin_109,random_forest,5,2,3,60.0,3,1,2,1,dead_code_elimination
-fin_109,fixed_order,5,2,3,60.0,3,1,2,2,constant_folding -> dead_code_elimination
-fin_123,rule_based,6,6,0,0.0,3,0,3,1,algebraic_simplification
-fin_123,decision_tree,6,6,0,0.0,3,0,3,1,algebraic_simplification
-fin_123,random_forest,6,6,0,0.0,3,0,3,1,algebraic_simplification
-fin_123,fixed_order,6,6,0,0.0,3,0,3,1,algebraic_simplification
-dead_code_heavy,rule_based,4,2,2,50.0,1,0,1,1,dead_code_elimination
-dead_code_heavy,decision_tree,4,2,2,50.0,1,0,1,1,dead_code_elimination
-dead_code_heavy,random_forest,4,2,2,50.0,1,0,1,1,dead_code_elimination
-dead_code_heavy,fixed_order,4,2,2,50.0,1,0,1,1,dead_code_elimination
-fin_071,rule_based,7,2,5,71.42857142857143,1,1,0,1,dead_code_elimination
-fin_071,decision_tree,7,2,5,71.42857142857143,1,1,0,1,dead_code_elimination
-fin_071,random_forest,7,2,5,71.42857142857143,1,1,0,1,dead_code_elimination
-fin_071,fixed_order,7,2,5,71.42857142857143,1,1,0,1,dead_code_elimination
-fin_186,rule_based,9,9,0,0.0,3,3,0,0,
-fin_186,decision_tree,9,9,0,0.0,3,3,0,0,
-fin_186,random_forest,9,9,0,0.0,3,3,0,0,
-fin_186,fixed_order,9,9,0,0.0,3,3,0,0,
-fin_182,rule_based,10,4,6,60.0,12,2,10,2,constant_folding -> dead_code_elimination
-fin_182,decision_tree,10,4,6,60.0,12,2,10,1,dead_code_elimination
-fin_182,random_forest,10,4,6,60.0,12,2,10,1,dead_code_elimination
-fin_182,fixed_order,10,4,6,60.0,12,2,10,2,constant_folding -> dead_code_elimination
-fin_180,rule_based,17,17,0,0.0,12,0,12,1,algebraic_simplification
-fin_180,decision_tree,17,17,0,0.0,12,0,12,1,algebraic_simplification
-fin_180,random_forest,17,17,0,0.0,12,0,12,1,algebraic_simplification
-fin_180,fixed_order,17,17,0,0.0,12,0,12,1,algebraic_simplification
-fin_178,rule_based,8,4,4,50.0,8,2,6,2,constant_folding -> dead_code_elimination
-fin_178,decision_tree,8,4,4,50.0,8,2,6,1,dead_code_elimination
-fin_178,random_forest,8,4,4,50.0,8,2,6,1,dead_code_elimination
-fin_178,fixed_order,8,4,4,50.0,8,2,6,2,constant_folding -> dead_code_elimination
+program_id,selector,instruction_gain,weighted_cost_gain,candidate_attempts,failed_candidate_attempts,successful_iterations,instruction_reduction_percentage,initial_weighted_cost,final_weighted_cost,strategy_sequence
+fin_141,rule_based,2,2,10,7,3,50.0,2,0,constant_folding -> constant_propagation -> dead_code_elimination
+fin_141,decision_tree,2,2,10,7,3,50.0,2,0,constant_folding -> constant_propagation -> dead_code_elimination
+fin_141,random_forest,2,2,9,6,3,50.0,2,0,constant_folding -> constant_propagation -> dead_code_elimination
+fin_141,logistic_regression,2,2,9,6,3,50.0,2,0,constant_folding -> constant_propagation -> dead_code_elimination
+fin_141,mlp,2,2,9,6,3,50.0,2,0,constant_folding -> constant_propagation -> dead_code_elimination
+fin_141,fixed_order,2,2,14,11,3,50.0,2,0,constant_folding -> constant_propagation -> dead_code_elimination
+fin_189,rule_based,0,0,6,6,0,0.0,1,1,
+fin_189,decision_tree,0,0,6,6,0,0.0,1,1,
+fin_189,random_forest,0,0,6,6,0,0.0,1,1,
+fin_189,logistic_regression,0,0,6,6,0,0.0,1,1,
+fin_189,mlp,0,0,6,6,0,0.0,1,1,
+fin_189,fixed_order,0,0,6,6,0,0.0,1,1,
+v2_157,rule_based,0,0,6,6,0,0.0,1,1,
+v2_157,decision_tree,0,0,6,6,0,0.0,1,1,
+v2_157,random_forest,0,0,6,6,0,0.0,1,1,
+v2_157,logistic_regression,0,0,6,6,0,0.0,1,1,
+v2_157,mlp,0,0,6,6,0,0.0,1,1,
+v2_157,fixed_order,0,0,6,6,0,0.0,1,1,
+fin_126,rule_based,6,6,7,6,1,75.0,7,1,dead_code_elimination
+fin_126,decision_tree,6,6,7,6,1,75.0,7,1,dead_code_elimination
+fin_126,random_forest,6,6,7,6,1,75.0,7,1,dead_code_elimination
+fin_126,logistic_regression,6,6,7,6,1,75.0,7,1,dead_code_elimination
+fin_126,mlp,6,6,7,6,1,75.0,7,1,dead_code_elimination
+fin_126,fixed_order,6,6,12,10,2,75.0,7,1,constant_folding -> dead_code_elimination
+v2_088,rule_based,6,6,7,6,1,75.0,7,1,dead_code_elimination
+v2_088,decision_tree,6,6,7,6,1,75.0,7,1,dead_code_elimination
+v2_088,random_forest,6,6,7,6,1,75.0,7,1,dead_code_elimination
+v2_088,logistic_regression,6,6,7,6,1,75.0,7,1,dead_code_elimination
+v2_088,mlp,6,6,7,6,1,75.0,7,1,dead_code_elimination
+v2_088,fixed_order,6,6,12,10,2,75.0,7,1,constant_folding -> dead_code_elimination
+v2_019,rule_based,2,2,10,7,3,28.57142857142857,2,0,constant_folding -> constant_propagation -> dead_code_elimination
+v2_019,decision_tree,2,2,10,7,3,28.57142857142857,2,0,constant_folding -> constant_propagation -> dead_code_elimination
+v2_019,random_forest,2,2,9,6,3,28.57142857142857,2,0,constant_folding -> constant_propagation -> dead_code_elimination
+v2_019,logistic_regression,2,2,9,6,3,28.57142857142857,2,0,constant_folding -> constant_propagation -> dead_code_elimination
+v2_019,mlp,2,2,9,6,3,28.57142857142857,2,0,constant_folding -> constant_propagation -> dead_code_elimination
+v2_019,fixed_order,2,2,14,11,3,28.57142857142857,2,0,constant_folding -> constant_propagation -> dead_code_elimination
+v2_053,rule_based,0,3,7,6,1,0.0,14,11,strength_reduction
+v2_053,decision_tree,0,3,7,6,1,0.0,14,11,strength_reduction
+v2_053,random_forest,0,3,7,6,1,0.0,14,11,strength_reduction
+v2_053,logistic_regression,0,3,7,6,1,0.0,14,11,strength_reduction
+v2_053,mlp,0,3,7,6,1,0.0,14,11,strength_reduction
+v2_053,fixed_order,0,3,12,11,1,0.0,14,11,strength_reduction
+v2_127,rule_based,1,6,13,9,4,5.555555555555555,9,3,strength_reduction -> common_subexpression_elimination -> constant_folding -> dead_code_elimination
+v2_127,decision_tree,1,6,15,11,4,5.555555555555555,9,3,dead_code_elimination -> common_subexpression_elimination -> constant_folding -> strength_reduction
+v2_127,random_forest,1,6,11,7,4,5.555555555555555,9,3,dead_code_elimination -> common_subexpression_elimination -> constant_folding -> strength_reduction
+v2_127,logistic_regression,1,6,14,10,4,5.555555555555555,9,3,dead_code_elimination -> common_subexpression_elimination -> constant_folding -> strength_reduction
+v2_127,mlp,1,6,12,8,4,5.555555555555555,9,3,dead_code_elimination -> common_subexpression_elimination -> strength_reduction -> constant_folding
+v2_127,fixed_order,1,6,22,18,4,5.555555555555555,9,3,constant_folding -> common_subexpression_elimination -> dead_code_elimination -> strength_reduction
+fin_080,rule_based,2,2,7,6,1,50.0,3,1,dead_code_elimination
+fin_080,decision_tree,2,2,7,6,1,50.0,3,1,dead_code_elimination
+fin_080,random_forest,2,2,7,6,1,50.0,3,1,dead_code_elimination
+fin_080,logistic_regression,2,2,7,6,1,50.0,3,1,dead_code_elimination
+fin_080,mlp,2,2,7,6,1,50.0,3,1,dead_code_elimination
+fin_080,fixed_order,2,2,12,10,2,50.0,3,1,constant_folding -> dead_code_elimination
+v2_052,rule_based,2,4,15,10,5,11.76470588235294,7,3,strength_reduction -> dead_code_elimination -> constant_folding -> algebraic_simplification -> common_subexpression_elimination
+v2_052,decision_tree,2,4,16,11,5,11.76470588235294,7,3,dead_code_elimination -> common_subexpression_elimination -> algebraic_simplification -> constant_folding -> strength_reduction
+v2_052,random_forest,2,4,14,9,5,11.76470588235294,7,3,dead_code_elimination -> common_subexpression_elimination -> algebraic_simplification -> constant_folding -> strength_reduction
+v2_052,logistic_regression,2,4,19,14,5,11.76470588235294,7,3,dead_code_elimination -> common_subexpression_elimination -> constant_folding -> algebraic_simplification -> strength_reduction
+v2_052,mlp,2,4,13,8,5,11.76470588235294,7,3,dead_code_elimination -> common_subexpression_elimination -> strength_reduction -> constant_folding -> algebraic_simplification
+v2_052,fixed_order,2,4,25,20,5,11.76470588235294,7,3,constant_folding -> algebraic_simplification -> common_subexpression_elimination -> dead_code_elimination -> strength_reduction
+v2_080,rule_based,2,1,9,7,2,13.333333333333334,6,5,strength_reduction -> dead_code_elimination
+v2_080,decision_tree,2,1,13,11,2,13.333333333333334,6,5,dead_code_elimination -> strength_reduction
+v2_080,random_forest,2,1,8,6,2,13.333333333333334,6,5,dead_code_elimination -> strength_reduction
+v2_080,logistic_regression,2,1,8,6,2,13.333333333333334,6,5,dead_code_elimination -> strength_reduction
+v2_080,mlp,2,1,8,6,2,13.333333333333334,6,5,dead_code_elimination -> strength_reduction
+v2_080,fixed_order,2,1,17,15,2,13.333333333333334,6,5,dead_code_elimination -> strength_reduction
+fin_078,rule_based,1,4,9,7,2,5.0,12,8,strength_reduction -> dead_code_elimination
+fin_078,decision_tree,1,4,8,6,2,5.0,12,8,dead_code_elimination -> strength_reduction
+fin_078,random_forest,1,4,8,6,2,5.0,12,8,dead_code_elimination -> strength_reduction
+fin_078,logistic_regression,1,4,8,6,2,5.0,12,8,dead_code_elimination -> strength_reduction
+fin_078,mlp,1,4,8,6,2,5.0,12,8,dead_code_elimination -> strength_reduction
+fin_078,fixed_order,1,4,17,15,2,5.0,12,8,dead_code_elimination -> strength_reduction
+v2_044,rule_based,1,4,9,7,2,5.0,12,8,strength_reduction -> dead_code_elimination
+v2_044,decision_tree,1,4,8,6,2,5.0,12,8,dead_code_elimination -> strength_reduction
+v2_044,random_forest,1,4,8,6,2,5.0,12,8,dead_code_elimination -> strength_reduction
+v2_044,logistic_regression,1,4,8,6,2,5.0,12,8,dead_code_elimination -> strength_reduction
+v2_044,mlp,1,4,8,6,2,5.0,12,8,dead_code_elimination -> strength_reduction
+v2_044,fixed_order,1,4,17,15,2,5.0,12,8,dead_code_elimination -> strength_reduction
+fin_070,rule_based,0,7,7,6,1,0.0,8,1,common_subexpression_elimination
+fin_070,decision_tree,0,7,7,6,1,0.0,8,1,common_subexpression_elimination
+fin_070,random_forest,0,7,7,6,1,0.0,8,1,common_subexpression_elimination
+fin_070,logistic_regression,0,7,7,6,1,0.0,8,1,common_subexpression_elimination
+fin_070,mlp,0,7,7,6,1,0.0,8,1,common_subexpression_elimination
+fin_070,fixed_order,0,7,10,9,1,0.0,8,1,common_subexpression_elimination
+fin_111,rule_based,2,5,13,9,4,11.76470588235294,8,3,strength_reduction -> common_subexpression_elimination -> dead_code_elimination -> algebraic_simplification
+fin_111,decision_tree,2,5,15,11,4,11.76470588235294,8,3,dead_code_elimination -> common_subexpression_elimination -> algebraic_simplification -> strength_reduction
+fin_111,random_forest,2,5,10,6,4,11.76470588235294,8,3,dead_code_elimination -> common_subexpression_elimination -> algebraic_simplification -> strength_reduction
+fin_111,logistic_regression,2,5,13,9,4,11.76470588235294,8,3,dead_code_elimination -> common_subexpression_elimination -> algebraic_simplification -> strength_reduction
+fin_111,mlp,2,5,11,7,4,11.76470588235294,8,3,dead_code_elimination -> common_subexpression_elimination -> strength_reduction -> algebraic_simplification
+fin_111,fixed_order,2,5,24,20,4,11.76470588235294,8,3,algebraic_simplification -> common_subexpression_elimination -> dead_code_elimination -> strength_reduction
+fin_100,rule_based,0,7,7,6,1,0.0,7,0,algebraic_simplification
+fin_100,decision_tree,0,7,7,6,1,0.0,7,0,algebraic_simplification
+fin_100,random_forest,0,7,7,6,1,0.0,7,0,algebraic_simplification
+fin_100,logistic_regression,0,7,7,6,1,0.0,7,0,algebraic_simplification
+fin_100,mlp,0,7,7,6,1,0.0,7,0,algebraic_simplification
+fin_100,fixed_order,0,7,9,8,1,0.0,7,0,algebraic_simplification
+v2_027,rule_based,0,7,7,6,1,0.0,7,0,algebraic_simplification
+v2_027,decision_tree,0,7,7,6,1,0.0,7,0,algebraic_simplification
+v2_027,random_forest,0,7,7,6,1,0.0,7,0,algebraic_simplification
+v2_027,logistic_regression,0,7,7,6,1,0.0,7,0,algebraic_simplification
+v2_027,mlp,0,7,7,6,1,0.0,7,0,algebraic_simplification
+v2_027,fixed_order,0,7,9,8,1,0.0,7,0,algebraic_simplification
+fin_082,rule_based,5,4,7,6,1,71.42857142857143,5,1,dead_code_elimination
+fin_082,decision_tree,5,4,7,6,1,71.42857142857143,5,1,dead_code_elimination
+fin_082,random_forest,5,4,7,6,1,71.42857142857143,5,1,dead_code_elimination
+fin_082,logistic_regression,5,4,7,6,1,71.42857142857143,5,1,dead_code_elimination
+fin_082,mlp,5,4,7,6,1,71.42857142857143,5,1,dead_code_elimination
+fin_082,fixed_order,5,4,12,10,2,71.42857142857143,5,1,constant_folding -> dead_code_elimination
+dead_code_heavy,rule_based,2,1,7,6,1,50.0,1,0,dead_code_elimination
+dead_code_heavy,decision_tree,2,1,7,6,1,50.0,1,0,dead_code_elimination
+dead_code_heavy,random_forest,2,1,7,6,1,50.0,1,0,dead_code_elimination
+dead_code_heavy,logistic_regression,2,1,7,6,1,50.0,1,0,dead_code_elimination
+dead_code_heavy,mlp,2,1,7,6,1,50.0,1,0,dead_code_elimination
+dead_code_heavy,fixed_order,2,1,11,10,1,50.0,1,0,dead_code_elimination
+fin_097,rule_based,0,0,6,6,0,0.0,4,4,
+fin_097,decision_tree,0,0,6,6,0,0.0,4,4,
+fin_097,random_forest,0,0,6,6,0,0.0,4,4,
+fin_097,logistic_regression,0,0,6,6,0,0.0,4,4,
+fin_097,mlp,0,0,6,6,0,0.0,4,4,
+fin_097,fixed_order,0,0,6,6,0,0.0,4,4,
+v2_093,rule_based,0,0,6,6,0,0.0,4,4,
+v2_093,decision_tree,0,0,6,6,0,0.0,4,4,
+v2_093,random_forest,0,0,6,6,0,0.0,4,4,
+v2_093,logistic_regression,0,0,6,6,0,0.0,4,4,
+v2_093,mlp,0,0,6,6,0,0.0,4,4,
+v2_093,fixed_order,0,0,6,6,0,0.0,4,4,
+fin_123,rule_based,0,3,7,6,1,0.0,3,0,algebraic_simplification
+fin_123,decision_tree,0,3,7,6,1,0.0,3,0,algebraic_simplification
+fin_123,random_forest,0,3,7,6,1,0.0,3,0,algebraic_simplification
+fin_123,logistic_regression,0,3,7,6,1,0.0,3,0,algebraic_simplification
+fin_123,mlp,0,3,7,6,1,0.0,3,0,algebraic_simplification
+fin_123,fixed_order,0,3,9,8,1,0.0,3,0,algebraic_simplification
+v2_101,rule_based,0,3,7,6,1,0.0,3,0,algebraic_simplification
+v2_101,decision_tree,0,3,7,6,1,0.0,3,0,algebraic_simplification
+v2_101,random_forest,0,3,7,6,1,0.0,3,0,algebraic_simplification
+v2_101,logistic_regression,0,3,7,6,1,0.0,3,0,algebraic_simplification
+v2_101,mlp,0,3,7,6,1,0.0,3,0,algebraic_simplification
+v2_101,fixed_order,0,3,9,8,1,0.0,3,0,algebraic_simplification
+v2_141,rule_based,0,0,6,6,0,0.0,8,8,
+v2_141,decision_tree,0,0,6,6,0,0.0,8,8,
+v2_141,random_forest,0,0,6,6,0,0.0,8,8,
+v2_141,logistic_regression,0,0,6,6,0,0.0,8,8,
+v2_141,mlp,0,0,6,6,0,0.0,8,8,
+v2_141,fixed_order,0,0,6,6,0,0.0,8,8,
+fin_073,rule_based,0,0,6,6,0,0.0,11,11,
+fin_073,decision_tree,0,0,6,6,0,0.0,11,11,
+fin_073,random_forest,0,0,6,6,0,0.0,11,11,
+fin_073,logistic_regression,0,0,6,6,0,0.0,11,11,
+fin_073,mlp,0,0,6,6,0,0.0,11,11,
+fin_073,fixed_order,0,0,6,6,0,0.0,11,11,
+v2_063,rule_based,0,0,6,6,0,0.0,11,11,
+v2_063,decision_tree,0,0,6,6,0,0.0,11,11,
+v2_063,random_forest,0,0,6,6,0,0.0,11,11,
+v2_063,logistic_regression,0,0,6,6,0,0.0,11,11,
+v2_063,mlp,0,0,6,6,0,0.0,11,11,
+v2_063,fixed_order,0,0,6,6,0,0.0,11,11,
+v2_106,rule_based,4,4,7,6,1,50.0,6,2,dead_code_elimination
+v2_106,decision_tree,4,4,7,6,1,50.0,6,2,dead_code_elimination
+v2_106,random_forest,4,4,7,6,1,50.0,6,2,dead_code_elimination
+v2_106,logistic_regression,4,4,7,6,1,50.0,6,2,dead_code_elimination
+v2_106,mlp,4,4,7,6,1,50.0,6,2,dead_code_elimination
+v2_106,fixed_order,4,4,12,10,2,50.0,6,2,constant_folding -> dead_code_elimination
+fin_061,rule_based,5,5,10,7,3,41.66666666666667,5,0,constant_folding -> constant_propagation -> dead_code_elimination
+fin_061,decision_tree,5,5,9,6,3,41.66666666666667,5,0,constant_folding -> constant_propagation -> dead_code_elimination
+fin_061,random_forest,5,5,9,6,3,41.66666666666667,5,0,constant_folding -> constant_propagation -> dead_code_elimination
+fin_061,logistic_regression,5,5,9,6,3,41.66666666666667,5,0,constant_folding -> constant_propagation -> dead_code_elimination
+fin_061,mlp,5,5,9,6,3,41.66666666666667,5,0,constant_folding -> constant_propagation -> dead_code_elimination
+fin_061,fixed_order,5,5,14,11,3,41.66666666666667,5,0,constant_folding -> constant_propagation -> dead_code_elimination
+fin_184,rule_based,0,5,7,6,1,0.0,5,0,algebraic_simplification
+fin_184,decision_tree,0,5,7,6,1,0.0,5,0,algebraic_simplification
+fin_184,random_forest,0,5,7,6,1,0.0,5,0,algebraic_simplification
+fin_184,logistic_regression,0,5,7,6,1,0.0,5,0,algebraic_simplification
+fin_184,mlp,0,5,7,6,1,0.0,5,0,algebraic_simplification
+fin_184,fixed_order,0,5,9,8,1,0.0,5,0,algebraic_simplification
+v2_130,rule_based,0,5,7,6,1,0.0,5,0,algebraic_simplification
+v2_130,decision_tree,0,5,7,6,1,0.0,5,0,algebraic_simplification
+v2_130,random_forest,0,5,7,6,1,0.0,5,0,algebraic_simplification
+v2_130,logistic_regression,0,5,7,6,1,0.0,5,0,algebraic_simplification
+v2_130,mlp,0,5,7,6,1,0.0,5,0,algebraic_simplification
+v2_130,fixed_order,0,5,9,8,1,0.0,5,0,algebraic_simplification
+fin_174,rule_based,1,4,9,7,2,3.4482758620689653,16,12,strength_reduction -> dead_code_elimination
+fin_174,decision_tree,1,4,8,6,2,3.4482758620689653,16,12,dead_code_elimination -> strength_reduction
+fin_174,random_forest,1,4,8,6,2,3.4482758620689653,16,12,dead_code_elimination -> strength_reduction
+fin_174,logistic_regression,1,4,8,6,2,3.4482758620689653,16,12,dead_code_elimination -> strength_reduction
+fin_174,mlp,1,4,8,6,2,3.4482758620689653,16,12,dead_code_elimination -> strength_reduction
+fin_174,fixed_order,1,4,17,15,2,3.4482758620689653,16,12,dead_code_elimination -> strength_reduction
+fin_176,rule_based,2,8,10,6,4,10.0,9,1,common_subexpression_elimination -> constant_folding -> algebraic_simplification -> dead_code_elimination
+fin_176,decision_tree,2,8,10,6,4,10.0,9,1,dead_code_elimination -> common_subexpression_elimination -> algebraic_simplification -> constant_folding
+fin_176,random_forest,2,8,10,6,4,10.0,9,1,dead_code_elimination -> common_subexpression_elimination -> algebraic_simplification -> constant_folding
+fin_176,logistic_regression,2,8,12,8,4,10.0,9,1,dead_code_elimination -> common_subexpression_elimination -> constant_folding -> algebraic_simplification
+fin_176,mlp,2,8,12,8,4,10.0,9,1,dead_code_elimination -> common_subexpression_elimination -> constant_folding -> algebraic_simplification
+fin_176,fixed_order,2,8,19,15,4,10.0,9,1,constant_folding -> algebraic_simplification -> common_subexpression_elimination -> dead_code_elimination
+fin_031,rule_based,0,7,11,8,3,0.0,10,3,strength_reduction -> common_subexpression_elimination -> constant_folding
+fin_031,decision_tree,0,7,14,11,3,0.0,10,3,common_subexpression_elimination -> constant_folding -> strength_reduction
+fin_031,random_forest,0,7,11,8,3,0.0,10,3,common_subexpression_elimination -> constant_folding -> strength_reduction
+fin_031,logistic_regression,0,7,14,11,3,0.0,10,3,common_subexpression_elimination -> constant_folding -> strength_reduction
+fin_031,mlp,0,7,11,8,3,0.0,10,3,common_subexpression_elimination -> constant_folding -> strength_reduction
+fin_031,fixed_order,0,7,17,14,3,0.0,10,3,constant_folding -> common_subexpression_elimination -> strength_reduction
+v2_018,rule_based,3,3,10,7,3,50.0,3,0,constant_folding -> constant_propagation -> dead_code_elimination
+v2_018,decision_tree,3,3,10,7,3,50.0,3,0,constant_folding -> constant_propagation -> dead_code_elimination
+v2_018,random_forest,3,3,9,6,3,50.0,3,0,constant_folding -> constant_propagation -> dead_code_elimination
+v2_018,logistic_regression,3,3,9,6,3,50.0,3,0,constant_folding -> constant_propagation -> dead_code_elimination
+v2_018,mlp,3,3,9,6,3,50.0,3,0,constant_folding -> constant_propagation -> dead_code_elimination
+v2_018,fixed_order,3,3,14,11,3,50.0,3,0,constant_folding -> constant_propagation -> dead_code_elimination
+fin_056,rule_based,0,5,7,6,1,0.0,5,0,algebraic_simplification
+fin_056,decision_tree,0,5,7,6,1,0.0,5,0,algebraic_simplification
+fin_056,random_forest,0,5,7,6,1,0.0,5,0,algebraic_simplification
+fin_056,logistic_regression,0,5,7,6,1,0.0,5,0,algebraic_simplification
+fin_056,mlp,0,5,7,6,1,0.0,5,0,algebraic_simplification
+fin_056,fixed_order,0,5,9,8,1,0.0,5,0,algebraic_simplification
+v2_020,rule_based,0,5,7,6,1,0.0,5,0,algebraic_simplification
+v2_020,decision_tree,0,5,7,6,1,0.0,5,0,algebraic_simplification
+v2_020,random_forest,0,5,7,6,1,0.0,5,0,algebraic_simplification
+v2_020,logistic_regression,0,5,7,6,1,0.0,5,0,algebraic_simplification
+v2_020,mlp,0,5,7,6,1,0.0,5,0,algebraic_simplification
+v2_020,fixed_order,0,5,9,8,1,0.0,5,0,algebraic_simplification
+fin_134,rule_based,1,6,10,7,3,7.142857142857142,6,0,constant_propagation -> constant_folding -> dead_code_elimination
+fin_134,decision_tree,1,6,9,6,3,7.142857142857142,6,0,constant_propagation -> dead_code_elimination -> constant_folding
+fin_134,random_forest,1,6,9,6,3,7.142857142857142,6,0,constant_propagation -> dead_code_elimination -> constant_folding
+fin_134,logistic_regression,1,6,10,7,3,7.142857142857142,6,0,constant_propagation -> constant_folding -> dead_code_elimination
+fin_134,mlp,1,6,10,7,3,7.142857142857142,6,0,constant_propagation -> constant_folding -> dead_code_elimination
+fin_134,fixed_order,1,6,14,11,3,7.142857142857142,6,0,constant_propagation -> constant_folding -> dead_code_elimination
+v2_193,rule_based,1,5,13,9,4,5.555555555555555,8,3,strength_reduction -> constant_folding -> common_subexpression_elimination -> dead_code_elimination
+v2_193,decision_tree,1,5,15,11,4,5.555555555555555,8,3,dead_code_elimination -> constant_folding -> common_subexpression_elimination -> strength_reduction
+v2_193,random_forest,1,5,11,7,4,5.555555555555555,8,3,dead_code_elimination -> constant_folding -> common_subexpression_elimination -> strength_reduction
+v2_193,logistic_regression,1,5,13,9,4,5.555555555555555,8,3,dead_code_elimination -> constant_folding -> common_subexpression_elimination -> strength_reduction
+v2_193,mlp,1,5,11,7,4,5.555555555555555,8,3,dead_code_elimination -> constant_folding -> common_subexpression_elimination -> strength_reduction
+v2_193,fixed_order,1,5,22,18,4,5.555555555555555,8,3,constant_folding -> common_subexpression_elimination -> dead_code_elimination -> strength_reduction
+fin_188,rule_based,1,7,15,10,5,5.0,10,3,strength_reduction -> common_subexpression_elimination -> constant_folding -> algebraic_simplification -> dead_code_elimination
+fin_188,decision_tree,1,7,16,11,5,5.0,10,3,dead_code_elimination -> common_subexpression_elimination -> algebraic_simplification -> constant_folding -> strength_reduction
+fin_188,random_forest,1,7,13,8,5,5.0,10,3,dead_code_elimination -> common_subexpression_elimination -> algebraic_simplification -> constant_folding -> strength_reduction
+fin_188,logistic_regression,1,7,20,15,5,5.0,10,3,dead_code_elimination -> common_subexpression_elimination -> constant_folding -> strength_reduction -> algebraic_simplification
+fin_188,mlp,1,7,14,9,5,5.0,10,3,dead_code_elimination -> common_subexpression_elimination -> strength_reduction -> constant_folding -> algebraic_simplification
+fin_188,fixed_order,1,7,25,20,5,5.0,10,3,constant_folding -> algebraic_simplification -> common_subexpression_elimination -> dead_code_elimination -> strength_reduction
+v2_072,rule_based,1,7,15,10,5,5.0,10,3,strength_reduction -> common_subexpression_elimination -> constant_folding -> algebraic_simplification -> dead_code_elimination
+v2_072,decision_tree,1,7,16,11,5,5.0,10,3,dead_code_elimination -> common_subexpression_elimination -> algebraic_simplification -> constant_folding -> strength_reduction
+v2_072,random_forest,1,7,13,8,5,5.0,10,3,dead_code_elimination -> common_subexpression_elimination -> algebraic_simplification -> constant_folding -> strength_reduction
+v2_072,logistic_regression,1,7,20,15,5,5.0,10,3,dead_code_elimination -> common_subexpression_elimination -> constant_folding -> strength_reduction -> algebraic_simplification
+v2_072,mlp,1,7,14,9,5,5.0,10,3,dead_code_elimination -> common_subexpression_elimination -> strength_reduction -> constant_folding -> algebraic_simplification
+v2_072,fixed_order,1,7,25,20,5,5.0,10,3,constant_folding -> algebraic_simplification -> common_subexpression_elimination -> dead_code_elimination -> strength_reduction
+fin_063,rule_based,0,11,7,6,1,0.0,11,0,algebraic_simplification
+fin_063,decision_tree,0,11,7,6,1,0.0,11,0,algebraic_simplification
+fin_063,random_forest,0,11,7,6,1,0.0,11,0,algebraic_simplification
+fin_063,logistic_regression,0,11,7,6,1,0.0,11,0,algebraic_simplification
+fin_063,mlp,0,11,7,6,1,0.0,11,0,algebraic_simplification
+fin_063,fixed_order,0,11,9,8,1,0.0,11,0,algebraic_simplification
+v2_161,rule_based,0,11,7,6,1,0.0,11,0,algebraic_simplification
+v2_161,decision_tree,0,11,7,6,1,0.0,11,0,algebraic_simplification
+v2_161,random_forest,0,11,7,6,1,0.0,11,0,algebraic_simplification
+v2_161,logistic_regression,0,11,7,6,1,0.0,11,0,algebraic_simplification
+v2_161,mlp,0,11,7,6,1,0.0,11,0,algebraic_simplification
+v2_161,fixed_order,0,11,9,8,1,0.0,11,0,algebraic_simplification
+v2_195,rule_based,1,8,10,7,3,5.0,8,0,constant_propagation -> constant_folding -> dead_code_elimination
+v2_195,decision_tree,1,8,9,6,3,5.0,8,0,constant_propagation -> dead_code_elimination -> constant_folding
+v2_195,random_forest,1,8,9,6,3,5.0,8,0,constant_propagation -> dead_code_elimination -> constant_folding
+v2_195,logistic_regression,1,8,10,7,3,5.0,8,0,constant_propagation -> constant_folding -> dead_code_elimination
+v2_195,mlp,1,8,10,7,3,5.0,8,0,constant_propagation -> constant_folding -> dead_code_elimination
+v2_195,fixed_order,1,8,14,11,3,5.0,8,0,constant_propagation -> constant_folding -> dead_code_elimination
+fin_014,rule_based,11,10,13,8,5,47.82608695652174,10,0,constant_propagation -> constant_folding -> dead_code_elimination -> constant_propagation -> dead_code_elimination
+fin_014,decision_tree,11,10,11,6,5,47.82608695652174,10,0,constant_propagation -> dead_code_elimination -> constant_folding -> constant_propagation -> dead_code_elimination
+fin_014,random_forest,11,10,11,6,5,47.82608695652174,10,0,constant_propagation -> dead_code_elimination -> constant_folding -> constant_propagation -> dead_code_elimination
+fin_014,logistic_regression,11,10,10,6,4,47.82608695652174,10,0,constant_propagation -> constant_folding -> constant_propagation -> dead_code_elimination
+fin_014,mlp,11,10,10,6,4,47.82608695652174,10,0,constant_propagation -> constant_folding -> constant_propagation -> dead_code_elimination
+fin_014,fixed_order,11,10,16,12,4,47.82608695652174,10,0,constant_propagation -> constant_folding -> constant_propagation -> dead_code_elimination
+v2_005,rule_based,2,3,9,7,2,10.526315789473683,10,7,strength_reduction -> dead_code_elimination
+v2_005,decision_tree,2,3,8,6,2,10.526315789473683,10,7,dead_code_elimination -> strength_reduction
+v2_005,random_forest,2,3,8,6,2,10.526315789473683,10,7,dead_code_elimination -> strength_reduction
+v2_005,logistic_regression,2,3,8,6,2,10.526315789473683,10,7,dead_code_elimination -> strength_reduction
+v2_005,mlp,2,3,8,6,2,10.526315789473683,10,7,dead_code_elimination -> strength_reduction
+v2_005,fixed_order,2,3,17,15,2,10.526315789473683,10,7,dead_code_elimination -> strength_reduction
+v2_126,rule_based,0,2,7,6,1,0.0,6,4,common_subexpression_elimination
+v2_126,decision_tree,0,2,7,6,1,0.0,6,4,common_subexpression_elimination
+v2_126,random_forest,0,2,7,6,1,0.0,6,4,common_subexpression_elimination
+v2_126,logistic_regression,0,2,7,6,1,0.0,6,4,common_subexpression_elimination
+v2_126,mlp,0,2,7,6,1,0.0,6,4,common_subexpression_elimination
+v2_126,fixed_order,0,2,10,9,1,0.0,6,4,common_subexpression_elimination
+fin_099,rule_based,0,1,7,6,1,0.0,3,2,common_subexpression_elimination
+fin_099,decision_tree,0,1,7,6,1,0.0,3,2,common_subexpression_elimination
+fin_099,random_forest,0,1,7,6,1,0.0,3,2,common_subexpression_elimination
+fin_099,logistic_regression,0,1,7,6,1,0.0,3,2,common_subexpression_elimination
+fin_099,mlp,0,1,7,6,1,0.0,3,2,common_subexpression_elimination
+fin_099,fixed_order,0,1,10,9,1,0.0,3,2,common_subexpression_elimination
+v2_092,rule_based,0,7,7,6,1,0.0,11,4,common_subexpression_elimination
+v2_092,decision_tree,0,7,7,6,1,0.0,11,4,common_subexpression_elimination
+v2_092,random_forest,0,7,7,6,1,0.0,11,4,common_subexpression_elimination
+v2_092,logistic_regression,0,7,7,6,1,0.0,11,4,common_subexpression_elimination
+v2_092,mlp,0,7,7,6,1,0.0,11,4,common_subexpression_elimination
+v2_092,fixed_order,0,7,10,9,1,0.0,11,4,common_subexpression_elimination
+fin_015,rule_based,0,7,7,6,1,0.0,11,4,common_subexpression_elimination
+fin_015,decision_tree,0,7,7,6,1,0.0,11,4,common_subexpression_elimination
+fin_015,random_forest,0,7,7,6,1,0.0,11,4,common_subexpression_elimination
+fin_015,logistic_regression,0,7,7,6,1,0.0,11,4,common_subexpression_elimination
+fin_015,mlp,0,7,7,6,1,0.0,11,4,common_subexpression_elimination
+fin_015,fixed_order,0,7,10,9,1,0.0,11,4,common_subexpression_elimination
+v2_059,rule_based,0,2,7,6,1,0.0,5,3,common_subexpression_elimination
+v2_059,decision_tree,0,2,7,6,1,0.0,5,3,common_subexpression_elimination
+v2_059,random_forest,0,2,7,6,1,0.0,5,3,common_subexpression_elimination
+v2_059,logistic_regression,0,2,7,6,1,0.0,5,3,common_subexpression_elimination
+v2_059,mlp,0,2,7,6,1,0.0,5,3,common_subexpression_elimination
+v2_059,fixed_order,0,2,10,9,1,0.0,5,3,common_subexpression_elimination
+fin_152,rule_based,0,0,6,6,0,0.0,8,8,
+fin_152,decision_tree,0,0,6,6,0,0.0,8,8,
+fin_152,random_forest,0,0,6,6,0,0.0,8,8,
+fin_152,logistic_regression,0,0,6,6,0,0.0,8,8,
+fin_152,mlp,0,0,6,6,0,0.0,8,8,
+fin_152,fixed_order,0,0,6,6,0,0.0,8,8,
+v2_140,rule_based,5,5,10,7,3,45.45454545454545,5,0,constant_folding -> constant_propagation -> dead_code_elimination
+v2_140,decision_tree,5,5,9,6,3,45.45454545454545,5,0,constant_folding -> constant_propagation -> dead_code_elimination
+v2_140,random_forest,5,5,9,6,3,45.45454545454545,5,0,constant_folding -> constant_propagation -> dead_code_elimination
+v2_140,logistic_regression,5,5,9,6,3,45.45454545454545,5,0,constant_folding -> constant_propagation -> dead_code_elimination
+v2_140,mlp,5,5,9,6,3,45.45454545454545,5,0,constant_folding -> constant_propagation -> dead_code_elimination
+v2_140,fixed_order,5,5,14,11,3,45.45454545454545,5,0,constant_folding -> constant_propagation -> dead_code_elimination
+v2_117,rule_based,0,8,13,9,4,0.0,11,3,strength_reduction -> common_subexpression_elimination -> algebraic_simplification -> constant_folding
+v2_117,decision_tree,0,8,15,11,4,0.0,11,3,common_subexpression_elimination -> algebraic_simplification -> constant_folding -> strength_reduction
+v2_117,random_forest,0,8,13,9,4,0.0,11,3,common_subexpression_elimination -> algebraic_simplification -> constant_folding -> strength_reduction
+v2_117,logistic_regression,0,8,18,14,4,0.0,11,3,common_subexpression_elimination -> constant_folding -> algebraic_simplification -> strength_reduction
+v2_117,mlp,0,8,11,7,4,0.0,11,3,common_subexpression_elimination -> constant_folding -> strength_reduction -> algebraic_simplification
+v2_117,fixed_order,0,8,20,16,4,0.0,11,3,constant_folding -> algebraic_simplification -> common_subexpression_elimination -> strength_reduction
+v2_158,rule_based,2,4,9,6,3,16.666666666666664,5,1,constant_folding -> dead_code_elimination -> common_subexpression_elimination
+v2_158,decision_tree,2,4,9,6,3,16.666666666666664,5,1,dead_code_elimination -> constant_folding -> common_subexpression_elimination
+v2_158,random_forest,2,4,9,6,3,16.666666666666664,5,1,dead_code_elimination -> constant_folding -> common_subexpression_elimination
+v2_158,logistic_regression,2,4,9,6,3,16.666666666666664,5,1,dead_code_elimination -> constant_folding -> common_subexpression_elimination
+v2_158,mlp,2,4,9,6,3,16.666666666666664,5,1,dead_code_elimination -> constant_folding -> common_subexpression_elimination
+v2_158,fixed_order,2,4,16,13,3,16.666666666666664,5,1,constant_folding -> common_subexpression_elimination -> dead_code_elimination
+fin_131,rule_based,1,9,10,7,3,4.3478260869565215,9,0,constant_propagation -> constant_folding -> dead_code_elimination
+fin_131,decision_tree,1,9,9,6,3,4.3478260869565215,9,0,constant_propagation -> dead_code_elimination -> constant_folding
+fin_131,random_forest,1,9,9,6,3,4.3478260869565215,9,0,constant_propagation -> dead_code_elimination -> constant_folding
+fin_131,logistic_regression,1,9,10,7,3,4.3478260869565215,9,0,constant_propagation -> constant_folding -> dead_code_elimination
+fin_131,mlp,1,9,9,6,3,4.3478260869565215,9,0,constant_propagation -> constant_folding -> dead_code_elimination
+fin_131,fixed_order,1,9,14,11,3,4.3478260869565215,9,0,constant_propagation -> constant_folding -> dead_code_elimination
+v2_179,rule_based,1,9,10,7,3,4.3478260869565215,9,0,constant_propagation -> constant_folding -> dead_code_elimination
+v2_179,decision_tree,1,9,9,6,3,4.3478260869565215,9,0,constant_propagation -> dead_code_elimination -> constant_folding
+v2_179,random_forest,1,9,9,6,3,4.3478260869565215,9,0,constant_propagation -> dead_code_elimination -> constant_folding
+v2_179,logistic_regression,1,9,10,7,3,4.3478260869565215,9,0,constant_propagation -> constant_folding -> dead_code_elimination
+v2_179,mlp,1,9,9,6,3,4.3478260869565215,9,0,constant_propagation -> constant_folding -> dead_code_elimination
+v2_179,fixed_order,1,9,14,11,3,4.3478260869565215,9,0,constant_propagation -> constant_folding -> dead_code_elimination
+v2_037,rule_based,2,3,9,7,2,8.0,13,10,strength_reduction -> dead_code_elimination
+v2_037,decision_tree,2,3,8,6,2,8.0,13,10,dead_code_elimination -> strength_reduction
+v2_037,random_forest,2,3,8,6,2,8.0,13,10,dead_code_elimination -> strength_reduction
+v2_037,logistic_regression,2,3,8,6,2,8.0,13,10,dead_code_elimination -> strength_reduction
+v2_037,mlp,2,3,8,6,2,8.0,13,10,dead_code_elimination -> strength_reduction
+v2_037,fixed_order,2,3,17,15,2,8.0,13,10,dead_code_elimination -> strength_reduction
+fin_145,rule_based,0,0,6,6,0,0.0,6,6,
+fin_145,decision_tree,0,0,6,6,0,0.0,6,6,
+fin_145,random_forest,0,0,6,6,0,0.0,6,6,
+fin_145,logistic_regression,0,0,6,6,0,0.0,6,6,
+fin_145,mlp,0,0,6,6,0,0.0,6,6,
+fin_145,fixed_order,0,0,6,6,0,0.0,6,6,
+expression_redefined,rule_based,0,0,6,6,0,0.0,2,2,
+expression_redefined,decision_tree,0,0,6,6,0,0.0,2,2,
+expression_redefined,random_forest,0,0,6,6,0,0.0,2,2,
+expression_redefined,logistic_regression,0,0,6,6,0,0.0,2,2,
+expression_redefined,mlp,0,0,6,6,0,0.0,2,2,
+expression_redefined,fixed_order,0,0,6,6,0,0.0,2,2,
+fin_040,rule_based,1,2,10,7,3,12.5,2,0,constant_propagation -> constant_folding -> dead_code_elimination
+fin_040,decision_tree,1,2,10,7,3,12.5,2,0,constant_propagation -> dead_code_elimination -> constant_folding
+fin_040,random_forest,1,2,9,6,3,12.5,2,0,constant_propagation -> dead_code_elimination -> constant_folding
+fin_040,logistic_regression,1,2,9,6,3,12.5,2,0,constant_propagation -> dead_code_elimination -> constant_folding
+fin_040,mlp,1,2,9,6,3,12.5,2,0,constant_propagation -> dead_code_elimination -> constant_folding
+fin_040,fixed_order,1,2,14,11,3,12.5,2,0,constant_propagation -> constant_folding -> dead_code_elimination
+fin_057,rule_based,0,6,8,6,2,0.0,7,1,common_subexpression_elimination -> algebraic_simplification
+fin_057,decision_tree,0,6,8,6,2,0.0,7,1,common_subexpression_elimination -> algebraic_simplification
+fin_057,random_forest,0,6,8,6,2,0.0,7,1,common_subexpression_elimination -> algebraic_simplification
+fin_057,logistic_regression,0,6,9,7,2,0.0,7,1,common_subexpression_elimination -> algebraic_simplification
+fin_057,mlp,0,6,9,7,2,0.0,7,1,common_subexpression_elimination -> algebraic_simplification
+fin_057,fixed_order,0,6,13,11,2,0.0,7,1,algebraic_simplification -> common_subexpression_elimination
+v2_112,rule_based,0,6,8,6,2,0.0,7,1,common_subexpression_elimination -> algebraic_simplification
+v2_112,decision_tree,0,6,8,6,2,0.0,7,1,common_subexpression_elimination -> algebraic_simplification
+v2_112,random_forest,0,6,8,6,2,0.0,7,1,common_subexpression_elimination -> algebraic_simplification
+v2_112,logistic_regression,0,6,9,7,2,0.0,7,1,common_subexpression_elimination -> algebraic_simplification
+v2_112,mlp,0,6,9,7,2,0.0,7,1,common_subexpression_elimination -> algebraic_simplification
+v2_112,fixed_order,0,6,13,11,2,0.0,7,1,algebraic_simplification -> common_subexpression_elimination
+v2_028,rule_based,0,0,6,6,0,0.0,4,4,
+v2_028,decision_tree,0,0,6,6,0,0.0,4,4,
+v2_028,random_forest,0,0,6,6,0,0.0,4,4,
+v2_028,logistic_regression,0,0,6,6,0,0.0,4,4,
+v2_028,mlp,0,0,6,6,0,0.0,4,4,
+v2_028,fixed_order,0,0,6,6,0,0.0,4,4,
+fin_125,rule_based,1,1,9,7,2,12.5,3,2,strength_reduction -> dead_code_elimination
+fin_125,decision_tree,1,1,8,6,2,12.5,3,2,dead_code_elimination -> strength_reduction
+fin_125,random_forest,1,1,8,6,2,12.5,3,2,dead_code_elimination -> strength_reduction
+fin_125,logistic_regression,1,1,8,6,2,12.5,3,2,dead_code_elimination -> strength_reduction
+fin_125,mlp,1,1,8,6,2,12.5,3,2,dead_code_elimination -> strength_reduction
+fin_125,fixed_order,1,1,17,15,2,12.5,3,2,dead_code_elimination -> strength_reduction
+fin_008,rule_based,2,4,9,7,2,9.523809523809524,12,8,strength_reduction -> dead_code_elimination
+fin_008,decision_tree,2,4,8,6,2,9.523809523809524,12,8,dead_code_elimination -> strength_reduction
+fin_008,random_forest,2,4,8,6,2,9.523809523809524,12,8,dead_code_elimination -> strength_reduction
+fin_008,logistic_regression,2,4,8,6,2,9.523809523809524,12,8,dead_code_elimination -> strength_reduction
+fin_008,mlp,2,4,8,6,2,9.523809523809524,12,8,dead_code_elimination -> strength_reduction
+fin_008,fixed_order,2,4,17,15,2,9.523809523809524,12,8,dead_code_elimination -> strength_reduction
+v2_177,rule_based,2,4,9,7,2,9.523809523809524,12,8,strength_reduction -> dead_code_elimination
+v2_177,decision_tree,2,4,8,6,2,9.523809523809524,12,8,dead_code_elimination -> strength_reduction
+v2_177,random_forest,2,4,8,6,2,9.523809523809524,12,8,dead_code_elimination -> strength_reduction
+v2_177,logistic_regression,2,4,8,6,2,9.523809523809524,12,8,dead_code_elimination -> strength_reduction
+v2_177,mlp,2,4,8,6,2,9.523809523809524,12,8,dead_code_elimination -> strength_reduction
+v2_177,fixed_order,2,4,17,15,2,9.523809523809524,12,8,dead_code_elimination -> strength_reduction
+v2_174,rule_based,4,8,8,6,2,66.66666666666666,9,1,constant_folding -> dead_code_elimination
+v2_174,decision_tree,4,8,7,6,1,66.66666666666666,9,1,dead_code_elimination
+v2_174,random_forest,4,8,7,6,1,66.66666666666666,9,1,dead_code_elimination
+v2_174,logistic_regression,4,8,7,6,1,66.66666666666666,9,1,dead_code_elimination
+v2_174,mlp,4,8,7,6,1,66.66666666666666,9,1,dead_code_elimination
+v2_174,fixed_order,4,8,12,10,2,66.66666666666666,9,1,constant_folding -> dead_code_elimination
+fin_009,rule_based,0,1,7,6,1,0.0,4,3,strength_reduction
+fin_009,decision_tree,0,1,7,6,1,0.0,4,3,strength_reduction
+fin_009,random_forest,0,1,7,6,1,0.0,4,3,strength_reduction
+fin_009,logistic_regression,0,1,7,6,1,0.0,4,3,strength_reduction
+fin_009,mlp,0,1,7,6,1,0.0,4,3,strength_reduction
+fin_009,fixed_order,0,1,12,11,1,0.0,4,3,strength_reduction
+constant_heavy,rule_based,0,7,7,6,1,0.0,8,1,constant_folding
+constant_heavy,decision_tree,0,7,7,6,1,0.0,8,1,constant_folding
+constant_heavy,random_forest,0,7,7,6,1,0.0,8,1,constant_folding
+constant_heavy,logistic_regression,0,7,7,6,1,0.0,8,1,constant_folding
+constant_heavy,mlp,0,7,7,6,1,0.0,8,1,constant_folding
+constant_heavy,fixed_order,0,7,7,6,1,0.0,8,1,constant_folding
+fin_117,rule_based,0,0,6,6,0,0.0,5,5,
+fin_117,decision_tree,0,0,6,6,0,0.0,5,5,
+fin_117,random_forest,0,0,6,6,0,0.0,5,5,
+fin_117,logistic_regression,0,0,6,6,0,0.0,5,5,
+fin_117,mlp,0,0,6,6,0,0.0,5,5,
+fin_117,fixed_order,0,0,6,6,0,0.0,5,5,
+v2_100,rule_based,2,5,15,10,5,13.333333333333334,7,2,strength_reduction -> dead_code_elimination -> constant_folding -> algebraic_simplification -> common_subexpression_elimination
+v2_100,decision_tree,2,5,16,11,5,13.333333333333334,7,2,dead_code_elimination -> common_subexpression_elimination -> algebraic_simplification -> constant_folding -> strength_reduction
+v2_100,random_forest,2,5,11,6,5,13.333333333333334,7,2,dead_code_elimination -> common_subexpression_elimination -> algebraic_simplification -> constant_folding -> strength_reduction
+v2_100,logistic_regression,2,5,14,9,5,13.333333333333334,7,2,dead_code_elimination -> common_subexpression_elimination -> algebraic_simplification -> constant_folding -> strength_reduction
+v2_100,mlp,2,5,12,7,5,13.333333333333334,7,2,dead_code_elimination -> algebraic_simplification -> common_subexpression_elimination -> strength_reduction -> constant_folding
+v2_100,fixed_order,2,5,25,20,5,13.333333333333334,7,2,constant_folding -> algebraic_simplification -> common_subexpression_elimination -> dead_code_elimination -> strength_reduction
+fin_050,rule_based,7,7,10,7,3,50.0,7,0,constant_folding -> constant_propagation -> dead_code_elimination
+fin_050,decision_tree,7,7,10,7,3,50.0,7,0,constant_folding -> constant_propagation -> dead_code_elimination
+fin_050,random_forest,7,7,9,6,3,50.0,7,0,constant_folding -> constant_propagation -> dead_code_elimination
+fin_050,logistic_regression,7,7,9,6,3,50.0,7,0,constant_folding -> constant_propagation -> dead_code_elimination
+fin_050,mlp,7,7,9,6,3,50.0,7,0,constant_folding -> constant_propagation -> dead_code_elimination
+fin_050,fixed_order,7,7,14,11,3,50.0,7,0,constant_folding -> constant_propagation -> dead_code_elimination
+v2_040,rule_based,7,7,10,7,3,50.0,7,0,constant_folding -> constant_propagation -> dead_code_elimination
+v2_040,decision_tree,7,7,10,7,3,50.0,7,0,constant_folding -> constant_propagation -> dead_code_elimination
+v2_040,random_forest,7,7,9,6,3,50.0,7,0,constant_folding -> constant_propagation -> dead_code_elimination
+v2_040,logistic_regression,7,7,9,6,3,50.0,7,0,constant_folding -> constant_propagation -> dead_code_elimination
+v2_040,mlp,7,7,9,6,3,50.0,7,0,constant_folding -> constant_propagation -> dead_code_elimination
+v2_040,fixed_order,7,7,14,11,3,50.0,7,0,constant_folding -> constant_propagation -> dead_code_elimination
+v2_194,rule_based,0,2,7,6,1,0.0,10,8,strength_reduction
+v2_194,decision_tree,0,2,7,6,1,0.0,10,8,strength_reduction
+v2_194,random_forest,0,2,7,6,1,0.0,10,8,strength_reduction
+v2_194,logistic_regression,0,2,7,6,1,0.0,10,8,strength_reduction
+v2_194,mlp,0,2,7,6,1,0.0,10,8,strength_reduction
+v2_194,fixed_order,0,2,12,11,1,0.0,10,8,strength_reduction
+v2_054,rule_based,12,12,10,7,3,46.15384615384615,12,0,constant_folding -> constant_propagation -> dead_code_elimination
+v2_054,decision_tree,12,12,9,6,3,46.15384615384615,12,0,constant_folding -> constant_propagation -> dead_code_elimination
+v2_054,random_forest,12,12,9,6,3,46.15384615384615,12,0,constant_folding -> constant_propagation -> dead_code_elimination
+v2_054,logistic_regression,12,12,9,6,3,46.15384615384615,12,0,constant_folding -> constant_propagation -> dead_code_elimination
+v2_054,mlp,12,12,9,6,3,46.15384615384615,12,0,constant_folding -> constant_propagation -> dead_code_elimination
+v2_054,fixed_order,12,12,14,11,3,46.15384615384615,12,0,constant_folding -> constant_propagation -> dead_code_elimination
+v2_146,rule_based,0,8,7,6,1,0.0,10,2,common_subexpression_elimination
+v2_146,decision_tree,0,8,7,6,1,0.0,10,2,common_subexpression_elimination
+v2_146,random_forest,0,8,7,6,1,0.0,10,2,common_subexpression_elimination
+v2_146,logistic_regression,0,8,7,6,1,0.0,10,2,common_subexpression_elimination
+v2_146,mlp,0,8,7,6,1,0.0,10,2,common_subexpression_elimination
+v2_146,fixed_order,0,8,10,9,1,0.0,10,2,common_subexpression_elimination
+v2_142,rule_based,1,4,9,7,2,3.8461538461538463,15,11,strength_reduction -> dead_code_elimination
+v2_142,decision_tree,1,4,8,6,2,3.8461538461538463,15,11,dead_code_elimination -> strength_reduction
+v2_142,random_forest,1,4,8,6,2,3.8461538461538463,15,11,dead_code_elimination -> strength_reduction
+v2_142,logistic_regression,1,4,8,6,2,3.8461538461538463,15,11,dead_code_elimination -> strength_reduction
+v2_142,mlp,1,4,8,6,2,3.8461538461538463,15,11,dead_code_elimination -> strength_reduction
+v2_142,fixed_order,1,4,17,15,2,3.8461538461538463,15,11,dead_code_elimination -> strength_reduction
+fin_180,rule_based,0,12,7,6,1,0.0,12,0,algebraic_simplification
+fin_180,decision_tree,0,12,7,6,1,0.0,12,0,algebraic_simplification
+fin_180,random_forest,0,12,7,6,1,0.0,12,0,algebraic_simplification
+fin_180,logistic_regression,0,12,7,6,1,0.0,12,0,algebraic_simplification
+fin_180,mlp,0,12,7,6,1,0.0,12,0,algebraic_simplification
+fin_180,fixed_order,0,12,9,8,1,0.0,12,0,algebraic_simplification
+v2_189,rule_based,1,9,10,6,4,4.761904761904762,10,1,constant_folding -> common_subexpression_elimination -> algebraic_simplification -> dead_code_elimination
+v2_189,decision_tree,1,9,10,6,4,4.761904761904762,10,1,dead_code_elimination -> constant_folding -> common_subexpression_elimination -> algebraic_simplification
+v2_189,random_forest,1,9,10,6,4,4.761904761904762,10,1,dead_code_elimination -> constant_folding -> common_subexpression_elimination -> algebraic_simplification
+v2_189,logistic_regression,1,9,11,7,4,4.761904761904762,10,1,dead_code_elimination -> common_subexpression_elimination -> constant_folding -> algebraic_simplification
+v2_189,mlp,1,9,14,10,4,4.761904761904762,10,1,dead_code_elimination -> common_subexpression_elimination -> constant_folding -> algebraic_simplification
+v2_189,fixed_order,1,9,19,15,4,4.761904761904762,10,1,constant_folding -> algebraic_simplification -> common_subexpression_elimination -> dead_code_elimination
+fin_146,rule_based,0,7,13,9,4,0.0,10,3,strength_reduction -> constant_folding -> algebraic_simplification -> common_subexpression_elimination
+fin_146,decision_tree,0,7,15,11,4,0.0,10,3,common_subexpression_elimination -> algebraic_simplification -> constant_folding -> strength_reduction
+fin_146,random_forest,0,7,12,8,4,0.0,10,3,common_subexpression_elimination -> algebraic_simplification -> constant_folding -> strength_reduction
+fin_146,logistic_regression,0,7,17,13,4,0.0,10,3,common_subexpression_elimination -> constant_folding -> algebraic_simplification -> strength_reduction
+fin_146,mlp,0,7,12,8,4,0.0,10,3,common_subexpression_elimination -> constant_folding -> algebraic_simplification -> strength_reduction
+fin_146,fixed_order,0,7,20,16,4,0.0,10,3,constant_folding -> algebraic_simplification -> common_subexpression_elimination -> strength_reduction
+v2_090,rule_based,3,2,7,6,1,42.857142857142854,4,2,dead_code_elimination
+v2_090,decision_tree,3,2,7,6,1,42.857142857142854,4,2,dead_code_elimination
+v2_090,random_forest,3,2,7,6,1,42.857142857142854,4,2,dead_code_elimination
+v2_090,logistic_regression,3,2,7,6,1,42.857142857142854,4,2,dead_code_elimination
+v2_090,mlp,3,2,7,6,1,42.857142857142854,4,2,dead_code_elimination
+v2_090,fixed_order,3,2,12,10,2,42.857142857142854,4,2,constant_folding -> dead_code_elimination
+fin_034,rule_based,1,3,10,7,3,9.090909090909092,3,0,constant_propagation -> constant_folding -> dead_code_elimination
+fin_034,decision_tree,1,3,9,6,3,9.090909090909092,3,0,constant_propagation -> dead_code_elimination -> constant_folding
+fin_034,random_forest,1,3,9,6,3,9.090909090909092,3,0,constant_propagation -> dead_code_elimination -> constant_folding
+fin_034,logistic_regression,1,3,9,6,3,9.090909090909092,3,0,constant_propagation -> dead_code_elimination -> constant_folding
+fin_034,mlp,1,3,9,6,3,9.090909090909092,3,0,constant_propagation -> dead_code_elimination -> constant_folding
+fin_034,fixed_order,1,3,14,11,3,9.090909090909092,3,0,constant_propagation -> constant_folding -> dead_code_elimination

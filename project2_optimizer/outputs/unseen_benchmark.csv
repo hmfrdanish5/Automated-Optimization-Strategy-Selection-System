@@ -1,0 +1,214 @@
+program_id,selector,predicted_strategy,actual_strategy,correct,confidence,predicted_instruction_gain,predicted_weighted_cost_gain,final_instruction_gain,final_weighted_cost_gain,strategy_sequence,tac
+fold_product,rule_based,constant_folding,constant_folding,True,,0,2,0,2,constant_folding,"t1 = 8 * 3
+print t1"
+fold_product,decision_tree,constant_folding,constant_folding,True,1.0,0,2,0,2,constant_folding,"t1 = 8 * 3
+print t1"
+fold_product,random_forest,constant_folding,constant_folding,True,0.67,0,2,0,2,constant_folding,"t1 = 8 * 3
+print t1"
+fold_remainder,rule_based,constant_folding,constant_folding,True,,0,8,2,8,constant_folding -> constant_propagation -> dead_code_elimination,"t1 = 17 % 5
+t2 = 17 / 5
+print t1
+print t2"
+fold_remainder,decision_tree,constant_folding,constant_folding,True,1.0,0,8,2,8,constant_folding -> constant_propagation -> dead_code_elimination,"t1 = 17 % 5
+t2 = 17 / 5
+print t1
+print t2"
+fold_remainder,random_forest,constant_folding,constant_folding,True,0.71,0,8,2,8,constant_folding -> constant_propagation -> dead_code_elimination,"t1 = 17 % 5
+t2 = 17 / 5
+print t1
+print t2"
+unsafe_zero_divide,rule_based,no_improvement,no_improvement,True,,0,0,0,0,,"t1 = 9 / 0
+print t1"
+unsafe_zero_divide,decision_tree,no_improvement,no_improvement,True,1.0,0,0,0,0,,"t1 = 9 / 0
+print t1"
+unsafe_zero_divide,random_forest,no_improvement,no_improvement,True,0.96,0,0,0,0,,"t1 = 9 / 0
+print t1"
+propagate_copy,rule_based,no_improvement,no_improvement,True,,0,0,0,0,,"p = 6
+q = p
+r = q + 3
+print r"
+propagate_copy,decision_tree,no_improvement,no_improvement,True,1.0,0,0,0,0,,"p = 6
+q = p
+r = q + 3
+print r"
+propagate_copy,random_forest,no_improvement,no_improvement,True,0.98,0,0,0,0,,"p = 6
+q = p
+r = q + 3
+print r"
+propagate_reassign,rule_based,common_subexpression_elimination,no_improvement,False,,0,0,0,0,,"a = 1
+b = a + 2
+a = 9
+c = a + 2
+print b
+print c"
+propagate_reassign,decision_tree,no_improvement,no_improvement,True,1.0,0,0,0,0,,"a = 1
+b = a + 2
+a = 9
+c = a + 2
+print b
+print c"
+propagate_reassign,random_forest,no_improvement,no_improvement,True,0.54,0,0,0,0,,"a = 1
+b = a + 2
+a = 9
+c = a + 2
+print b
+print c"
+algebraic_pair,rule_based,algebraic_simplification,algebraic_simplification,True,,0,3,0,3,algebraic_simplification,"t1 = u + 0
+t2 = 1 * v
+print t1
+print t2"
+algebraic_pair,decision_tree,algebraic_simplification,algebraic_simplification,True,1.0,0,3,0,3,algebraic_simplification,"t1 = u + 0
+t2 = 1 * v
+print t1
+print t2"
+algebraic_pair,random_forest,algebraic_simplification,algebraic_simplification,True,0.97,0,3,0,3,algebraic_simplification,"t1 = u + 0
+t2 = 1 * v
+print t1
+print t2"
+unsafe_subtract,rule_based,no_improvement,no_improvement,True,,0,0,0,0,,"t1 = 0 - w
+print t1"
+unsafe_subtract,decision_tree,no_improvement,no_improvement,True,1.0,0,0,0,0,,"t1 = 0 - w
+print t1"
+unsafe_subtract,random_forest,no_improvement,no_improvement,True,0.96,0,0,0,0,,"t1 = 0 - w
+print t1"
+cse_plain,rule_based,common_subexpression_elimination,dead_code_elimination,False,,0,1,1,2,common_subexpression_elimination -> dead_code_elimination,"t1 = p + q
+t2 = r - s
+t3 = p + q
+print t1
+print t3"
+cse_plain,decision_tree,dead_code_elimination,dead_code_elimination,True,1.0,1,1,1,2,dead_code_elimination -> common_subexpression_elimination,"t1 = p + q
+t2 = r - s
+t3 = p + q
+print t1
+print t3"
+cse_plain,random_forest,dead_code_elimination,dead_code_elimination,True,0.86,1,1,1,2,dead_code_elimination -> common_subexpression_elimination,"t1 = p + q
+t2 = r - s
+t3 = p + q
+print t1
+print t3"
+cse_redefined,rule_based,common_subexpression_elimination,no_improvement,False,,0,0,0,0,,"t1 = p + q
+p = 4
+t2 = p + q
+print t1
+print t2"
+cse_redefined,decision_tree,no_improvement,no_improvement,True,1.0,0,0,0,0,,"t1 = p + q
+p = 4
+t2 = p + q
+print t1
+print t2"
+cse_redefined,random_forest,no_improvement,no_improvement,True,0.79,0,0,0,0,,"t1 = p + q
+p = 4
+t2 = p + q
+print t1
+print t2"
+cse_latest,rule_based,common_subexpression_elimination,dead_code_elimination,False,,0,1,1,2,common_subexpression_elimination -> dead_code_elimination,"t1 = p + q
+p = 3
+t2 = p + q
+t3 = p + q
+print t2
+print t3"
+cse_latest,decision_tree,dead_code_elimination,dead_code_elimination,True,1.0,1,1,1,2,dead_code_elimination -> common_subexpression_elimination,"t1 = p + q
+p = 3
+t2 = p + q
+t3 = p + q
+print t2
+print t3"
+cse_latest,random_forest,dead_code_elimination,dead_code_elimination,True,0.75,1,1,1,2,dead_code_elimination -> common_subexpression_elimination,"t1 = p + q
+p = 3
+t2 = p + q
+t3 = p + q
+print t2
+print t3"
+dead_chain,rule_based,dead_code_elimination,dead_code_elimination,True,,2,1,2,1,dead_code_elimination,"a = 1
+b = a + 2
+print 7"
+dead_chain,decision_tree,dead_code_elimination,dead_code_elimination,True,1.0,2,1,2,1,dead_code_elimination,"a = 1
+b = a + 2
+print 7"
+dead_chain,random_forest,dead_code_elimination,dead_code_elimination,True,0.91,2,1,2,1,dead_code_elimination,"a = 1
+b = a + 2
+print 7"
+live_condition,rule_based,no_improvement,constant_propagation,False,,0,0,1,0,constant_propagation -> dead_code_elimination,"flag = 1
+if flag < 2 goto L1
+print 0
+L1:
+print flag"
+live_condition,decision_tree,no_improvement,constant_propagation,False,1.0,0,0,1,0,constant_propagation -> dead_code_elimination,"flag = 1
+if flag < 2 goto L1
+print 0
+L1:
+print flag"
+live_condition,random_forest,no_improvement,constant_propagation,False,0.88,0,0,1,0,constant_propagation -> dead_code_elimination,"flag = 1
+if flag < 2 goto L1
+print 0
+L1:
+print flag"
+strength_in_loop,rule_based,strength_reduction,strength_reduction,True,,0,1,0,1,strength_reduction,"i = 0
+L1:
+t1 = i * 2
+i = i + 1
+if i < n goto L1
+print t1"
+strength_in_loop,decision_tree,strength_reduction,strength_reduction,True,1.0,0,1,0,1,strength_reduction,"i = 0
+L1:
+t1 = i * 2
+i = i + 1
+if i < n goto L1
+print t1"
+strength_in_loop,random_forest,strength_reduction,strength_reduction,True,0.77,0,1,0,1,strength_reduction,"i = 0
+L1:
+t1 = i * 2
+i = i + 1
+if i < n goto L1
+print t1"
+multiply_outside_loop,rule_based,no_improvement,no_improvement,True,,0,0,0,0,,"t1 = z * 2
+print t1"
+multiply_outside_loop,decision_tree,no_improvement,no_improvement,True,1.0,0,0,0,0,,"t1 = z * 2
+print t1"
+multiply_outside_loop,random_forest,no_improvement,no_improvement,True,0.96,0,0,0,0,,"t1 = z * 2
+print t1"
+straight_dependency,rule_based,no_improvement,no_improvement,True,,0,0,0,0,,"t1 = a + b
+t2 = t1 * c
+print t2"
+straight_dependency,decision_tree,no_improvement,no_improvement,True,1.0,0,0,0,0,,"t1 = a + b
+t2 = t1 * c
+print t2"
+straight_dependency,random_forest,no_improvement,no_improvement,True,0.93,0,0,0,0,,"t1 = a + b
+t2 = t1 * c
+print t2"
+mixed_live,rule_based,constant_folding,dead_code_elimination,False,,0,1,1,2,constant_folding -> algebraic_simplification -> dead_code_elimination,"t1 = 4 + 9
+t2 = a + 0
+spare = 3
+print t1
+print t2"
+mixed_live,decision_tree,dead_code_elimination,dead_code_elimination,True,1.0,1,0,1,2,dead_code_elimination -> algebraic_simplification -> constant_folding,"t1 = 4 + 9
+t2 = a + 0
+spare = 3
+print t1
+print t2"
+mixed_live,random_forest,dead_code_elimination,dead_code_elimination,True,0.87,1,0,1,2,dead_code_elimination -> constant_folding -> algebraic_simplification,"t1 = 4 + 9
+t2 = a + 0
+spare = 3
+print t1
+print t2"
+name_plus_constant,rule_based,no_improvement,no_improvement,True,,0,0,0,0,,"t1 = a + 4
+print t1"
+name_plus_constant,decision_tree,no_improvement,no_improvement,True,1.0,0,0,0,0,,"t1 = a + 4
+print t1"
+name_plus_constant,random_forest,no_improvement,no_improvement,True,0.96,0,0,0,0,,"t1 = a + 4
+print t1"
+counted_loop,rule_based,strength_reduction,no_improvement,False,,0,0,0,0,,"i = 0
+L1:
+i = i + 1
+if i < n goto L1
+print i"
+counted_loop,decision_tree,strength_reduction,no_improvement,False,1.0,0,0,0,0,,"i = 0
+L1:
+i = i + 1
+if i < n goto L1
+print i"
+counted_loop,random_forest,strength_reduction,no_improvement,False,0.61,0,0,0,0,,"i = 0
+L1:
+i = i + 1
+if i < n goto L1
+print i"

@@ -1,0 +1,68 @@
+DATASET AUDIT
+The CSV was not modified.
+Total samples: 200
+Unique feature vectors: 199
+Duplicate feature rows: 1
+
+Unique values per feature:
+  num_statements: 30 distinct, range 2 to 31
+  num_constants: 12 distinct, range 0 to 11
+  num_repeated_expr: 9 distinct, range 0 to 8
+  num_dead_stmts: 10 distinct, range 0 to 10
+  num_algebraic_ops: 9 distinct, range 0 to 8
+  num_loop_ops: 21 distinct, range 0 to 23
+  num_tmp_vars: 13 distinct, range 0 to 12
+  const_ratio: 37 distinct, range 0.0 to 0.5714285714
+
+Class counts:
+  algebraic_simplification: 22
+  common_subexpression_elimination: 31
+  constant_folding: 21
+  constant_propagation: 20
+  dead_code_elimination: 63
+  no_improvement: 33
+  strength_reduction: 10
+
+Duplicate feature signatures: 1
+  count 2, labels strength_reduction, ids loop_heavy, fin_067
+
+Identical feature vectors have consistent labels.
+
+Zero-variance features: none
+
+Pairwise feature correlations (Pearson). Undefined when a feature has zero variance:
+                   num_statements  num_constants  num_repeated_expr  num_dead_stmts  num_algebraic_ops  num_loop_ops  num_tmp_vars  const_ratio
+num_statements              1.000          0.156              0.300          -0.153              0.034         0.564         0.753       -0.086
+num_constants               0.156          1.000             -0.120           0.163             -0.129        -0.189         0.260        0.870
+num_repeated_expr           0.300         -0.120              1.000          -0.110             -0.055        -0.143         0.499       -0.186
+num_dead_stmts             -0.153          0.163             -0.110           1.000             -0.122        -0.069        -0.369        0.324
+num_algebraic_ops           0.034         -0.129             -0.055          -0.122              1.000        -0.151         0.182       -0.172
+num_loop_ops                0.564         -0.189             -0.143          -0.069             -0.151         1.000         0.059       -0.242
+num_tmp_vars                0.753          0.260              0.499          -0.369              0.182         0.059         1.000        0.004
+const_ratio                -0.086          0.870             -0.186           0.324             -0.172        -0.242         0.004        1.000
+
+Label distribution by generator category:
+  algebraic_heavy: algebraic_simplification 20
+  constant_heavy: constant_folding 20
+  cse_heavy: common_subexpression_elimination 22
+  dead_code_heavy: dead_code_elimination 22
+  handwritten: algebraic_simplification 1, common_subexpression_elimination 1, constant_folding 1, dead_code_elimination 2, no_improvement 3, strength_reduction 1
+  loop_heavy: no_improvement 14
+  mixed: algebraic_simplification 1, common_subexpression_elimination 8, dead_code_elimination 26
+  propagation_heavy: constant_propagation 20
+  straight_line: no_improvement 16
+  strength_reduction_heavy: dead_code_elimination 13, strength_reduction 9
+
+Label distribution independent of generator category:
+  algebraic_simplification: 22
+  common_subexpression_elimination: 31
+  constant_folding: 21
+  constant_propagation: 20
+  dead_code_elimination: 63
+  no_improvement: 33
+  strength_reduction: 10
+
+Constructed same-feature examples (not added to the dataset):
+  expression_redefined: label no_improvement, signature (5, 0, 1, 0, 0, 0, 2, 0.0)
+  safe_repeated_add: label common_subexpression_elimination, signature (5, 0, 1, 0, 0, 0, 2, 0.0)
+Feature representation is not sufficient to uniquely determine the label for this signature.

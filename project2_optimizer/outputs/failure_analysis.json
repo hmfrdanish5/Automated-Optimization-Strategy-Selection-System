@@ -1,0 +1,1351 @@
+[
+  {
+    "set": "strict_holdout",
+    "selector": "decision_tree",
+    "program_id": "fin_113",
+    "program": "t1 = v0 + w0\nprint t1\nt2 = v1 + w1\nprint t2\nt3 = v2 + w2\nprint t3\nt4 = v3 + w3\nprint t4\nt5 = v4 + w4\nprint t5\nt6 = v5 + w5\nprint t6\nt7 = v6 + w6\nprint t7\nt8 = v7 + w7\nprint t8",
+    "features": {
+      "num_statements": 16,
+      "num_constants": 0,
+      "num_repeated_expr": 0,
+      "num_dead_stmts": 0,
+      "num_algebraic_ops": 0,
+      "num_loop_ops": 0,
+      "num_tmp_vars": 8,
+      "const_ratio": 0.0
+    },
+    "actual_strategy": "no_improvement",
+    "predicted_strategy": "constant_propagation",
+    "probabilities": {
+      "constant_folding": 0.0,
+      "constant_propagation": 1.0,
+      "algebraic_simplification": 0.0,
+      "common_subexpression_elimination": 0.0,
+      "dead_code_elimination": 0.0,
+      "strength_reduction": 0.0,
+      "no_improvement": 0.0
+    },
+    "strategy_gains": {
+      "constant_folding": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "constant_propagation": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "algebraic_simplification": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "common_subexpression_elimination": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "dead_code_elimination": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "strength_reduction": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      }
+    }
+  },
+  {
+    "set": "strict_holdout",
+    "selector": "decision_tree",
+    "program_id": "fin_149",
+    "program": "t1 = v0 + w0\nprint t1\nt2 = v1 + w1\nprint t2\nt3 = v2 + w2\nprint t3\nt4 = v3 + w3\nprint t4\nt5 = v4 + w4\nprint t5\nt6 = v5 + w5\nprint t6\nt7 = v6 + w6\nprint t7\nt8 = v7 + w7\nprint t8\nprint 0",
+    "features": {
+      "num_statements": 17,
+      "num_constants": 0,
+      "num_repeated_expr": 0,
+      "num_dead_stmts": 0,
+      "num_algebraic_ops": 0,
+      "num_loop_ops": 0,
+      "num_tmp_vars": 8,
+      "const_ratio": 0.0
+    },
+    "actual_strategy": "no_improvement",
+    "predicted_strategy": "constant_propagation",
+    "probabilities": {
+      "constant_folding": 0.0,
+      "constant_propagation": 1.0,
+      "algebraic_simplification": 0.0,
+      "common_subexpression_elimination": 0.0,
+      "dead_code_elimination": 0.0,
+      "strength_reduction": 0.0,
+      "no_improvement": 0.0
+    },
+    "strategy_gains": {
+      "constant_folding": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "constant_propagation": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "algebraic_simplification": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "common_subexpression_elimination": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "dead_code_elimination": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "strength_reduction": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      }
+    }
+  },
+  {
+    "set": "strict_holdout",
+    "selector": "decision_tree",
+    "program_id": "fin_143",
+    "program": "value = 12\nt1 = value + 3\nprint t1\nprint value\nprint 0",
+    "features": {
+      "num_statements": 5,
+      "num_constants": 0,
+      "num_repeated_expr": 0,
+      "num_dead_stmts": 0,
+      "num_algebraic_ops": 0,
+      "num_loop_ops": 0,
+      "num_tmp_vars": 1,
+      "const_ratio": 0.0
+    },
+    "actual_strategy": "constant_propagation",
+    "predicted_strategy": "no_improvement",
+    "probabilities": {
+      "constant_folding": 0.0,
+      "constant_propagation": 0.0,
+      "algebraic_simplification": 0.0,
+      "common_subexpression_elimination": 0.0,
+      "dead_code_elimination": 0.0,
+      "strength_reduction": 0.0,
+      "no_improvement": 1.0
+    },
+    "strategy_gains": {
+      "constant_folding": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "constant_propagation": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 6
+      },
+      "algebraic_simplification": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "common_subexpression_elimination": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "dead_code_elimination": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "strength_reduction": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      }
+    }
+  },
+  {
+    "set": "strict_holdout",
+    "selector": "decision_tree",
+    "program_id": "fin_021",
+    "program": "value = 12\nt1 = value + 3\nprint t1\nt2 = value + 4\nprint t2\nt3 = value + 5\nprint t3\nt4 = value + 6\nprint t4\nt5 = value + 7\nprint t5\nt6 = value + 8\nprint t6\nprint value\nprint 0",
+    "features": {
+      "num_statements": 15,
+      "num_constants": 0,
+      "num_repeated_expr": 0,
+      "num_dead_stmts": 0,
+      "num_algebraic_ops": 0,
+      "num_loop_ops": 0,
+      "num_tmp_vars": 6,
+      "const_ratio": 0.0
+    },
+    "actual_strategy": "constant_propagation",
+    "predicted_strategy": "no_improvement",
+    "probabilities": {
+      "constant_folding": 0.0,
+      "constant_propagation": 0.0,
+      "algebraic_simplification": 0.0,
+      "common_subexpression_elimination": 0.0,
+      "dead_code_elimination": 0.0,
+      "strength_reduction": 0.0,
+      "no_improvement": 1.0
+    },
+    "strategy_gains": {
+      "constant_folding": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "constant_propagation": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 21
+      },
+      "algebraic_simplification": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "common_subexpression_elimination": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "dead_code_elimination": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "strength_reduction": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      }
+    }
+  },
+  {
+    "set": "strict_holdout",
+    "selector": "decision_tree",
+    "program_id": "fin_108",
+    "program": "i = 0\nL1:\nt1 = i + 3\nprint t1\nt2 = i + 4\nprint t2\nt3 = i + 5\nprint t3\nt4 = i + 6\nprint t4\nt5 = i + 7\nprint t5\ni = i + 1\nif i < 5 goto L1\nprint i",
+    "features": {
+      "num_statements": 15,
+      "num_constants": 0,
+      "num_repeated_expr": 0,
+      "num_dead_stmts": 0,
+      "num_algebraic_ops": 0,
+      "num_loop_ops": 13,
+      "num_tmp_vars": 5,
+      "const_ratio": 0.0
+    },
+    "actual_strategy": "no_improvement",
+    "predicted_strategy": "strength_reduction",
+    "probabilities": {
+      "constant_folding": 0.0,
+      "constant_propagation": 0.0,
+      "algebraic_simplification": 0.0,
+      "common_subexpression_elimination": 0.0,
+      "dead_code_elimination": 0.0,
+      "strength_reduction": 1.0,
+      "no_improvement": 0.0
+    },
+    "strategy_gains": {
+      "constant_folding": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "constant_propagation": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "algebraic_simplification": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "common_subexpression_elimination": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "dead_code_elimination": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "strength_reduction": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      }
+    }
+  },
+  {
+    "set": "strict_holdout",
+    "selector": "decision_tree",
+    "program_id": "fin_099",
+    "program": "t1 = left + right\nt2 = left + right\nt3 = name0 - other0\nprint t1\nprint t2\nprint t3\nprint 0\nprint 0",
+    "features": {
+      "num_statements": 8,
+      "num_constants": 0,
+      "num_repeated_expr": 1,
+      "num_dead_stmts": 0,
+      "num_algebraic_ops": 0,
+      "num_loop_ops": 0,
+      "num_tmp_vars": 3,
+      "const_ratio": 0.0
+    },
+    "actual_strategy": "common_subexpression_elimination",
+    "predicted_strategy": "no_improvement",
+    "probabilities": {
+      "constant_folding": 0.0,
+      "constant_propagation": 0.0,
+      "algebraic_simplification": 0.0,
+      "common_subexpression_elimination": 0.0,
+      "dead_code_elimination": 0.0,
+      "strength_reduction": 0.0,
+      "no_improvement": 1.0
+    },
+    "strategy_gains": {
+      "constant_folding": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "constant_propagation": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "algebraic_simplification": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "common_subexpression_elimination": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 1,
+        "operation_gain": 1,
+        "temporary_gain": 0,
+        "code_size_gain": 10
+      },
+      "dead_code_elimination": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "strength_reduction": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      }
+    }
+  },
+  {
+    "set": "strict_holdout",
+    "selector": "decision_tree",
+    "program_id": "fin_118",
+    "program": "value = 12\nt1 = value + 3\nprint t1\nt2 = value + 4\nprint t2\nt3 = value + 5\nprint t3\nt4 = value + 6\nprint t4\nt5 = value + 7\nprint t5\nprint value",
+    "features": {
+      "num_statements": 12,
+      "num_constants": 0,
+      "num_repeated_expr": 0,
+      "num_dead_stmts": 0,
+      "num_algebraic_ops": 0,
+      "num_loop_ops": 0,
+      "num_tmp_vars": 5,
+      "const_ratio": 0.0
+    },
+    "actual_strategy": "constant_propagation",
+    "predicted_strategy": "no_improvement",
+    "probabilities": {
+      "constant_folding": 0.0,
+      "constant_propagation": 0.0,
+      "algebraic_simplification": 0.0,
+      "common_subexpression_elimination": 0.0,
+      "dead_code_elimination": 0.0,
+      "strength_reduction": 0.0,
+      "no_improvement": 1.0
+    },
+    "strategy_gains": {
+      "constant_folding": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "constant_propagation": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 18
+      },
+      "algebraic_simplification": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "common_subexpression_elimination": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "dead_code_elimination": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "strength_reduction": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      }
+    }
+  },
+  {
+    "set": "strict_holdout",
+    "selector": "decision_tree",
+    "program_id": "fin_007",
+    "program": "t1 = shared + value\nprint t1\nt2 = shared + value\nprint t2\nt3 = shared + value\nprint t3",
+    "features": {
+      "num_statements": 6,
+      "num_constants": 0,
+      "num_repeated_expr": 2,
+      "num_dead_stmts": 0,
+      "num_algebraic_ops": 0,
+      "num_loop_ops": 0,
+      "num_tmp_vars": 3,
+      "const_ratio": 0.0
+    },
+    "actual_strategy": "common_subexpression_elimination",
+    "predicted_strategy": "no_improvement",
+    "probabilities": {
+      "constant_folding": 0.0,
+      "constant_propagation": 0.0,
+      "algebraic_simplification": 0.0,
+      "common_subexpression_elimination": 0.0,
+      "dead_code_elimination": 0.0,
+      "strength_reduction": 0.0,
+      "no_improvement": 1.0
+    },
+    "strategy_gains": {
+      "constant_folding": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "constant_propagation": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "algebraic_simplification": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "common_subexpression_elimination": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 2,
+        "operation_gain": 2,
+        "temporary_gain": 0,
+        "code_size_gain": 24
+      },
+      "dead_code_elimination": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "strength_reduction": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      }
+    }
+  },
+  {
+    "set": "strict_holdout",
+    "selector": "decision_tree",
+    "program_id": "fin_186",
+    "program": "i = 0\nL1:\nt1 = i + 3\nprint t1\nt2 = i + 4\nprint t2\ni = i + 1\nif i < 5 goto L1\nprint i",
+    "features": {
+      "num_statements": 9,
+      "num_constants": 0,
+      "num_repeated_expr": 0,
+      "num_dead_stmts": 0,
+      "num_algebraic_ops": 0,
+      "num_loop_ops": 7,
+      "num_tmp_vars": 2,
+      "const_ratio": 0.0
+    },
+    "actual_strategy": "no_improvement",
+    "predicted_strategy": "strength_reduction",
+    "probabilities": {
+      "constant_folding": 0.0,
+      "constant_propagation": 0.0,
+      "algebraic_simplification": 0.0,
+      "common_subexpression_elimination": 0.0,
+      "dead_code_elimination": 0.0,
+      "strength_reduction": 1.0,
+      "no_improvement": 0.0
+    },
+    "strategy_gains": {
+      "constant_folding": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "constant_propagation": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "algebraic_simplification": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "common_subexpression_elimination": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "dead_code_elimination": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "strength_reduction": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      }
+    }
+  },
+  {
+    "set": "strict_holdout",
+    "selector": "random_forest",
+    "program_id": "fin_113",
+    "program": "t1 = v0 + w0\nprint t1\nt2 = v1 + w1\nprint t2\nt3 = v2 + w2\nprint t3\nt4 = v3 + w3\nprint t4\nt5 = v4 + w4\nprint t5\nt6 = v5 + w5\nprint t6\nt7 = v6 + w6\nprint t7\nt8 = v7 + w7\nprint t8",
+    "features": {
+      "num_statements": 16,
+      "num_constants": 0,
+      "num_repeated_expr": 0,
+      "num_dead_stmts": 0,
+      "num_algebraic_ops": 0,
+      "num_loop_ops": 0,
+      "num_tmp_vars": 8,
+      "const_ratio": 0.0
+    },
+    "actual_strategy": "no_improvement",
+    "predicted_strategy": "constant_propagation",
+    "probabilities": {
+      "constant_folding": 0.01,
+      "constant_propagation": 0.86,
+      "algebraic_simplification": 0.03,
+      "common_subexpression_elimination": 0.03,
+      "dead_code_elimination": 0.0,
+      "strength_reduction": 0.0,
+      "no_improvement": 0.07
+    },
+    "strategy_gains": {
+      "constant_folding": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "constant_propagation": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "algebraic_simplification": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "common_subexpression_elimination": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "dead_code_elimination": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "strength_reduction": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      }
+    }
+  },
+  {
+    "set": "strict_holdout",
+    "selector": "random_forest",
+    "program_id": "fin_149",
+    "program": "t1 = v0 + w0\nprint t1\nt2 = v1 + w1\nprint t2\nt3 = v2 + w2\nprint t3\nt4 = v3 + w3\nprint t4\nt5 = v4 + w4\nprint t5\nt6 = v5 + w5\nprint t6\nt7 = v6 + w6\nprint t7\nt8 = v7 + w7\nprint t8\nprint 0",
+    "features": {
+      "num_statements": 17,
+      "num_constants": 0,
+      "num_repeated_expr": 0,
+      "num_dead_stmts": 0,
+      "num_algebraic_ops": 0,
+      "num_loop_ops": 0,
+      "num_tmp_vars": 8,
+      "const_ratio": 0.0
+    },
+    "actual_strategy": "no_improvement",
+    "predicted_strategy": "constant_propagation",
+    "probabilities": {
+      "constant_folding": 0.01,
+      "constant_propagation": 0.83,
+      "algebraic_simplification": 0.05,
+      "common_subexpression_elimination": 0.03,
+      "dead_code_elimination": 0.0,
+      "strength_reduction": 0.01,
+      "no_improvement": 0.07
+    },
+    "strategy_gains": {
+      "constant_folding": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "constant_propagation": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "algebraic_simplification": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "common_subexpression_elimination": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "dead_code_elimination": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "strength_reduction": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      }
+    }
+  },
+  {
+    "set": "strict_holdout",
+    "selector": "random_forest",
+    "program_id": "fin_143",
+    "program": "value = 12\nt1 = value + 3\nprint t1\nprint value\nprint 0",
+    "features": {
+      "num_statements": 5,
+      "num_constants": 0,
+      "num_repeated_expr": 0,
+      "num_dead_stmts": 0,
+      "num_algebraic_ops": 0,
+      "num_loop_ops": 0,
+      "num_tmp_vars": 1,
+      "const_ratio": 0.0
+    },
+    "actual_strategy": "constant_propagation",
+    "predicted_strategy": "no_improvement",
+    "probabilities": {
+      "constant_folding": 0.02,
+      "constant_propagation": 0.15,
+      "algebraic_simplification": 0.0,
+      "common_subexpression_elimination": 0.0,
+      "dead_code_elimination": 0.0,
+      "strength_reduction": 0.0,
+      "no_improvement": 0.83
+    },
+    "strategy_gains": {
+      "constant_folding": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "constant_propagation": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 6
+      },
+      "algebraic_simplification": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "common_subexpression_elimination": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "dead_code_elimination": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "strength_reduction": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      }
+    }
+  },
+  {
+    "set": "strict_holdout",
+    "selector": "random_forest",
+    "program_id": "fin_118",
+    "program": "value = 12\nt1 = value + 3\nprint t1\nt2 = value + 4\nprint t2\nt3 = value + 5\nprint t3\nt4 = value + 6\nprint t4\nt5 = value + 7\nprint t5\nprint value",
+    "features": {
+      "num_statements": 12,
+      "num_constants": 0,
+      "num_repeated_expr": 0,
+      "num_dead_stmts": 0,
+      "num_algebraic_ops": 0,
+      "num_loop_ops": 0,
+      "num_tmp_vars": 5,
+      "const_ratio": 0.0
+    },
+    "actual_strategy": "constant_propagation",
+    "predicted_strategy": "no_improvement",
+    "probabilities": {
+      "constant_folding": 0.0,
+      "constant_propagation": 0.22,
+      "algebraic_simplification": 0.01,
+      "common_subexpression_elimination": 0.05,
+      "dead_code_elimination": 0.01,
+      "strength_reduction": 0.0,
+      "no_improvement": 0.71
+    },
+    "strategy_gains": {
+      "constant_folding": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "constant_propagation": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 18
+      },
+      "algebraic_simplification": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "common_subexpression_elimination": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "dead_code_elimination": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "strength_reduction": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      }
+    }
+  },
+  {
+    "set": "strict_holdout",
+    "selector": "random_forest",
+    "program_id": "fin_097",
+    "program": "i = 0\nL1:\nt1 = i + 3\nprint t1\nt2 = i + 4\nprint t2\nt3 = i + 5\nprint t3\ni = i + 1\nif i < 5 goto L1\nprint i\nprint 0\nprint 0",
+    "features": {
+      "num_statements": 13,
+      "num_constants": 0,
+      "num_repeated_expr": 0,
+      "num_dead_stmts": 0,
+      "num_algebraic_ops": 0,
+      "num_loop_ops": 9,
+      "num_tmp_vars": 3,
+      "const_ratio": 0.0
+    },
+    "actual_strategy": "no_improvement",
+    "predicted_strategy": "strength_reduction",
+    "probabilities": {
+      "constant_folding": 0.0,
+      "constant_propagation": 0.05,
+      "algebraic_simplification": 0.0,
+      "common_subexpression_elimination": 0.0,
+      "dead_code_elimination": 0.01,
+      "strength_reduction": 0.53,
+      "no_improvement": 0.41
+    },
+    "strategy_gains": {
+      "constant_folding": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "constant_propagation": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "algebraic_simplification": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "common_subexpression_elimination": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "dead_code_elimination": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "strength_reduction": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      }
+    }
+  },
+  {
+    "set": "strict_holdout",
+    "selector": "random_forest",
+    "program_id": "fin_186",
+    "program": "i = 0\nL1:\nt1 = i + 3\nprint t1\nt2 = i + 4\nprint t2\ni = i + 1\nif i < 5 goto L1\nprint i",
+    "features": {
+      "num_statements": 9,
+      "num_constants": 0,
+      "num_repeated_expr": 0,
+      "num_dead_stmts": 0,
+      "num_algebraic_ops": 0,
+      "num_loop_ops": 7,
+      "num_tmp_vars": 2,
+      "const_ratio": 0.0
+    },
+    "actual_strategy": "no_improvement",
+    "predicted_strategy": "strength_reduction",
+    "probabilities": {
+      "constant_folding": 0.0,
+      "constant_propagation": 0.07,
+      "algebraic_simplification": 0.02,
+      "common_subexpression_elimination": 0.01,
+      "dead_code_elimination": 0.03,
+      "strength_reduction": 0.47,
+      "no_improvement": 0.4
+    },
+    "strategy_gains": {
+      "constant_folding": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "constant_propagation": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "algebraic_simplification": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "common_subexpression_elimination": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "dead_code_elimination": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "strength_reduction": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      }
+    }
+  },
+  {
+    "set": "unseen",
+    "selector": "decision_tree",
+    "program_id": "propagate_reassign",
+    "program": "a = 1\nb = a + 2\na = 9\nc = a + 2\nprint b\nprint c",
+    "features": {
+      "num_statements": 6,
+      "num_constants": 0,
+      "num_repeated_expr": 1,
+      "num_dead_stmts": 0,
+      "num_algebraic_ops": 0,
+      "num_loop_ops": 0,
+      "num_tmp_vars": 0,
+      "const_ratio": 0.0
+    },
+    "actual_strategy": "no_improvement",
+    "predicted_strategy": "common_subexpression_elimination",
+    "probabilities": {
+      "constant_folding": 0.0,
+      "constant_propagation": 0.0,
+      "algebraic_simplification": 0.0,
+      "common_subexpression_elimination": 1.0,
+      "dead_code_elimination": 0.0,
+      "strength_reduction": 0.0,
+      "no_improvement": 0.0
+    },
+    "strategy_gains": {
+      "constant_folding": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "constant_propagation": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "algebraic_simplification": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "common_subexpression_elimination": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "dead_code_elimination": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "strength_reduction": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      }
+    }
+  },
+  {
+    "set": "unseen",
+    "selector": "random_forest",
+    "program_id": "propagate_reassign",
+    "program": "a = 1\nb = a + 2\na = 9\nc = a + 2\nprint b\nprint c",
+    "features": {
+      "num_statements": 6,
+      "num_constants": 0,
+      "num_repeated_expr": 1,
+      "num_dead_stmts": 0,
+      "num_algebraic_ops": 0,
+      "num_loop_ops": 0,
+      "num_tmp_vars": 0,
+      "const_ratio": 0.0
+    },
+    "actual_strategy": "no_improvement",
+    "predicted_strategy": "common_subexpression_elimination",
+    "probabilities": {
+      "constant_folding": 0.0,
+      "constant_propagation": 0.17,
+      "algebraic_simplification": 0.0,
+      "common_subexpression_elimination": 0.44,
+      "dead_code_elimination": 0.07,
+      "strength_reduction": 0.0,
+      "no_improvement": 0.32
+    },
+    "strategy_gains": {
+      "constant_folding": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "constant_propagation": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "algebraic_simplification": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "common_subexpression_elimination": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "dead_code_elimination": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "strength_reduction": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      }
+    }
+  },
+  {
+    "set": "unseen",
+    "selector": "decision_tree",
+    "program_id": "counted_loop",
+    "program": "i = 0\nL1:\ni = i + 1\nif i < n goto L1\nprint i",
+    "features": {
+      "num_statements": 5,
+      "num_constants": 0,
+      "num_repeated_expr": 0,
+      "num_dead_stmts": 0,
+      "num_algebraic_ops": 0,
+      "num_loop_ops": 3,
+      "num_tmp_vars": 0,
+      "const_ratio": 0.0
+    },
+    "actual_strategy": "no_improvement",
+    "predicted_strategy": "strength_reduction",
+    "probabilities": {
+      "constant_folding": 0.0,
+      "constant_propagation": 0.0,
+      "algebraic_simplification": 0.0,
+      "common_subexpression_elimination": 0.0,
+      "dead_code_elimination": 0.0,
+      "strength_reduction": 1.0,
+      "no_improvement": 0.0
+    },
+    "strategy_gains": {
+      "constant_folding": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "constant_propagation": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "algebraic_simplification": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "common_subexpression_elimination": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "dead_code_elimination": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "strength_reduction": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      }
+    }
+  },
+  {
+    "set": "unseen",
+    "selector": "random_forest",
+    "program_id": "counted_loop",
+    "program": "i = 0\nL1:\ni = i + 1\nif i < n goto L1\nprint i",
+    "features": {
+      "num_statements": 5,
+      "num_constants": 0,
+      "num_repeated_expr": 0,
+      "num_dead_stmts": 0,
+      "num_algebraic_ops": 0,
+      "num_loop_ops": 3,
+      "num_tmp_vars": 0,
+      "const_ratio": 0.0
+    },
+    "actual_strategy": "no_improvement",
+    "predicted_strategy": "strength_reduction",
+    "probabilities": {
+      "constant_folding": 0.0,
+      "constant_propagation": 0.17,
+      "algebraic_simplification": 0.0,
+      "common_subexpression_elimination": 0.0,
+      "dead_code_elimination": 0.05,
+      "strength_reduction": 0.6,
+      "no_improvement": 0.18
+    },
+    "strategy_gains": {
+      "constant_folding": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "constant_propagation": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "algebraic_simplification": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "common_subexpression_elimination": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "dead_code_elimination": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      },
+      "strength_reduction": {
+        "instruction_gain": 0,
+        "weighted_cost_gain": 0,
+        "operation_gain": 0,
+        "temporary_gain": 0,
+        "code_size_gain": 0
+      }
+    }
+  }
+]

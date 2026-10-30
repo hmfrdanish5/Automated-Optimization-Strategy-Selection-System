@@ -28,9 +28,9 @@ FEATURE_COLUMNS = [
     "const_ratio",
 ]
 
-# Temporary names are exactly t followed by digits: t1, t2, t10. Names such as
-# temp, total, or t do not count.
-_TEMP_NAME = re.compile(r"t\d+\Z")
+# Temporary names: classic TAC `t` + digits, or source-compiler `__src_tmp_` + digits.
+# Names such as temp, total, or `t` alone do not count.
+_TEMP_NAME = re.compile(r"(?:t\d+|__src_tmp_\d+)\Z")
 
 # Binary operators for which two integer operands can be evaluated.
 # Division and remainder by zero are not counted: there is no safe result.
@@ -174,10 +174,11 @@ def num_loop_ops(program: TACProgram) -> int:
 
 
 def num_tmp_vars(program: TACProgram) -> int:
-    """Count unique temporary names matching t1, t2, t3, and so on.
+    """Count unique compiler temporary names used in assignments or operands.
 
-    A name counts when it appears as a result or as an operand. Label names
-    are not scanned, so a label called `L1` is not a temporary.
+    Matches `t1`, `t2`, … and source-generated `__src_tmp_1`, `__src_tmp_2`, …
+    Each distinct name counts once even if referenced multiple times. Label names
+    are not scanned.
     """
     names: set[str] = set()
     for instruction in program.instructions:

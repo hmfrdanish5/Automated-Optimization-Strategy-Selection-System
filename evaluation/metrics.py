@@ -17,8 +17,8 @@ from evaluation.operation_cost import OPERATION_COST, UNARY_MINUS_COST
 from tac.instruction import InstructionType
 from tac.program import TACProgram
 
-# Same temporary-name rule as num_tmp_vars: t followed by digits.
-_TEMP_NAME = re.compile(r"t\d+\Z")
+# Match both classic TAC temporaries and source-compiler temporaries.
+_TEMP_NAME = re.compile(r"(?:t\d+|__src_tmp_\d+)\Z")
 
 
 def instruction_count(program: TACProgram) -> int:
@@ -50,7 +50,7 @@ def arithmetic_operation_count(program: TACProgram) -> int:
 
 
 def temporary_variable_count(program: TACProgram) -> int:
-    """Count unique temporaries t1, t2, t3, and so on, used as a result or operand."""
+    """Count unique classic TAC and source-compiler temporaries used as results or operands."""
     names: set[str] = set()
     for instruction in program.instructions:
         for value in (instruction.result, instruction.operand1, instruction.operand2):

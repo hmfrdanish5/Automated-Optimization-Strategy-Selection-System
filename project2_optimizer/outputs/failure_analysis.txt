@@ -1,0 +1,352 @@
+FAILURE ANALYSIS
+Holdout models were loaded and applied to the strict test split.
+Feature-signature overlap between that train split and test split: 0.
+Unseen rows are the hand-written benchmark, which was not a training row.
+Failure records: 19.
+
+[strict_holdout] decision_tree / fin_113
+actual no_improvement
+predicted constant_propagation
+probabilities {'constant_folding': 0.0, 'constant_propagation': 1.0, 'algebraic_simplification': 0.0, 'common_subexpression_elimination': 0.0, 'dead_code_elimination': 0.0, 'strength_reduction': 0.0, 'no_improvement': 0.0}
+features {'num_statements': 16, 'num_constants': 0, 'num_repeated_expr': 0, 'num_dead_stmts': 0, 'num_algebraic_ops': 0, 'num_loop_ops': 0, 'num_tmp_vars': 8, 'const_ratio': 0.0}
+strategy gains {'constant_folding': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'constant_propagation': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'algebraic_simplification': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'common_subexpression_elimination': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'dead_code_elimination': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'strength_reduction': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'no_improvement': {'instruction_gain': 0, 'weighted_cost_gain': 0}}
+TAC:
+t1 = v0 + w0
+print t1
+t2 = v1 + w1
+print t2
+t3 = v2 + w2
+print t3
+t4 = v3 + w3
+print t4
+t5 = v4 + w4
+print t5
+t6 = v5 + w5
+print t6
+t7 = v6 + w6
+print t7
+t8 = v7 + w7
+print t8
+
+[strict_holdout] decision_tree / fin_149
+actual no_improvement
+predicted constant_propagation
+probabilities {'constant_folding': 0.0, 'constant_propagation': 1.0, 'algebraic_simplification': 0.0, 'common_subexpression_elimination': 0.0, 'dead_code_elimination': 0.0, 'strength_reduction': 0.0, 'no_improvement': 0.0}
+features {'num_statements': 17, 'num_constants': 0, 'num_repeated_expr': 0, 'num_dead_stmts': 0, 'num_algebraic_ops': 0, 'num_loop_ops': 0, 'num_tmp_vars': 8, 'const_ratio': 0.0}
+strategy gains {'constant_folding': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'constant_propagation': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'algebraic_simplification': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'common_subexpression_elimination': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'dead_code_elimination': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'strength_reduction': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'no_improvement': {'instruction_gain': 0, 'weighted_cost_gain': 0}}
+TAC:
+t1 = v0 + w0
+print t1
+t2 = v1 + w1
+print t2
+t3 = v2 + w2
+print t3
+t4 = v3 + w3
+print t4
+t5 = v4 + w4
+print t5
+t6 = v5 + w5
+print t6
+t7 = v6 + w6
+print t7
+t8 = v7 + w7
+print t8
+print 0
+
+[strict_holdout] decision_tree / fin_143
+actual constant_propagation
+predicted no_improvement
+probabilities {'constant_folding': 0.0, 'constant_propagation': 0.0, 'algebraic_simplification': 0.0, 'common_subexpression_elimination': 0.0, 'dead_code_elimination': 0.0, 'strength_reduction': 0.0, 'no_improvement': 1.0}
+features {'num_statements': 5, 'num_constants': 0, 'num_repeated_expr': 0, 'num_dead_stmts': 0, 'num_algebraic_ops': 0, 'num_loop_ops': 0, 'num_tmp_vars': 1, 'const_ratio': 0.0}
+strategy gains {'constant_folding': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'constant_propagation': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'algebraic_simplification': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'common_subexpression_elimination': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'dead_code_elimination': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'strength_reduction': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'no_improvement': {'instruction_gain': 0, 'weighted_cost_gain': 0}}
+TAC:
+value = 12
+t1 = value + 3
+print t1
+print value
+print 0
+
+[strict_holdout] decision_tree / fin_021
+actual constant_propagation
+predicted no_improvement
+probabilities {'constant_folding': 0.0, 'constant_propagation': 0.0, 'algebraic_simplification': 0.0, 'common_subexpression_elimination': 0.0, 'dead_code_elimination': 0.0, 'strength_reduction': 0.0, 'no_improvement': 1.0}
+features {'num_statements': 15, 'num_constants': 0, 'num_repeated_expr': 0, 'num_dead_stmts': 0, 'num_algebraic_ops': 0, 'num_loop_ops': 0, 'num_tmp_vars': 6, 'const_ratio': 0.0}
+strategy gains {'constant_folding': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'constant_propagation': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'algebraic_simplification': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'common_subexpression_elimination': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'dead_code_elimination': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'strength_reduction': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'no_improvement': {'instruction_gain': 0, 'weighted_cost_gain': 0}}
+TAC:
+value = 12
+t1 = value + 3
+print t1
+t2 = value + 4
+print t2
+t3 = value + 5
+print t3
+t4 = value + 6
+print t4
+t5 = value + 7
+print t5
+t6 = value + 8
+print t6
+print value
+print 0
+
+[strict_holdout] decision_tree / fin_108
+actual no_improvement
+predicted strength_reduction
+probabilities {'constant_folding': 0.0, 'constant_propagation': 0.0, 'algebraic_simplification': 0.0, 'common_subexpression_elimination': 0.0, 'dead_code_elimination': 0.0, 'strength_reduction': 1.0, 'no_improvement': 0.0}
+features {'num_statements': 15, 'num_constants': 0, 'num_repeated_expr': 0, 'num_dead_stmts': 0, 'num_algebraic_ops': 0, 'num_loop_ops': 13, 'num_tmp_vars': 5, 'const_ratio': 0.0}
+strategy gains {'constant_folding': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'constant_propagation': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'algebraic_simplification': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'common_subexpression_elimination': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'dead_code_elimination': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'strength_reduction': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'no_improvement': {'instruction_gain': 0, 'weighted_cost_gain': 0}}
+TAC:
+i = 0
+L1:
+t1 = i + 3
+print t1
+t2 = i + 4
+print t2
+t3 = i + 5
+print t3
+t4 = i + 6
+print t4
+t5 = i + 7
+print t5
+i = i + 1
+if i < 5 goto L1
+print i
+
+[strict_holdout] decision_tree / fin_099
+actual common_subexpression_elimination
+predicted no_improvement
+probabilities {'constant_folding': 0.0, 'constant_propagation': 0.0, 'algebraic_simplification': 0.0, 'common_subexpression_elimination': 0.0, 'dead_code_elimination': 0.0, 'strength_reduction': 0.0, 'no_improvement': 1.0}
+features {'num_statements': 8, 'num_constants': 0, 'num_repeated_expr': 1, 'num_dead_stmts': 0, 'num_algebraic_ops': 0, 'num_loop_ops': 0, 'num_tmp_vars': 3, 'const_ratio': 0.0}
+strategy gains {'constant_folding': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'constant_propagation': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'algebraic_simplification': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'common_subexpression_elimination': {'instruction_gain': 0, 'weighted_cost_gain': 1}, 'dead_code_elimination': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'strength_reduction': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'no_improvement': {'instruction_gain': 0, 'weighted_cost_gain': 0}}
+TAC:
+t1 = left + right
+t2 = left + right
+t3 = name0 - other0
+print t1
+print t2
+print t3
+print 0
+print 0
+
+[strict_holdout] decision_tree / fin_118
+actual constant_propagation
+predicted no_improvement
+probabilities {'constant_folding': 0.0, 'constant_propagation': 0.0, 'algebraic_simplification': 0.0, 'common_subexpression_elimination': 0.0, 'dead_code_elimination': 0.0, 'strength_reduction': 0.0, 'no_improvement': 1.0}
+features {'num_statements': 12, 'num_constants': 0, 'num_repeated_expr': 0, 'num_dead_stmts': 0, 'num_algebraic_ops': 0, 'num_loop_ops': 0, 'num_tmp_vars': 5, 'const_ratio': 0.0}
+strategy gains {'constant_folding': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'constant_propagation': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'algebraic_simplification': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'common_subexpression_elimination': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'dead_code_elimination': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'strength_reduction': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'no_improvement': {'instruction_gain': 0, 'weighted_cost_gain': 0}}
+TAC:
+value = 12
+t1 = value + 3
+print t1
+t2 = value + 4
+print t2
+t3 = value + 5
+print t3
+t4 = value + 6
+print t4
+t5 = value + 7
+print t5
+print value
+
+[strict_holdout] decision_tree / fin_007
+actual common_subexpression_elimination
+predicted no_improvement
+probabilities {'constant_folding': 0.0, 'constant_propagation': 0.0, 'algebraic_simplification': 0.0, 'common_subexpression_elimination': 0.0, 'dead_code_elimination': 0.0, 'strength_reduction': 0.0, 'no_improvement': 1.0}
+features {'num_statements': 6, 'num_constants': 0, 'num_repeated_expr': 2, 'num_dead_stmts': 0, 'num_algebraic_ops': 0, 'num_loop_ops': 0, 'num_tmp_vars': 3, 'const_ratio': 0.0}
+strategy gains {'constant_folding': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'constant_propagation': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'algebraic_simplification': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'common_subexpression_elimination': {'instruction_gain': 0, 'weighted_cost_gain': 2}, 'dead_code_elimination': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'strength_reduction': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'no_improvement': {'instruction_gain': 0, 'weighted_cost_gain': 0}}
+TAC:
+t1 = shared + value
+print t1
+t2 = shared + value
+print t2
+t3 = shared + value
+print t3
+
+[strict_holdout] decision_tree / fin_186
+actual no_improvement
+predicted strength_reduction
+probabilities {'constant_folding': 0.0, 'constant_propagation': 0.0, 'algebraic_simplification': 0.0, 'common_subexpression_elimination': 0.0, 'dead_code_elimination': 0.0, 'strength_reduction': 1.0, 'no_improvement': 0.0}
+features {'num_statements': 9, 'num_constants': 0, 'num_repeated_expr': 0, 'num_dead_stmts': 0, 'num_algebraic_ops': 0, 'num_loop_ops': 7, 'num_tmp_vars': 2, 'const_ratio': 0.0}
+strategy gains {'constant_folding': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'constant_propagation': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'algebraic_simplification': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'common_subexpression_elimination': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'dead_code_elimination': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'strength_reduction': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'no_improvement': {'instruction_gain': 0, 'weighted_cost_gain': 0}}
+TAC:
+i = 0
+L1:
+t1 = i + 3
+print t1
+t2 = i + 4
+print t2
+i = i + 1
+if i < 5 goto L1
+print i
+
+[strict_holdout] random_forest / fin_113
+actual no_improvement
+predicted constant_propagation
+probabilities {'constant_folding': 0.01, 'constant_propagation': 0.86, 'algebraic_simplification': 0.03, 'common_subexpression_elimination': 0.03, 'dead_code_elimination': 0.0, 'strength_reduction': 0.0, 'no_improvement': 0.07}
+features {'num_statements': 16, 'num_constants': 0, 'num_repeated_expr': 0, 'num_dead_stmts': 0, 'num_algebraic_ops': 0, 'num_loop_ops': 0, 'num_tmp_vars': 8, 'const_ratio': 0.0}
+strategy gains {'constant_folding': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'constant_propagation': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'algebraic_simplification': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'common_subexpression_elimination': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'dead_code_elimination': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'strength_reduction': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'no_improvement': {'instruction_gain': 0, 'weighted_cost_gain': 0}}
+TAC:
+t1 = v0 + w0
+print t1
+t2 = v1 + w1
+print t2
+t3 = v2 + w2
+print t3
+t4 = v3 + w3
+print t4
+t5 = v4 + w4
+print t5
+t6 = v5 + w5
+print t6
+t7 = v6 + w6
+print t7
+t8 = v7 + w7
+print t8
+
+[strict_holdout] random_forest / fin_149
+actual no_improvement
+predicted constant_propagation
+probabilities {'constant_folding': 0.01, 'constant_propagation': 0.83, 'algebraic_simplification': 0.05, 'common_subexpression_elimination': 0.03, 'dead_code_elimination': 0.0, 'strength_reduction': 0.01, 'no_improvement': 0.07}
+features {'num_statements': 17, 'num_constants': 0, 'num_repeated_expr': 0, 'num_dead_stmts': 0, 'num_algebraic_ops': 0, 'num_loop_ops': 0, 'num_tmp_vars': 8, 'const_ratio': 0.0}
+strategy gains {'constant_folding': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'constant_propagation': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'algebraic_simplification': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'common_subexpression_elimination': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'dead_code_elimination': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'strength_reduction': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'no_improvement': {'instruction_gain': 0, 'weighted_cost_gain': 0}}
+TAC:
+t1 = v0 + w0
+print t1
+t2 = v1 + w1
+print t2
+t3 = v2 + w2
+print t3
+t4 = v3 + w3
+print t4
+t5 = v4 + w4
+print t5
+t6 = v5 + w5
+print t6
+t7 = v6 + w6
+print t7
+t8 = v7 + w7
+print t8
+print 0
+
+[strict_holdout] random_forest / fin_143
+actual constant_propagation
+predicted no_improvement
+probabilities {'constant_folding': 0.02, 'constant_propagation': 0.15, 'algebraic_simplification': 0.0, 'common_subexpression_elimination': 0.0, 'dead_code_elimination': 0.0, 'strength_reduction': 0.0, 'no_improvement': 0.83}
+features {'num_statements': 5, 'num_constants': 0, 'num_repeated_expr': 0, 'num_dead_stmts': 0, 'num_algebraic_ops': 0, 'num_loop_ops': 0, 'num_tmp_vars': 1, 'const_ratio': 0.0}
+strategy gains {'constant_folding': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'constant_propagation': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'algebraic_simplification': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'common_subexpression_elimination': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'dead_code_elimination': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'strength_reduction': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'no_improvement': {'instruction_gain': 0, 'weighted_cost_gain': 0}}
+TAC:
+value = 12
+t1 = value + 3
+print t1
+print value
+print 0
+
+[strict_holdout] random_forest / fin_118
+actual constant_propagation
+predicted no_improvement
+probabilities {'constant_folding': 0.0, 'constant_propagation': 0.22, 'algebraic_simplification': 0.01, 'common_subexpression_elimination': 0.05, 'dead_code_elimination': 0.01, 'strength_reduction': 0.0, 'no_improvement': 0.71}
+features {'num_statements': 12, 'num_constants': 0, 'num_repeated_expr': 0, 'num_dead_stmts': 0, 'num_algebraic_ops': 0, 'num_loop_ops': 0, 'num_tmp_vars': 5, 'const_ratio': 0.0}
+strategy gains {'constant_folding': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'constant_propagation': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'algebraic_simplification': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'common_subexpression_elimination': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'dead_code_elimination': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'strength_reduction': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'no_improvement': {'instruction_gain': 0, 'weighted_cost_gain': 0}}
+TAC:
+value = 12
+t1 = value + 3
+print t1
+t2 = value + 4
+print t2
+t3 = value + 5
+print t3
+t4 = value + 6
+print t4
+t5 = value + 7
+print t5
+print value
+
+[strict_holdout] random_forest / fin_097
+actual no_improvement
+predicted strength_reduction
+probabilities {'constant_folding': 0.0, 'constant_propagation': 0.05, 'algebraic_simplification': 0.0, 'common_subexpression_elimination': 0.0, 'dead_code_elimination': 0.01, 'strength_reduction': 0.53, 'no_improvement': 0.41}
+features {'num_statements': 13, 'num_constants': 0, 'num_repeated_expr': 0, 'num_dead_stmts': 0, 'num_algebraic_ops': 0, 'num_loop_ops': 9, 'num_tmp_vars': 3, 'const_ratio': 0.0}
+strategy gains {'constant_folding': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'constant_propagation': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'algebraic_simplification': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'common_subexpression_elimination': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'dead_code_elimination': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'strength_reduction': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'no_improvement': {'instruction_gain': 0, 'weighted_cost_gain': 0}}
+TAC:
+i = 0
+L1:
+t1 = i + 3
+print t1
+t2 = i + 4
+print t2
+t3 = i + 5
+print t3
+i = i + 1
+if i < 5 goto L1
+print i
+print 0
+print 0
+
+[strict_holdout] random_forest / fin_186
+actual no_improvement
+predicted strength_reduction
+probabilities {'constant_folding': 0.0, 'constant_propagation': 0.07, 'algebraic_simplification': 0.02, 'common_subexpression_elimination': 0.01, 'dead_code_elimination': 0.03, 'strength_reduction': 0.47, 'no_improvement': 0.4}
+features {'num_statements': 9, 'num_constants': 0, 'num_repeated_expr': 0, 'num_dead_stmts': 0, 'num_algebraic_ops': 0, 'num_loop_ops': 7, 'num_tmp_vars': 2, 'const_ratio': 0.0}
+strategy gains {'constant_folding': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'constant_propagation': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'algebraic_simplification': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'common_subexpression_elimination': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'dead_code_elimination': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'strength_reduction': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'no_improvement': {'instruction_gain': 0, 'weighted_cost_gain': 0}}
+TAC:
+i = 0
+L1:
+t1 = i + 3
+print t1
+t2 = i + 4
+print t2
+i = i + 1
+if i < 5 goto L1
+print i
+
+[unseen] decision_tree / live_condition
+actual constant_propagation
+predicted no_improvement
+probabilities {'constant_folding': 0.0, 'constant_propagation': 0.0, 'algebraic_simplification': 0.0, 'common_subexpression_elimination': 0.0, 'dead_code_elimination': 0.0, 'strength_reduction': 0.0, 'no_improvement': 1.0}
+features {'num_statements': 5, 'num_constants': 0, 'num_repeated_expr': 0, 'num_dead_stmts': 0, 'num_algebraic_ops': 0, 'num_loop_ops': 0, 'num_tmp_vars': 0, 'const_ratio': 0.0}
+strategy gains {'constant_folding': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'constant_propagation': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'algebraic_simplification': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'common_subexpression_elimination': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'dead_code_elimination': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'strength_reduction': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'no_improvement': {'instruction_gain': 0, 'weighted_cost_gain': 0}}
+TAC:
+flag = 1
+if flag < 2 goto L1
+print 0
+L1:
+print flag
+
+[unseen] random_forest / live_condition
+actual constant_propagation
+predicted no_improvement
+probabilities {'constant_folding': 0.02, 'constant_propagation': 0.1, 'algebraic_simplification': 0.0, 'common_subexpression_elimination': 0.0, 'dead_code_elimination': 0.0, 'strength_reduction': 0.0, 'no_improvement': 0.88}
+features {'num_statements': 5, 'num_constants': 0, 'num_repeated_expr': 0, 'num_dead_stmts': 0, 'num_algebraic_ops': 0, 'num_loop_ops': 0, 'num_tmp_vars': 0, 'const_ratio': 0.0}
+strategy gains {'constant_folding': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'constant_propagation': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'algebraic_simplification': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'common_subexpression_elimination': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'dead_code_elimination': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'strength_reduction': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'no_improvement': {'instruction_gain': 0, 'weighted_cost_gain': 0}}
+TAC:
+flag = 1
+if flag < 2 goto L1
+print 0
+L1:
+print flag
+
+[unseen] decision_tree / counted_loop
+actual no_improvement
+predicted strength_reduction
+probabilities {'constant_folding': 0.0, 'constant_propagation': 0.0, 'algebraic_simplification': 0.0, 'common_subexpression_elimination': 0.0, 'dead_code_elimination': 0.0, 'strength_reduction': 1.0, 'no_improvement': 0.0}
+features {'num_statements': 5, 'num_constants': 0, 'num_repeated_expr': 0, 'num_dead_stmts': 0, 'num_algebraic_ops': 0, 'num_loop_ops': 3, 'num_tmp_vars': 0, 'const_ratio': 0.0}
+strategy gains {'constant_folding': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'constant_propagation': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'algebraic_simplification': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'common_subexpression_elimination': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'dead_code_elimination': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'strength_reduction': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'no_improvement': {'instruction_gain': 0, 'weighted_cost_gain': 0}}
+TAC:
+i = 0
+L1:
+i = i + 1
+if i < n goto L1
+print i
+
+[unseen] random_forest / counted_loop
+actual no_improvement
+predicted strength_reduction
+probabilities {'constant_folding': 0.01, 'constant_propagation': 0.04, 'algebraic_simplification': 0.0, 'common_subexpression_elimination': 0.0, 'dead_code_elimination': 0.0, 'strength_reduction': 0.61, 'no_improvement': 0.34}
+features {'num_statements': 5, 'num_constants': 0, 'num_repeated_expr': 0, 'num_dead_stmts': 0, 'num_algebraic_ops': 0, 'num_loop_ops': 3, 'num_tmp_vars': 0, 'const_ratio': 0.0}
+strategy gains {'constant_folding': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'constant_propagation': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'algebraic_simplification': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'common_subexpression_elimination': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'dead_code_elimination': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'strength_reduction': {'instruction_gain': 0, 'weighted_cost_gain': 0}, 'no_improvement': {'instruction_gain': 0, 'weighted_cost_gain': 0}}
+TAC:
+i = 0
+L1:
+i = i + 1
+if i < n goto L1
+print i

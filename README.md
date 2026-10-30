@@ -17,22 +17,62 @@ schema; the Rule-Based selector always uses eight features. The Streamlit demo a
 **Review 1 (frozen baseline):** two ML models (tree + forest) on 200 programs.
 Artifacts and metrics are preserved; see `REVIEW_1_BASELINE.md`.
 
-TAC is the primary input. A Project 1 source parser is **not** bundled; see
-`integration/project1_adapter.py` for the expected hook.
+The Streamlit demo defaults to a **restricted C-like source language** compiled by
+`source_frontend/` (this is **not** the missing external Project 1 parser). Advanced
+TAC input remains available for debugging.
 
 ## Architecture
 
 ```text
-TAC program
-    → extract features (8 for rules; 8 or 11 for ML, per saved model)
-    → selector ranks six optimizers + no_improvement
-    → try candidates in order until one measurably improves the program
-    → re-extract features and repeat
-    → stop when no pass helps, iteration limit, or repeated TAC text
+                    OFFLINE (training / evaluation — not run on every UI click)
+  dataset_v2.csv ──► train_review2.py ──► saved production pickles (models/)
+                  └──► evaluate_review2.py ──► outputs/review2/ (metrics, plots)
+
+                    ONLINE (Streamlit / optimize.py)
+  Source code ──► lexer ──► parser ──► AST ──► TAC generator
+       │                                              │
+       └── Advanced TAC paste ────────────────────────┘
+                              ▼
+                    tac/parser.py (validation)
+                              ▼
+                    feature extraction (8 or 11 columns)
+                              ▼
+         five selectors (saved models + rule baseline)
+                              ▼
+              candidate ranking + six optimization passes
+                              ▼
+           measured gains + iterative engine ──► final TAC
+
+  Supporting (offline): semantic/differential tests, fuzz corpus — not mandatory per request
 ```
 
-Each optimizer runs alone and returns a **new** program. The original TAC is
-never modified.
+Each optimizer runs alone and returns a **new** program. The original TAC is never
+modified in place.
+
+## Supported source language (subset)
+
+Implemented in `source_frontend/`:
+
+- `int name = expression;` declarations (flat namespace; duplicate names rejected).
+- Assignment, `+ - * / %`, unary `-`, parentheses.
+- `print(expr);`
+- `if (a rel b) { ... } else { ... }` and `while (cond) { ... }` with nested blocks.
+- `//` line comments.
+
+**Not supported:** functions, arrays, pointers, floats, strings, `for`, `break`, `continue`,
+`return`, logical `&&`/`||`, and external input. Identifiers `if`, `goto`, and `print` are
+reserved because the TAC backend uses them as keywords. A definite-assignment check rejects
+reads of variables that may be uninitialized (for example, declared only inside a loop body).
+Unsupported constructs produce errors with line/column information.
+
+Compile entry point: `source_frontend.compiler.compile_source(source)`.
+
+## Visualization dashboard
+
+`app.py` tabs **Model Performance**, **Optimization Analytics**, and **Semantic Correctness**
+render frozen artifacts from `outputs/` and `outputs/review2/` via `ui/visualizations.py`.
+Review-1 and Review-2 charts are labeled separately; the UI does not retrain models or
+regenerate experiment CSVs.
 
 ## Review-1 frozen baseline
 
@@ -55,7 +95,7 @@ Historical scope (unchanged artifacts):
 | `num_dead_stmts` | Assignments removable by iterative liveness (same analysis as DCE). |
 | `num_algebraic_ops` | Count of `x+0`, `0+x`, `x-0`, `x*1`, `1*x`, `x/1`, `x*0`, `0*x`. |
 | `num_loop_ops` | Instructions inside a back-edge loop (counted once). |
-| `num_tmp_vars` | Unique names matching `t` + digits as result or operand. |
+| `num_tmp_vars` | Unique names matching `t` + digits or `__src_tmp_` + digits (as result or operand). |
 | `const_ratio` | `num_constants / num_statements`, or 0 if empty. |
 
 **Three extended columns** (`features/extended_extractor.py`, Review 2 only) document
@@ -71,7 +111,7 @@ Each module exposes `optimize(program) -> TACProgram`:
 | `constant_propagation` | Substitute constants from simple assignments and copies (does not fold new expressions). |
 | `algebraic_simplification` | Apply the eight algebraic identities listed above. |
 | `common_subexpression_elimination` | Reuse temporaries for repeated expressions; respects reassignment; no commutativity. |
-| `dead_code_elimination` | Remove dead assignments; keeps prints, labels, and jumps. |
+| `dead_code_elimination` | Remove dead assignments; keeps prints, labels, jumps, and unused `/`/`%` that may trap. |
 | `strength_reduction` | Inside loops only: `x * 2` or `2 * x` → `x + x`. |
 
 `apply_strategy(program, name)` runs one pass. Chaining happens only in the
@@ -132,6 +172,7 @@ optimization using the TAC interpreter (`tac/interpreter.py`, step limit
 | --- | --- |
 | `tests/test_semantics.py` | Hand-written regression cases for each of the six passes. |
 | `tests/test_semantic_fuzz.py` | Deterministic generated corpus (seed `20261029`): 80 programs × 10 input environments × 6 passes (4,800 comparisons), plus 24 programs × 10 environments through the fixed-order iterative engine (240 comparisons). |
+| `tests/test_source_*.py` | Lexer/parser/codegen tests plus source→TAC→optimizer differential checks. |
 
 These tests provide evidence for the cases they exercise; they do **not** verify
 every possible TAC program. The production engine does not re-run the interpreter
@@ -159,10 +200,11 @@ models when present). Search-efficiency metrics are recorded per run.
 ## Limitations
 
 - Synthetic dataset; not representative of production compilers.
-- Simplified TAC (no functions, pointers, or rich types).
+- Simplified TAC (no functions, pointers, or rich types in the IR).
+- Source front end covers a small C-like subset only.
 - Feature vectors can be ambiguous under eight columns; extended features reduce but
   do not remove all limits on this corpus.
-- Project 1 parser integration is **not** implemented.
+- External Project 1 parser is **not** integrated; `integration/project1_adapter.py` delegates to `source_frontend`.
 
 ## Reproducing the project
 
@@ -192,6 +234,9 @@ python app.py
 ```
 
 Pinned: `scikit-learn==1.9.1`, `streamlit==1.63.0` (see `requirements.txt`).
+
+Tabs: **Optimize Program** (source/TAC input, five-selector comparison), **Model Performance**,
+**Optimization Analytics**, **Semantic Correctness** (saved offline artifacts).
 
 ## TAC syntax (quick reference)
 
