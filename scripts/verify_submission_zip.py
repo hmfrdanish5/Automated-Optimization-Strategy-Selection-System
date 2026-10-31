@@ -28,6 +28,18 @@ REQUIRED_PATHS = (
     "outputs/evaluation/feature_ablation.csv", "outputs/evaluation/summary.txt",
     "tests/test_source_compiler.py", "tests/test_source_correctness.py",
     "tests/test_semantic_fuzz.py", "package_submission.py",
+    # Search controls, fair rule baseline, required plots and unseen benchmark.
+    "evaluate_search.py", "evaluation/search_experiment.py", "selection/search_config.py",
+    "tests/test_search_controls.py", "tests/test_rule_v2.py", "tests/test_demo_search_options.py",
+    "examples/source_program.txt",
+    "outputs/search/experiment_summary.txt", "outputs/search/holdout_metrics.csv",
+    "outputs/search/search_summary.csv", "outputs/search/unseen_benchmark.csv",
+    "outputs/search/confusion_matrix_random_forest_v2.png",
+    "outputs/search/random_forest_feature_importance_v2.png",
+    "outputs/search/confidence_vs_gain.png", "outputs/search/strategy_sequences.png",
+    "outputs/search/reduction_by_strategy_boxplot.png",
+    "outputs/search/constants_vs_constant_folding_score.png",
+    "outputs/search/search_efficiency.png",
 )
 
 

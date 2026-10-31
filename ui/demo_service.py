@@ -1,6 +1,6 @@
 """Adapter between the Streamlit demo and the optimization engine.
 
-Compares five selectors on identical TAC input using the saved production models.
+Compares six selectors (including Rule-Based v2) on identical TAC input using the saved production models.
 The demo does not train models or modify datasets.
 """
 
@@ -17,13 +17,15 @@ from tac.instruction import InstructionType
 from ui.random_tac import generate_random_tac
 from ui.random_source import generate_random_source
 from engine.loop import (
+    STOP_BUDGET_EXHAUSTED,
     STOP_ITERATION_LIMIT,
+    STOP_PREDICTED_NO_IMPROVEMENT,
     STOP_NO_BENEFIT,
     STOP_REPEATED_STATE,
     OptimizationRun,
     optimize_program,
 )
-from engine.selectors import ModelSelector, SelectorAdvice, runtime_selectors
+from engine.selectors import ModelSelector, RuleSelectorV2, SelectorAdvice, runtime_selectors
 from evaluation.label_policy import NO_IMPROVEMENT
 from features.extended_extractor import FEATURE_COLUMNS_EXTENDED, extract_extended_features
 from features.extractor import FEATURE_COLUMNS, extract_features
@@ -54,6 +56,7 @@ SELECTOR_LABELS = {
     "random_forest": "Random Forest",
     "logistic_regression": "Logistic Regression",
     "mlp": "MLP",
+    "rule_based_v2": "Rule-Based v2",
 }
 
 SELECTOR_ORDER = (
@@ -62,7 +65,10 @@ SELECTOR_ORDER = (
     "random_forest",
     "logistic_regression",
     "mlp",
+    "rule_based_v2",
 )
+
+RULE_SELECTORS = ("rule_based", "rule_based_v2")
 
 STRATEGY_LABELS = {
     "constant_folding": "Constant folding",
@@ -85,6 +91,8 @@ _STOP_MESSAGES = {
     STOP_NO_BENEFIT: "Optimization converged — no beneficial strategy remains.",
     STOP_ITERATION_LIMIT: "Maximum iteration limit reached.",
     STOP_REPEATED_STATE: "Repeated TAC state detected.",
+    STOP_PREDICTED_NO_IMPROVEMENT: "Stopped early — the selector is confident no optimization will help.",
+    STOP_BUDGET_EXHAUSTED: "Stopped — no improvement within the candidate budget.",
 }
 
 
@@ -178,12 +186,12 @@ def ensure_production_models() -> bool:
 
 
 def get_runtime_selectors():
-    """Return the five production selectors without fitting anything in the UI."""
+    """Return the production selectors plus Rule-Based v2, without fitting anything in the UI."""
     if not ensure_production_models():
         raise ModelArtifactsMissing(
             "Production models were not found. Run `python train_models.py` to create them."
         )
-    return runtime_selectors()
+    return {**runtime_selectors(), "rule_based_v2": RuleSelectorV2()}
 
 
 def selector_feature_bundle(program: TACProgram, selector) -> tuple[dict[str, float], str]:
@@ -225,8 +233,12 @@ def compare_all_selectors(
     source: str,
     *,
     submitted_source: str | None = None,
+    stop_on_no_improvement: float | None = None,
 ) -> SelectorComparison:
-    """Run all five selectors on separate copies of the same TAC program.
+    """Run every selector on separate copies of the same TAC program.
+
+    ``stop_on_no_improvement`` turns on the engine's early stop: a run ends when
+    the selector predicts no_improvement with at least that confidence.
 
     Each call uses ``optimize_program``, which copies its input. The parsed
     program is checked afterward and must match the text that was submitted.
@@ -238,7 +250,9 @@ def compare_all_selectors(
     selectors = get_runtime_selectors()
     by_selector: dict[str, DemoOptimizationResult] = {}
     for key in SELECTOR_ORDER:
-        by_selector[key] = _optimize_copy(program, selectors[key], key, features, features_extended)
+        by_selector[key] = _optimize_copy(
+            program, selectors[key], key, features, features_extended, stop_on_no_improvement
+        )
     if program.to_tac() != submitted:
         raise DemoError("Internal error: the backend changed the input program.")
     return SelectorComparison(
@@ -259,7 +273,7 @@ def comparison_table_rows(comparison: SelectorComparison) -> list[dict[str, obje
         item = comparison.by_selector[key]
         advice = item.initial_advice
         top = advice.confidence
-        if key == "rule_based":
+        if key in RULE_SELECTORS:
             top_text = f"{top:.4f} (rule score)"
         else:
             top_text = f"{top * 100:.1f}% (class probability)"
@@ -293,7 +307,7 @@ def class_score_rows(advice: SelectorAdvice, selector_key: str) -> list[dict[str
             "Strategy": strategy_label(name),
             "Top prediction": "yes" if name == advice.selected_strategy else "",
         }
-        if selector_key == "rule_based":
+        if selector_key in RULE_SELECTORS:
             row["Rule score"] = round(value, 4)
         else:
             row["Probability (%)"] = round(value * 100.0, 1)
@@ -312,13 +326,13 @@ def horizontal_score_figure(advice: SelectorAdvice, selector_key: str):
     for name in advice.ranking:
         names.append(strategy_label(name))
         raw = float(advice.probabilities.get(name, 0.0))
-        values.append(raw if selector_key == "rule_based" else raw * 100.0)
+        values.append(raw if selector_key in RULE_SELECTORS else raw * 100.0)
     # Highest score at the top of the chart.
     names = list(reversed(names))
     values = list(reversed(values))
     figure, axis = plt.subplots(figsize=(7.2, 3.1))
     axis.barh(names, values, color="#3d6f99")
-    if selector_key == "rule_based":
+    if selector_key in RULE_SELECTORS:
         axis.set_xlabel("Rule score (not a probability)")
     else:
         axis.set_xlim(0, 100)
@@ -366,12 +380,12 @@ def convergence_message(stopped_because: str) -> str:
 
 def iteration_history_rows(run: OptimizationRun, selector_key: str = "") -> list[dict[str, object]]:
     """One row per optimizer attempt recorded by the engine."""
-    score_name = "Rule score" if selector_key == "rule_based" else "Class probability (%)"
+    score_name = "Rule score" if selector_key in RULE_SELECTORS else "Class probability (%)"
     rows: list[dict[str, object]] = []
     for record in run.history:
         for attempt in record.attempts:
             raw = float(record.candidate_probabilities.get(attempt.strategy, 0.0))
-            shown = round(raw, 4) if selector_key == "rule_based" else round(raw * 100.0, 1)
+            shown = round(raw, 4) if selector_key in RULE_SELECTORS else round(raw * 100.0, 1)
             rows.append(
                 {
                     "Iteration": record.iteration,
@@ -393,6 +407,7 @@ def _optimize_copy(
     selector_key: str,
     features_original: dict[str, float],
     features_extended: dict[str, float],
+    stop_on_no_improvement: float | None = None,
 ) -> DemoOptimizationResult:
     before = program.to_tac()
     if isinstance(selector, ModelSelector):
@@ -402,12 +417,15 @@ def _optimize_copy(
         else:
             features = {column: features_original[column] for column in FEATURE_COLUMNS}
             schema = "8 features (original)"
+    elif isinstance(selector, RuleSelectorV2):
+        features = {column: features_extended[column] for column in FEATURE_COLUMNS_EXTENDED}
+        schema = "11 features (extended)"
     else:
         features = {column: features_original[column] for column in FEATURE_COLUMNS}
         schema = "8 features (original)"
     advice = selector.advise(features)
     try:
-        run = optimize_program(program, selector, program_id="demo")
+        run = optimize_program(program, selector, program_id="demo", stop_on_no_improvement=stop_on_no_improvement)
     except Exception as error:
         logger.exception("Optimization failed")
         raise DemoError(f"Optimization failed: {error}") from error
@@ -429,7 +447,7 @@ def _optimize_copy(
 
 def ranking_rows(advice: SelectorAdvice, selector_key: str) -> list[dict[str, object]]:
     """Strategy ranking for the expandable panel."""
-    if selector_key == "rule_based":
+    if selector_key in RULE_SELECTORS:
         label = "Score"
     else:
         label = "Probability"

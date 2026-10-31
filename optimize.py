@@ -3,16 +3,28 @@
 From the project2_optimizer directory:
 
     python optimize.py
+    python optimize.py --early-stop 0.7
+    python optimize.py --source examples/source_program.txt
+    python optimize.py --source examples/source_program.txt --early-stop 0.7
+
+``--source`` compiles one restricted C-like program with source_frontend and
+optimizes the generated TAC with every selector, including Rule-Based v2.
+``--early-stop`` stops a run when the selector predicts no_improvement with at
+least that confidence.
 
 Loads the saved production classifiers. This script does not train models.
 """
 
 from __future__ import annotations
 
+import argparse
+from pathlib import Path
+import sys
+
 from dataset.examples import load_sample_programs
 from engine.loop import optimize_program
 from engine.report import format_comparison, format_run
-from engine.selectors import RankingSelector, runtime_selectors
+from engine.selectors import RankingSelector, RuleSelectorV2, runtime_selectors
 from tac.parser import parse_tac
 
 DEMO_IDS = (
@@ -37,7 +49,49 @@ print t1
 """
 
 
-def main() -> None:
+def main(argv: list[str] | None = None) -> None:
+    parser = argparse.ArgumentParser(description="Run the iterative optimizer on sample or source programs.")
+    parser.add_argument("--source", type=Path, help="restricted C-like source file to compile and optimize")
+    parser.add_argument(
+        "--early-stop",
+        type=float,
+        default=None,
+        metavar="CONFIDENCE",
+        help="stop when the selector predicts no_improvement with at least this confidence (0 to 1)",
+    )
+    args = parser.parse_args(argv)
+    if args.early_stop is not None and not 0.0 <= args.early_stop <= 1.0:
+        parser.error("--early-stop must be between 0 and 1")
+    if args.source is not None:
+        run_source(args.source, args.early_stop)
+        return
+    run_samples(args.early_stop)
+
+
+def run_source(path: Path, early_stop: float | None = None) -> None:
+    """Compile one source program, then optimize its TAC with every selector."""
+    from source_frontend.compiler import compile_source
+
+    result = compile_source(path.read_text(encoding="utf-8"))
+    if not result.ok:
+        for error in result.errors:
+            print(f"error: {error}", file=sys.stderr)
+        raise SystemExit(1)
+    print("Generated TAC:")
+    print(result.program.to_tac())
+    print()
+    selectors = {**runtime_selectors(), "rule_based_v2": RuleSelectorV2()}
+    runs = [
+        optimize_program(result.program, selectors[name], path.stem, stop_on_no_improvement=early_stop)
+        for name in (*SELECTOR_KEYS, "rule_based_v2")
+    ]
+    print(format_comparison(runs))
+    print()
+    showcase = next(run for run in runs if run.selector_type == "random_forest")
+    print(format_run(showcase))
+
+
+def run_samples(early_stop: float | None = None) -> None:
     programs = dict(load_sample_programs())
     originals = {program_id: programs[program_id].to_tac() for program_id in DEMO_IDS}
     selectors = runtime_selectors()
@@ -46,7 +100,9 @@ def main() -> None:
         for name in SELECTOR_KEYS:
             if name not in selectors:
                 raise RuntimeError(f"selector {name} is not available; run train_models.py first")
-            runs.append(optimize_program(programs[program_id], selectors[name], program_id))
+            runs.append(
+                optimize_program(programs[program_id], selectors[name], program_id, stop_on_no_improvement=early_stop)
+            )
     print(format_comparison(runs))
     print()
     showcase = next(

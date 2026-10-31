@@ -1,0 +1,10 @@
+// Restricted C-like source for `python optimize.py --source examples/source_program.txt`.
+// The unused store and the multiplication by two give the selectors work to do.
+int i = 0;
+int total = 0;
+int unused = 99;
+while (i < 5) {
+    total = total + i * 2;
+    i = i + 1;
+}
+print(total);

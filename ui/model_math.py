@@ -7,6 +7,7 @@ import streamlit as st
 from evaluation.operation_cost import OPERATION_COST, UNARY_MINUS_COST
 from features.extended_extractor import FEATURE_COLUMNS_EXTENDED
 from features.extractor import FEATURE_COLUMNS
+from selection.search_config import DEFAULT_EARLY_STOP_THRESHOLD, RULE_WEIGHTS_V2
 from selection.config import RULE_WEIGHTS
 from selection.model_config import LOGISTIC_PARAMETERS, MLP_PARAMETERS
 
@@ -54,7 +55,8 @@ def _render_features() -> None:
     for name in FEATURE_COLUMNS_EXTENDED:
         if name not in FEATURE_COLUMNS:
             rows.append({"Symbol / feature": name, "Meaning": _feature_role(name)})
-    st.dataframe(rows, hide_index=True, use_container_width=True)
+    # Tall enough to show every feature without an inner scroll bar.
+    st.dataframe(rows, hide_index=True, width="stretch", height=36 * (len(rows) + 1) + 4)
     st.latex(r"const\_ratio = N_c / N")
     st.caption("N_c is `num_constants`; N is `num_statements` (0 when empty).")
 
@@ -89,41 +91,51 @@ def _render_rule_based() -> None:
                 "Weighted features": ", ".join(f"{k}×{v}" for k, v in weights.items()),
             }
         )
-    st.dataframe(weight_rows, hide_index=True, use_container_width=True)
+    st.dataframe(weight_rows, hide_index=True, width="stretch")
     st.caption("Highest positive score wins; all zero → `no_improvement`.")
+
+    st.markdown("**Rule-Based v2** (the same eleven features as the ML models, raw counts)")
+    st.caption(
+        "A fair rule baseline ordered like the label policy: dead code first (only DCE removes instructions), "
+        "then the passes that save operation cost, and constant propagation last. Weights from "
+        "`selection/search_config.py`."
+    )
+    st.latex(r"S^{v2}_s = \sum_f w_{s,f} \cdot f")
+    v2_rows = [
+        {"Strategy": strategy, "Weighted features": ", ".join(f"{k}×{v:g}" for k, v in weights.items())}
+        for strategy, weights in RULE_WEIGHTS_V2.items()
+    ]
+    st.dataframe(v2_rows, hide_index=True, width="stretch")
+    st.caption("All scores zero → `no_improvement`; ties use the fixed strategy priority.")
 
 
 def _render_ml_selectors() -> None:
-    col1, col2 = st.columns(2)
-    with col1:
-        st.markdown("**Decision Tree**")
-        st.markdown(
-            "Split nodes test **x_j ≤ t** on one feature; leaves predict a strategy class. "
-            "Random Forest averages many trees (100 trees, fixed seed offline)."
-        )
-        st.markdown("**Logistic Regression**")
-        st.latex(
-            r"P(y=k \mid \mathbf{x}) = \frac{\exp(\mathbf{w}_k^\top \mathbf{z} + b_k)}"
-            r"{\sum_j \exp(\mathbf{w}_j^\top \mathbf{z} + b_j)}, \quad "
-            r"\mathbf{z} = \mathrm{StandardScale}(\mathbf{x})"
-        )
-        st.caption(
-            f"solver={LOGISTIC_PARAMETERS['solver']!r}, C={LOGISTIC_PARAMETERS['C']} (offline)."
-        )
-    with col2:
-        st.markdown("**MLP**")
-        st.latex(
-            r"\mathbf{h} = \mathrm{ReLU}(\mathbf{W}_1 \mathbf{z} + \mathbf{b}_1), \quad "
-            r"P(y=k \mid \mathbf{x}) = \mathrm{softmax}_k(\mathbf{W}_2 \mathbf{h} + \mathbf{b}_2)"
-        )
-        st.caption(
-            f"Hidden {MLP_PARAMETERS['hidden_layer_sizes']}, "
-            f"alpha={MLP_PARAMETERS['alpha']} (offline)."
-        )
-        st.markdown("**Feature vector x**")
-        st.caption(
-            "The Rule-Based selector uses eight features. The four production ML models use all eleven features."
-        )
+    st.markdown("**Decision Tree and Random Forest**")
+    st.markdown(
+        "Split nodes test **x_j ≤ t** on one feature; leaves predict a strategy class. "
+        "Random Forest averages many trees (100 trees, fixed seed offline)."
+    )
+    st.markdown("**Logistic Regression**")
+    st.latex(
+        r"P(y=k \mid \mathbf{x}) = \frac{\exp(\mathbf{w}_k^\top \mathbf{z} + b_k)}"
+        r"{\sum_j \exp(\mathbf{w}_j^\top \mathbf{z} + b_j)}"
+    )
+    st.latex(r"\mathbf{z} = \mathrm{StandardScale}(\mathbf{x})")
+    st.caption(
+        f"solver={LOGISTIC_PARAMETERS['solver']!r}, C={LOGISTIC_PARAMETERS['C']} (offline)."
+    )
+    st.markdown("**MLP**")
+    st.latex(r"\mathbf{h} = \mathrm{ReLU}(\mathbf{W}_1 \mathbf{z} + \mathbf{b}_1)")
+    st.latex(r"P(y=k \mid \mathbf{x}) = \mathrm{softmax}_k(\mathbf{W}_2 \mathbf{h} + \mathbf{b}_2)")
+    st.caption(
+        f"Hidden {MLP_PARAMETERS['hidden_layer_sizes']}, "
+        f"alpha={MLP_PARAMETERS['alpha']} (offline)."
+    )
+    st.markdown("**Feature vector x**")
+    st.caption(
+        "The Rule-Based selector uses eight features. Rule-Based v2 and the four production ML models use all "
+        "eleven features."
+    )
 
 
 def _render_optimization_metrics() -> None:
@@ -132,7 +144,7 @@ def _render_optimization_metrics() -> None:
         {"Operator": op, "Weight": w} for op, w in OPERATION_COST.items()
     ]
     cost_table.append({"Operator": "unary −", "Weight": UNARY_MINUS_COST})
-    st.dataframe(cost_table, hide_index=True, use_container_width=True)
+    st.dataframe(cost_table, hide_index=True, width="stretch")
     st.caption("Assignments, prints, labels, jumps, and comparisons add **0** to C(P).")
     st.latex(
         r"C(P) = n_{+} + n_{-} + 2 n_{*} + 4 n_{/} + 4 n_{\%} + n_{unary}"
@@ -141,6 +153,15 @@ def _render_optimization_metrics() -> None:
     st.caption(
         "I_o / I_n: instruction counts before and after a pass. "
         "The engine accepts a step only when measured gain is positive."
+    )
+    st.markdown("**Search controls** (optional; off by default)")
+    st.latex(
+        r"\text{early stop: } \hat{y} = \texttt{no\_improvement} \;\wedge\; P(\hat{y} \mid \mathbf{x}) \ge \tau"
+    )
+    st.latex(r"\text{budget: try only the top } k \text{ ranked strategies per round}")
+    st.caption(
+        f"The demo's stop-early switch uses τ = {DEFAULT_EARLY_STOP_THRESHOLD:g}. "
+        "Rule scores are not probabilities, so for the rule selectors the top score plays the role of P."
     )
 
 

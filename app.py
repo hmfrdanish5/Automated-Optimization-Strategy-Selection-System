@@ -12,6 +12,7 @@ import streamlit.components.v1 as components
 
 from selection.config import FOREST_PARAMETERS, MODEL_RANDOM_STATE
 from features.extended_extractor import FEATURE_COLUMNS_EXTENDED
+from selection.search_config import DEFAULT_EARLY_STOP_THRESHOLD
 from ui.demo_service import (
     DEMO_SAMPLE_IDS,
     OBSERVABILITY_NOTE,
@@ -58,7 +59,7 @@ PANELS = (
     (
         "overview",
         "Overview",
-        "Instruction counts, gains, and extracted features for all five selectors.",
+        "Instruction counts, gains, and extracted features for all six selectors (including Rule-Based v2).",
     ),
     (
         "scores",
@@ -120,7 +121,7 @@ def main() -> None:
         toggle_col, _spacer = st.columns([0.12, 0.88])
         with toggle_col:
             label = "Hide program panel" if st.session_state.sidebar_open else "Show program panel"
-            if st.button(label, use_container_width=True, key="sidebar_toggle"):
+            if st.button(label, width="stretch", key="sidebar_toggle"):
                 st.session_state.sidebar_open = not st.session_state.sidebar_open
                 st.rerun()
         if st.session_state.sidebar_open:
@@ -307,7 +308,7 @@ def _editor(samples) -> None:
         )
         _tip(
             "Program",
-            "Edit source or TAC here. All five selectors start from the compiled or pasted program. "
+            "Edit source or TAC here. All six selectors start from the compiled or pasted program. "
             + OBSERVABILITY_NOTE,
         )
         if "source_input" not in st.session_state:
@@ -352,14 +353,14 @@ def _editor(samples) -> None:
             st.button(
                 "Random Source",
                 on_click=_fill_random_source,
-                use_container_width=True,
+                width="stretch",
                 help="Small C-like program with print.",
             )
         with gen_col2:
             st.button(
                 "Random TAC",
                 on_click=_fill_random,
-                use_container_width=True,
+                width="stretch",
                 help="Switches to Advanced TAC mode.",
             )
         _tip(
@@ -370,24 +371,29 @@ def _editor(samples) -> None:
             "Load Example",
             on_click=_fill_example,
             args=(samples, example),
-            use_container_width=True,
+            width="stretch",
         )
         _tip(
             "Compare All Selectors",
-            "Compiles source (when selected) or parses TAC, then runs all five selectors "
-            "on separate copies. Loads saved production models; does not train.",
+            "Compiles source (when selected) or parses TAC, then runs every selector "
+            "(including Rule-Based v2) on separate copies. Loads saved production models; does not train.",
+        )
+        st.checkbox(
+            f"Stop early when a selector is confident nothing will help (≥ {DEFAULT_EARLY_STOP_THRESHOLD:.1f})",
+            key="early_stop",
+            help="Uses the engine's early stop. Off: every candidate is tried until none helps.",
         )
         if st.button(
             "Compare All Selectors",
             type="primary",
-            use_container_width=True,
+            width="stretch",
         ):
             _compare()
         _tip("Clear", "Empty the editor and hide the last comparison.")
         st.button(
             "Clear",
             on_click=_clear_editor,
-            use_container_width=True,
+            width="stretch",
         )
 
 
@@ -472,7 +478,7 @@ def _panel_switcher() -> None:
             label,
             key=f"panel_{key}",
             type="primary" if selected else "secondary",
-            use_container_width=True,
+            width="stretch",
             on_click=_select_panel,
             args=(key,),
         )
@@ -582,6 +588,10 @@ def _clear_editor() -> None:
     st.session_state.pop("notice_kind", None)
 
 
+def _early_stop_threshold() -> float | None:
+    return DEFAULT_EARLY_STOP_THRESHOLD if st.session_state.get("early_stop") else None
+
+
 def _compare() -> None:
     st.session_state.pop("notice", None)
     st.session_state.pop("notice_kind", None)
@@ -600,6 +610,7 @@ def _compare() -> None:
             st.session_state["comparison"] = compare_all_selectors(
                 tac_text,
                 submitted_source=source_text.strip(),
+                stop_on_no_improvement=_early_stop_threshold(),
             )
         else:
             program_text = st.session_state.get("tac_input", "").strip()
@@ -609,7 +620,9 @@ def _compare() -> None:
                     "and leave an empty program. " + OBSERVABILITY_NOTE
                 )
                 st.session_state["notice_kind"] = "warning"
-            st.session_state["comparison"] = compare_all_selectors(program_text)
+            st.session_state["comparison"] = compare_all_selectors(
+                program_text, stop_on_no_improvement=_early_stop_threshold()
+            )
         st.session_state["result_panel"] = "overview"
         st.session_state["focus_selector"] = "random_forest"
     except (ModelArtifactsMissing, DemoError) as error:
@@ -642,7 +655,7 @@ def _overview_tab(comparison) -> None:
                 st.caption(
                     f"{run.successful_iterations} successful iterations, {run.candidate_attempts} attempts"
                 )
-    st.dataframe(pd.DataFrame(comparison_table_rows(comparison)), hide_index=True, use_container_width=True)
+    st.dataframe(pd.DataFrame(comparison_table_rows(comparison)), hide_index=True, width="stretch")
     _tip(
         "Features",
         "Eight core inputs extracted from the submitted TAC. Eleven-feature ML selectors "
@@ -686,7 +699,7 @@ def _scores_tab(comparison) -> None:
     item = comparison.by_selector[key]
     advice = item.initial_advice
     with st.container(border=True):
-        if key == "rule_based":
+        if key in ("rule_based", "rule_based_v2"):
             top = f"{advice.confidence:.4f} (rule score, not a probability)"
         else:
             top = f"{advice.confidence * 100:.1f}% class probability"
@@ -703,12 +716,12 @@ def _scores_tab(comparison) -> None:
             "no_improvement.",
         )
         figure = horizontal_score_figure(advice, key)
-        st.pyplot(figure, use_container_width=True)
+        st.pyplot(figure, width="stretch")
         plt.close(figure)
         st.dataframe(
             pd.DataFrame(class_score_rows(advice, key)),
             hide_index=True,
-            use_container_width=True,
+            width="stretch",
         )
 
 
@@ -747,7 +760,7 @@ def _history_tab(comparison) -> None:
         st.dataframe(
             pd.DataFrame(iteration_history_rows(item.run, key)),
             hide_index=True,
-            use_container_width=True,
+            width="stretch",
         )
 
 
